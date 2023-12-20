@@ -1,14 +1,25 @@
 import Head from "next/head";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import FirebaseAPI from "../pages/api/firebaseAPI";
 
 export default function Home() {
+	const { registration } = FirebaseAPI();
+
+	const handleLogout = () => {
+		registration.logout();
+	};
+
 	return (
 		<>
 			<Head>
-				<title>Dashboard | QuickStudy</title>
+				<title>Dashboard</title>
 			</Head>
 
-			<main></main>
+			<main className="w-full h-full">
+				<button onClick={handleLogout} className="btn w-fit m-5">
+					Logout
+				</button>
+			</main>
 		</>
 	);
 }
