@@ -213,6 +213,7 @@ const SignUp = ({
 						alt="logo"
 						width={70}
 						height={70}
+						priority="true"
 					/>
 
 					<iframe
@@ -377,6 +378,7 @@ const SignIn = ({
 						alt="logo"
 						width={70}
 						height={70}
+						priority="true"
 					/>
 
 					<iframe

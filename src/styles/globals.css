@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+	scroll-behavior: smooth;
+}
+
 /* Tailwind */
 .base-bg {
 	@apply bg-[#2871FF];

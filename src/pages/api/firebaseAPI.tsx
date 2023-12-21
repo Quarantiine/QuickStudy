@@ -24,7 +24,7 @@ import {
 	signInWithPopup,
 	signOut,
 } from "firebase/auth";
-import { Provider, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDsdXJq8CKygXeD3ERXS3-MzhIqk_DC0V0",
@@ -49,9 +49,13 @@ const queryRegistration: Query = query(
 export default function FirebaseAPI() {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 	const [registrationErrMsg, setRegistrationErrMsg] = useState<string>("");
+	const [dashboardErrMsg, setDashboardErrMsg] = useState<string>("");
 
 	const registrationErrMsgRef = useRef<any>();
 	const registrationErrMsgTime = 5000;
+
+	const dashboardErrMsgRef = useRef<any>();
+	const dashboardErrMsgTime = 5000;
 
 	useEffect(() => {
 		onSnapshot(queryRegistration, (ss) => {
@@ -72,7 +76,7 @@ export default function FirebaseAPI() {
 		constructor() {}
 
 		addUser = async (email: string, password: string, username: string) => {
-			const user = createUserWithEmailAndPassword(auth, email, password)
+			createUserWithEmailAndPassword(auth, email, password)
 				.then(async (result) => {
 					await sendEmailVerification(result.user);
 
@@ -82,6 +86,10 @@ export default function FirebaseAPI() {
 						createdTime: serverTimestamp(),
 						theme: false,
 						uid: result.user.uid,
+						hideSection1: true,
+						hideSection2: true,
+						hideSection3: true,
+						hideSection4: true,
 					});
 				})
 				.catch(async (err) => {
@@ -136,6 +144,10 @@ export default function FirebaseAPI() {
 								createdTime: serverTimestamp(),
 								theme: false,
 								uid: user.uid,
+								hideSection1: true,
+								hideSection2: true,
+								hideSection3: true,
+								hideSection4: true,
 						  });
 				})
 				.catch((err) => {
@@ -165,12 +177,72 @@ export default function FirebaseAPI() {
 			await updateDoc(docRef, {
 				theme: !theme,
 			}).catch((err) => {
-				clearTimeout(registrationErrMsgRef.current);
-				setRegistrationErrMsg(err.message);
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
 
-				registrationErrMsgRef.current = setTimeout(() => {
-					setRegistrationErrMsg("");
-				}, registrationErrMsgTime);
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		hidingSection1 = async (hideSection1: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				hideSection1: !hideSection1,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		hidingSection2 = async (hideSection2: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				hideSection2: !hideSection2,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		hidingSection3 = async (hideSection3: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				hideSection3: !hideSection3,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		hidingSection4 = async (hideSection4: boolean, id: string) => {
+			const docRef = doc(colRefRegistration, id);
+
+			await updateDoc(docRef, {
+				hideSection4: !hideSection4,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
 			});
 		};
 	}
@@ -181,18 +253,28 @@ export default function FirebaseAPI() {
 	const signIn = RS.signIn;
 	const logout = RS.logout;
 	const themeChange = RS.themeChange;
+	const hidingSection1 = RS.hidingSection1;
+	const hidingSection2 = RS.hidingSection2;
+	const hidingSection3 = RS.hidingSection3;
+	const hidingSection4 = RS.hidingSection4;
 
 	return {
 		auth,
+
 		registration: {
 			allUsers,
 			registrationErrMsg,
+			dashboardErrMsg,
 			addUser,
 			signIn,
 			googleSignIn,
 			themeChange,
 			passwordReset,
 			logout,
+			hidingSection1,
+			hidingSection2,
+			hidingSection3,
+			hidingSection4,
 		},
 	};
 }
