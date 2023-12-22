@@ -135,10 +135,11 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 	const handleChangeFolderName = (e, id) => {
 		e.preventDefault();
-		setEditFolderName(false);
 
-		changedFolderNameRef.current.value.length > 0 &&
+		if (changedFolderNameRef.current.value.length > 0) {
+			setEditFolderName(false);
 			folderSystem.updateFolderName(changedFolderNameRef.current.value, id);
+		}
 	};
 
 	const handleChangeFolderDescription = (e, id) => {
