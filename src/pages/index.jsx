@@ -9,16 +9,52 @@ import Folders from "../components/Dashboard/Folders";
 import KhanAcademy from "../components/Dashboard/KhanAcademy";
 import LoaderSymbol from "../components/LoaderSymbol";
 import StudyTips from "../components/Dashboard/StudyTips";
+import { createPortal } from "react-dom";
 
 export const UserCredentialsCtx = createContext();
 
 export default function Home() {
-	const { auth, registration } = FirebaseAPI();
+	const { auth, registration, folderSystem } = FirebaseAPI();
 	const [openShortNavbar, setOpenShortNavbar] = useState(false);
+	const [createFolderModal, setCreateFolderModal] = useState(false);
+	const [openFolderModal, setOpenFolderModal] = useState(false);
+	const [folderID, setFolderID] = useState("");
+	const [libraryDropdown, setLibraryDropdown] = useState(false);
+	const [viewAllFolders, setViewAllFolders] = useState(false);
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
 	};
+
+	useEffect(() => {
+		const closeModal = (e) => {
+			if (!e.target.closest(".folder-child-modal")) {
+				setOpenFolderModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeModal);
+		return () => document.removeEventListener("mousedown", closeModal);
+	}, []);
+
+	const handleOpenFolderModal = (id) => {
+		setFolderID(id);
+		setOpenFolderModal(!openFolderModal);
+		setLibraryDropdown(false);
+		setCreateFolderModal(false);
+		setViewAllFolders(false);
+	};
+
+	useEffect(() => {
+		const closeViewAllFolders = (e) => {
+			if (!e.target.closest(".all-folders-modal")) {
+				setViewAllFolders(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeViewAllFolders);
+		return () => document.removeEventListener("mousedown", closeViewAllFolders);
+	}, []);
 
 	return (
 		<>
@@ -39,7 +75,83 @@ export default function Home() {
 				.map((user) => {
 					return (
 						<React.Fragment key={user.id}>
-							<UserCredentialsCtx.Provider value={{ user }}>
+							<UserCredentialsCtx.Provider
+								value={{
+									user,
+									createFolderModal,
+									setCreateFolderModal,
+									openFolderModal,
+									setOpenFolderModal,
+									folderID,
+									setFolderID,
+									handleOpenFolderModal,
+									libraryDropdown,
+									setLibraryDropdown,
+									viewAllFolders,
+									setViewAllFolders,
+								}}
+							>
+								{viewAllFolders &&
+									createPortal(
+										<>
+											<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+												<div className="all-folders-modal w-fit h-fit flex flex-col justify-center items-center gap-4 rounded-xl bg-white p-5">
+													{folderSystem.allFolders
+														.filter((folder) => folder.uid === user.uid)
+														.map((folder) => folder).length < 1 ? (
+														<div
+															className={`w-full h-fit rounded-xl flex flex-col gap-2 justify-center items-center`}
+														>
+															<Image
+																className="object-cover grayscale opacity-50"
+																src={"/images/logo.png"}
+																alt="logo"
+																width={60}
+																height={60}
+																priority="true"
+															/>
+															<p className="text-lg text-gray-400">
+																You have no folders
+															</p>
+														</div>
+													) : (
+														<>
+															<h1 className="title-h1">Your Folders</h1>
+															<div className="flex flex-col justify-start items-center gap-1 w-full min-h-[fit-content] max-h-[250px] overflow-no-width overflow-x-hidden overflow-y-scroll">
+																{folderSystem.allFolders
+																	.filter((folder) => folder.uid === user.uid)
+																	.map((folder) => {
+																		return (
+																			<React.Fragment key={folder.id}>
+																				<button
+																					onClick={() =>
+																						handleOpenFolderModal(folder.id)
+																					}
+																					className="flex justify-between items-center gap-2 w-full text-btn"
+																				>
+																					<h1 className="text-xl">
+																						{folder.name}
+																					</h1>
+																					<Image
+																						className="object-contain"
+																						src={"/icons/folder.svg"}
+																						alt="icon"
+																						width={23}
+																						height={23}
+																					/>
+																				</button>
+																			</React.Fragment>
+																		);
+																	})}
+															</div>
+														</>
+													)}
+												</div>
+											</div>
+										</>,
+										document.body
+									)}
+
 								<main
 									className={`fixed top-0 left-0 w-full h-full overflow-no-width overflow-y-scroll overflow-x-hidden ${
 										user.theme ? "bg-[#222]" : "bg-white"
@@ -53,43 +165,47 @@ export default function Home() {
 										/>
 									</div>
 
-									{!openShortNavbar && (
-										<ThemeChange
-											user={user}
-											handleChangeTheme={handleChangeTheme}
-										/>
-									)}
-
-									<div
-										className={`w-[90%] sm:w-[80%] lg:w-[900px] mx-auto h-auto flex flex-col justify-center items-center gap-16 pt-16 pb-20 ${
-											user.theme ? "text-[#bbb]" : "text-black"
-										}`}
-									>
-										<Bar user={user} />
-										{!user.hideSection1 &&
-											!user.hideSection2 &&
-											!user.hideSection3 &&
-											!user.hideSection4 && (
-												<div className="flex flex-col justify-center items-center gap-4 opacity-50">
-													<Image
-														className="object-contain grayscale"
-														src={"/images/logo.png"}
-														alt="logo"
-														width={70}
-														height={70}
-														draggable={false}
-													/>
-													<h1 className="text-lg">
-														<span>All Sections Are Hidden, </span>
-														<span>{user.username || user.displayName}</span>
-													</h1>
-												</div>
+									{!createFolderModal && (
+										<>
+											{!openShortNavbar && (
+												<ThemeChange
+													user={user}
+													handleChangeTheme={handleChangeTheme}
+												/>
 											)}
-										{user.hideSection1 && <RecentActivities user={user} />}
-										{user.hideSection2 && <Folders user={user} />}
-										{user.hideSection3 && <KhanAcademy user={user} />}
-										{user.hideSection4 && <StudyTips user={user} />}
-									</div>
+
+											<div
+												className={`w-[90%] sm:w-[80%] lg:w-[900px] mx-auto h-auto flex flex-col justify-center items-center gap-16 pt-16 pb-20 ${
+													user.theme ? "text-[#bbb]" : "text-black"
+												}`}
+											>
+												<Bar user={user} />
+												{!user.hideSection1 &&
+													!user.hideSection2 &&
+													!user.hideSection3 &&
+													!user.hideSection4 && (
+														<div className="flex flex-col justify-center items-center gap-4 opacity-50">
+															<Image
+																className="object-contain grayscale"
+																src={"/images/logo.png"}
+																alt="logo"
+																width={70}
+																height={70}
+																draggable={false}
+															/>
+															<h1 className="text-lg">
+																<span>All Sections Are Hidden, </span>
+																<span>{user.username || user.displayName}</span>
+															</h1>
+														</div>
+													)}
+												{user.hideSection1 && <RecentActivities user={user} />}
+												{user.hideSection2 && <Folders user={user} />}
+												{user.hideSection3 && <KhanAcademy user={user} />}
+												{user.hideSection4 && <StudyTips user={user} />}
+											</div>
+										</>
+									)}
 								</main>
 							</UserCredentialsCtx.Provider>
 						</React.Fragment>

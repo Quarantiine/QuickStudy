@@ -1,13 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
 import Image from "next/image";
+import { createPortal } from "react-dom";
+import { UserCredentialsCtx } from "../../pages";
+import NavbarFolders from "./NavbarFolders";
 
 export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
-	const { registration } = FirebaseAPI();
+	const { registration, folderSystem } = FirebaseAPI();
+	const {
+		createFolderModal,
+		setCreateFolderModal,
+		openFolderModal,
+		folderID,
+		handleOpenFolderModal,
+		libraryDropdown,
+		setLibraryDropdown,
+		setViewAllFolders,
+		setFolderID,
+	} = useContext(UserCredentialsCtx);
 
-	const [libraryDropdown, setLibraryDropdown] = useState(false);
+	const [folderName, setFolderName] = useState("");
+	const [folderDescription, setFolderDescription] = useState("");
+
+	const [msgError, setMsgError] = useState("");
+	const msgErrorRef = useRef();
 
 	const handleLogout = () => {
+		setFolderID("");
 		registration.logout();
 	};
 
@@ -31,8 +50,135 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			document.removeEventListener("mousedown", closeLibraryDropdown);
 	}, []);
 
+	useEffect(() => {
+		const closeCreateFolderModal = (e) => {
+			if (!e.target.closest(".create-folder-modal")) {
+				setCreateFolderModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeCreateFolderModal);
+		return () =>
+			document.removeEventListener("mousedown", closeCreateFolderModal);
+	}, []);
+
+	const handleCreateFolderModal = () => {
+		setCreateFolderModal(!createFolderModal);
+	};
+
+	const handleCreateFolder = (e) => {
+		e.preventDefault();
+		clearTimeout(msgErrorRef.current);
+
+		if (
+			folderName.length <= 42 &&
+			folderName.length > 1 &&
+			folderDescription.length <= 400
+		) {
+			folderSystem.addingFolder(folderName, folderDescription, user.uid);
+			setCreateFolderModal(false);
+
+			setFolderName("");
+			setFolderDescription("");
+		} else {
+			setMsgError("Check Information");
+
+			msgErrorRef.current = setTimeout(() => {
+				setMsgError("");
+			}, 4000);
+		}
+	};
+
+	const handleViewAllFolders = () => {
+		setViewAllFolders(true);
+		setLibraryDropdown(false);
+	};
+
 	return (
 		<>
+			{createFolderModal &&
+				createPortal(
+					<>
+						<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+							<div className="create-folder-modal w-[400px] h-fit flex flex-col justify-center items-center gap-4 rounded-xl bg-white p-5">
+								{msgError && (
+									<div
+										className={`bg-red-500 rounded-xl text-white text-sm w-full h-fit px-4 py-2 flex justify-center items-center`}
+									>
+										<p>{msgError}</p>
+									</div>
+								)}
+
+								<div className="flex flex-col justify-center items-start gap-1 w-full">
+									<h1 className="title-h1">Create Folder</h1>
+									<p className="text-sm text-gray-500">
+										This folder will hold all of your quizzes, test, and
+										flashcards.
+									</p>
+								</div>
+
+								<form className="flex flex-col justify-center items-start gap-4 w-full">
+									<div className="flex flex-col justify-center items-start gap-1 w-full">
+										<div className="flex justify-between items-center gap-2 w-full">
+											<div className="flex justify-center items-center gap-2">
+												<label className="font-medium" htmlFor="name">
+													Name
+												</label>
+												<p className="text-sm text-gray-400">required</p>
+											</div>
+
+											<p
+												className={`text-sm ${
+													folderName.length > 42 && "text-red-500"
+												}`}
+											>
+												{folderName.length}/42
+											</p>
+										</div>
+										<input
+											className="input-field w-full"
+											onChange={(e) => setFolderName(e.target.value)}
+											placeholder="Chemistry"
+											type="text"
+										/>
+									</div>
+
+									<div className="flex flex-col justify-center items-start gap-1 w-full">
+										<div className="flex justify-between items-center gap-2 w-full">
+											<div className="flex justify-center items-center gap-2">
+												<label className="font-medium" htmlFor="name">
+													Description
+												</label>
+												<p className="text-sm text-gray-400">optional</p>
+											</div>
+
+											<p
+												className={`text-sm ${
+													folderDescription.length > 400 && "text-red-500"
+												}`}
+											>
+												{folderDescription.length}/400
+											</p>
+										</div>
+										<textarea
+											className="input-field w-full min-h-[150px] max-h-[150px]"
+											onChange={(e) => setFolderDescription(e.target.value)}
+											placeholder="This folder is focused on chemistry problem-sets from MIT"
+											type="text"
+											rows={5}
+										/>
+									</div>
+
+									<button onClick={handleCreateFolder} className="btn w-full">
+										Create Folder
+									</button>
+								</form>
+							</div>
+						</div>
+					</>,
+					document.body
+				)}
+
 			<div
 				className={`w-full h-fit flex sm:justify-start items-center bg-[#373f4e] px-7 py-7 z-50`}
 			>
@@ -64,7 +210,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 					<div className="hidden sm:flex justify-center items-center gap-4">
 						<button
-							onClick={null}
+							onClick={handleCreateFolderModal}
 							className="flex justify-center items-center gap-1 text-btn"
 						>
 							<p>Create Folder</p>
@@ -94,9 +240,133 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 								/>
 							</button>
 
-							{libraryDropdown && (
-								<div className="library-dropdown w-full h-20 rounded-xl absolute top-10 right-0 bg-white shadow-md z-10"></div>
-							)}
+							{openFolderModal &&
+								createPortal(
+									<>
+										<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+											<div className="folder-child-modal w-full md:w-fit h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
+												{folderSystem.allFolders
+													.filter((folder) => folder.uid === user.uid)
+													.map((folder) => {
+														return (
+															<React.Fragment key={folder.id}>
+																{folderID === folder.id && (
+																	<>
+																		<form className="flex flex-col justify-center items-start gap-1 w-full">
+																			<div className="flex justify-between items-center gap-2 w-full">
+																				<h1
+																					onClick={null}
+																					className="text-btn title-h1"
+																				>
+																					{folder.name}
+																				</h1>
+
+																				<button
+																					onClick={null}
+																					className="btn !bg-red-500"
+																				>
+																					Delete Folder
+																				</button>
+																			</div>
+
+																			<p
+																				onClick={null}
+																				className="text-btn text-gray-500"
+																			>
+																				{folder.description}
+																			</p>
+																		</form>
+
+																		<div
+																			className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative `}
+																		>
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																				<h1 className="text-xl font-semibold">
+																					Tests
+																				</h1>
+																				<p>2 Items</p>
+																				<button
+																					onClick={null}
+																					className="btn w-full mt-auto"
+																				>
+																					Open
+																				</button>
+																			</div>
+
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																				<h1 className="text-xl font-semibold">
+																					Quizzes
+																				</h1>
+																				<p>2 Items</p>
+																				<button
+																					onClick={null}
+																					className="btn w-full mt-auto"
+																				>
+																					Open
+																				</button>
+																			</div>
+
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																				<h1 className="text-xl font-semibold">
+																					Flash Cards
+																				</h1>
+																				<p>2 Items</p>
+																				<button
+																					onClick={null}
+																					className="btn w-full mt-auto"
+																				>
+																					Open
+																				</button>
+																			</div>
+																		</div>
+																	</>
+																)}
+															</React.Fragment>
+														);
+													})}
+											</div>
+										</div>
+									</>,
+									document.body
+								)}
+
+							{libraryDropdown &&
+								(folderSystem.allFolders
+									.filter((folder) => folder.uid === user.uid)
+									.map((folder) => folder).length < 1 ? (
+									<div className="library-dropdown flex flex-col justify-center items-center gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
+										<p className="text-sm text-center text-gray-400">
+											You have no folders
+										</p>
+									</div>
+								) : (
+									<>
+										<div className="library-dropdown flex flex-col justify-center items-start gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
+											<div className="flex flex-col justify-center items-start gap-1 w-full">
+												{folderSystem.allFolders
+													.filter((folder) => folder.uid === user.uid)
+													.slice(0, 5)
+													.map((folder) => {
+														return (
+															<React.Fragment key={folder.id}>
+																<NavbarFolders
+																	folder={folder}
+																	handleOpenFolderModal={handleOpenFolderModal}
+																/>
+															</React.Fragment>
+														);
+													})}
+											</div>
+
+											<button
+												onClick={handleViewAllFolders}
+												className="btn w-full text-sm"
+											>
+												View All
+											</button>
+										</div>
+									</>
+								))}
 						</div>
 					</div>
 
@@ -121,6 +391,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 				openShortNavbar={openShortNavbar}
 				handleLibraryDropdown={handleLibraryDropdown}
 				libraryDropdown={libraryDropdown}
+				handleCreateFolderModal={handleCreateFolderModal}
+				folderSystem={folderSystem}
+				NavbarFolders={NavbarFolders}
 			/>
 		</>
 	);
@@ -131,6 +404,8 @@ const ShortNavbar = ({
 	openShortNavbar,
 	handleLibraryDropdown,
 	libraryDropdown,
+	handleCreateFolderModal,
+	folderSystem,
 }) => {
 	return (
 		<>
@@ -142,7 +417,7 @@ const ShortNavbar = ({
 				>
 					<div className="flex flex-col justify-center items-start gap-4">
 						<button
-							onClick={null}
+							onClick={handleCreateFolderModal}
 							className="flex justify-center items-center gap-1 text-btn"
 						>
 							<p>Create Folder</p>
@@ -173,7 +448,19 @@ const ShortNavbar = ({
 							</button>
 
 							{libraryDropdown && (
-								<div className="library-dropdown w-full h-20 rounded-xl absolute top-10 right-0 bg-white shadow-md z-10"></div>
+								<>
+									<div className="library-dropdown flex flex-col justify-center items-start gap-1 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
+										{folderSystem.allFolders
+											.filter((folder) => folder.uid === user.uid)
+											.map((folder) => {
+												return (
+													<NavbarFolders key={folder.id} folder={folder} />
+												);
+											})}
+
+										<button className="btn w-full">View All</button>
+									</div>
+								</>
 							)}
 						</div>
 					</div>

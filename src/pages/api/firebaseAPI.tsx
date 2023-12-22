@@ -5,6 +5,7 @@ import {
 	Query,
 	addDoc,
 	collection,
+	deleteDoc,
 	doc,
 	getFirestore,
 	onSnapshot,
@@ -46,16 +47,21 @@ const queryRegistration: Query = query(
 	orderBy("createdTime")
 );
 
+const colRefFolder: CollectionReference = collection(db, "folders");
+const queryFolder: Query = query(colRefFolder, orderBy("createdTime"));
+
 export default function FirebaseAPI() {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
+	const [allFolders, setAllFolders] = useState<any[]>([]);
+
 	const [registrationErrMsg, setRegistrationErrMsg] = useState<string>("");
 	const [dashboardErrMsg, setDashboardErrMsg] = useState<string>("");
 
 	const registrationErrMsgRef = useRef<any>();
-	const registrationErrMsgTime = 5000;
+	const registrationErrMsgTime: number = 5000;
 
 	const dashboardErrMsgRef = useRef<any>();
-	const dashboardErrMsgTime = 5000;
+	const dashboardErrMsgTime: number = 5000;
 
 	useEffect(() => {
 		onSnapshot(queryRegistration, (ss) => {
@@ -69,6 +75,21 @@ export default function FirebaseAPI() {
 			});
 
 			setAllUsers(users);
+		});
+	}, []);
+
+	useEffect(() => {
+		onSnapshot(queryFolder, (ss) => {
+			const folders = [];
+
+			ss.docs.map((doc) => {
+				folders.push({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+
+			setAllFolders(folders);
 		});
 	}, []);
 
@@ -258,9 +279,42 @@ export default function FirebaseAPI() {
 	const hidingSection3 = RS.hidingSection3;
 	const hidingSection4 = RS.hidingSection4;
 
+	class FolderSystem {
+		addingFolder = async (name: string, description: string, uid: string) => {
+			await addDoc(colRefFolder, {
+				name: name,
+				description: description || "No Description",
+				uid: uid,
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		deletingFolder = async (id: string) => {
+			const docRef = doc(colRefFolder, id);
+
+			await deleteDoc(docRef).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+	}
+	const FS = new FolderSystem();
+	const addingFolder = FS.addingFolder;
+	const deletingFolder = FS.deletingFolder;
+
 	return {
 		auth,
-
 		registration: {
 			allUsers,
 			registrationErrMsg,
@@ -275,6 +329,12 @@ export default function FirebaseAPI() {
 			hidingSection2,
 			hidingSection3,
 			hidingSection4,
+		},
+
+		folderSystem: {
+			allFolders,
+			addingFolder,
+			deletingFolder,
 		},
 	};
 }

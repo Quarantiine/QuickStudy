@@ -1,5 +1,6 @@
 import React from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
+import Image from "next/image";
 
 export default function RecentActivities({ user }) {
 	const { registration } = FirebaseAPI();
@@ -22,38 +23,19 @@ export default function RecentActivities({ user }) {
 				</div>
 
 				<div
-					className={`grid grid-cols-[auto_auto_auto] gap-7 lg:gap-0 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+					className={`w-full h-[250px] rounded-xl flex flex-col gap-2 justify-center items-center ${
+						user.theme ? "bg-[#333] text-[#555]" : "bg-gray-200 text-gray-400"
+					}`}
 				>
-					<div
-						className={`w-[280px] h-fit rounded-xl px-6 py-4 ${
-							user.theme ? "bg-[#444]" : "bg-gray-100"
-						}`}
-					>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-						deleniti maxime perspiciatis suscipit! Vel quasi commodi laboriosam
-						est quas deleniti temporibus ipsum, odit modi? Consequatur sed eos
-						blanditiis nam magni?
-					</div>
-					<div
-						className={`w-[280px] h-fit rounded-xl px-6 py-4 ${
-							user.theme ? "bg-[#444]" : "bg-gray-100"
-						}`}
-					>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-						deleniti maxime perspiciatis suscipit! Vel quasi commodi laboriosam
-						est quas deleniti temporibus ipsum, odit modi? Consequatur sed eos
-						blanditiis nam magni?
-					</div>
-					<div
-						className={`w-[280px] h-fit rounded-xl px-6 py-4 ${
-							user.theme ? "bg-[#444]" : "bg-gray-100"
-						}`}
-					>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat
-						deleniti maxime perspiciatis suscipit! Vel quasi commodi laboriosam
-						est quas deleniti temporibus ipsum, odit modi? Consequatur sed eos
-						blanditiis nam magni?
-					</div>
+					<Image
+						className="object-cover grayscale opacity-50"
+						src={"/images/logo.png"}
+						alt="logo"
+						width={60}
+						height={60}
+						priority="true"
+					/>
+					<p className="text-lg">You have no recent activities</p>
 				</div>
 			</div>
 		</>

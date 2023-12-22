@@ -48,7 +48,7 @@ export default function StudyTips({ user }) {
 									</div>
 
 									<div className="flex flex-col gap-12 h-fit rounded-t-3xl bg-white px-5 sm:px-10 py-8 mx-auto">
-										<div className="flex flex-col justify-center items-start gap-1 w-[80%] mx-auto">
+										<div className="flex flex-col justify-center items-start gap-1 w-full sm:w-[80%] mx-auto">
 											<h1 className="title-h1">Video Study Tips</h1>
 											<p>
 												The Study Tips section is meticulously crafted to
