@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import Navbar from "../components/Dashboard/Navbar";
 import FirebaseAPI from "../pages/api/firebaseAPI";
 import Bar from "../components/Dashboard/Bar";
@@ -21,6 +21,7 @@ export default function Home() {
 	const [folderID, setFolderID] = useState("");
 	const [libraryDropdown, setLibraryDropdown] = useState(false);
 	const [viewAllFolders, setViewAllFolders] = useState(false);
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
@@ -38,6 +39,7 @@ export default function Home() {
 	}, []);
 
 	const handleOpenFolderModal = (id) => {
+		folderSystem.updateCreatedTime(id);
 		setFolderID(id);
 		setOpenFolderModal(!openFolderModal);
 		setLibraryDropdown(false);
@@ -49,6 +51,7 @@ export default function Home() {
 		const closeViewAllFolders = (e) => {
 			if (!e.target.closest(".all-folders-modal")) {
 				setViewAllFolders(false);
+				setSearchQuery("");
 			}
 		};
 
@@ -95,7 +98,11 @@ export default function Home() {
 									createPortal(
 										<>
 											<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-												<div className="all-folders-modal w-fit h-fit flex flex-col justify-center items-center gap-4 rounded-xl bg-white p-5">
+												<div
+													className={`all-folders-modal w-[80%] sm:w-[45%] h-fit flex flex-col justify-center items-center rounded-xl bg-white p-5 ${
+														searchQuery.length < 1 ? "gap-4" : "gap-2"
+													}`}
+												>
 													{folderSystem.allFolders
 														.filter((folder) => folder.uid === user.uid)
 														.map((folder) => folder).length < 1 ? (
@@ -117,34 +124,66 @@ export default function Home() {
 													) : (
 														<>
 															<h1 className="title-h1">Your Folders</h1>
+															<input
+																className="input-field w-full"
+																type="text"
+																placeholder="Search Folder"
+																onChange={(e) => setSearchQuery(e.target.value)}
+															/>
+
 															<div className="flex flex-col justify-start items-center gap-1 w-full min-h-[fit-content] max-h-[250px] overflow-no-width overflow-x-hidden overflow-y-scroll">
 																{folderSystem.allFolders
 																	.filter((folder) => folder.uid === user.uid)
 																	.map((folder) => {
-																		return (
-																			<React.Fragment key={folder.id}>
-																				<button
-																					onClick={() =>
-																						handleOpenFolderModal(folder.id)
-																					}
-																					className="flex justify-between items-center gap-2 w-full text-btn"
-																				>
-																					<h1 className="text-xl">
-																						{folder.name}
-																					</h1>
-																					<Image
-																						className="object-contain"
-																						src={"/icons/folder.svg"}
-																						alt="icon"
-																						width={23}
-																						height={23}
-																					/>
-																				</button>
-																			</React.Fragment>
-																		);
+																		if (
+																			folder.name
+																				.normalize("NFD")
+																				.replace(/\p{Diacritic}/gu, "")
+																				.toLowerCase()
+																				.includes(searchQuery.toLowerCase())
+																		) {
+																			return (
+																				<React.Fragment key={folder.id}>
+																					<button
+																						onClick={() =>
+																							handleOpenFolderModal(folder.id)
+																						}
+																						className="flex justify-between items-center gap-2 w-full text-btn"
+																					>
+																						<h1 className="text-xl line-clamp-1">
+																							{folder.name}
+																						</h1>
+																						<Image
+																							className="object-contain"
+																							src={"/icons/folder.svg"}
+																							alt="icon"
+																							width={23}
+																							height={23}
+																						/>
+																					</button>
+																				</React.Fragment>
+																			);
+																		}
 																	})}
 															</div>
 														</>
+													)}
+
+													{folderSystem.allFolders
+														.filter(
+															(folder) =>
+																folder.uid === user.uid &&
+																folder.name
+																	.normalize("NFD")
+																	.replace(/\p{Diacritic}/gu, "")
+																	.toLowerCase()
+																	.includes(searchQuery.toLowerCase())
+														)
+														.map((folder) => folder).length < 1 && (
+														<div className="flex flex-col justify-center items-center text-lg">
+															<p className="text-gray-400">No Folder Named:</p>
+															<p className="font-medium">{searchQuery}</p>
+														</div>
 													)}
 												</div>
 											</div>

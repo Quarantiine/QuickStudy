@@ -36,7 +36,7 @@ export default function Folders({ user }) {
 				</div>
 
 				<div
-					className={`grid grid-cols-[auto_auto_auto] gap-7 lg:gap-0 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+					className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 				>
 					{folderSystem.allFolders
 						.filter((value) => value.uid === user.uid)
@@ -97,7 +97,7 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 					/>
 				</div>
 				<p
-					className={`${
+					className={`line-clamp-4 ${
 						user.theme
 							? folder.description === "No Description" && "text-[#777]"
 							: folder.description === "No Description" && "text-gray-400"

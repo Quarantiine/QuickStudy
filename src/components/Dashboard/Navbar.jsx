@@ -11,6 +11,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		createFolderModal,
 		setCreateFolderModal,
 		openFolderModal,
+		setOpenFolderModal,
 		folderID,
 		handleOpenFolderModal,
 		libraryDropdown,
@@ -21,6 +22,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 	const [folderName, setFolderName] = useState("");
 	const [folderDescription, setFolderDescription] = useState("");
+	const [folderDeleteDropdown, setFolderDeleteDropdown] = useState(false);
 
 	const [msgError, setMsgError] = useState("");
 	const msgErrorRef = useRef();
@@ -70,11 +72,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		e.preventDefault();
 		clearTimeout(msgErrorRef.current);
 
-		if (
-			folderName.length <= 42 &&
-			folderName.length > 1 &&
-			folderDescription.length <= 400
-		) {
+		if (folderName.length <= 42 && folderName.length > 1) {
 			folderSystem.addingFolder(folderName, folderDescription, user.uid);
 			setCreateFolderModal(false);
 
@@ -92,6 +90,65 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 	const handleViewAllFolders = () => {
 		setViewAllFolders(true);
 		setLibraryDropdown(false);
+	};
+
+	const handleFolderDeleteDropdown = (e) => {
+		e.preventDefault();
+		setFolderDeleteDropdown(!folderDeleteDropdown);
+	};
+
+	useEffect(() => {
+		const closeFolderDeleteDropdown = (e) => {
+			if (!e.target.closest(".folder-delete-dropdown")) {
+				setFolderDeleteDropdown(false);
+				setEditFolderName(false);
+				setEditFolderDescription(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeFolderDeleteDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeFolderDeleteDropdown);
+	}, []);
+
+	const handleDeleteFolder = (e, id) => {
+		e.preventDefault();
+		folderSystem.deletingFolder(id);
+		setFolderDeleteDropdown(false);
+		setOpenFolderModal(false);
+	};
+
+	const [editFolderName, setEditFolderName] = useState(false);
+	const [editFolderDescription, setEditFolderDescription] = useState(false);
+	const changedFolderNameRef = useRef();
+	const changedFolderDescriptionRef = useRef();
+
+	const handleEditFolderName = (e) => {
+		e.preventDefault();
+		setEditFolderName(!editFolderName);
+	};
+
+	const handleEditFolderDescription = (e) => {
+		e.preventDefault();
+		setEditFolderDescription(!editFolderDescription);
+	};
+
+	const handleChangeFolderName = (e, id) => {
+		e.preventDefault();
+		setEditFolderName(false);
+
+		changedFolderNameRef.current.value.length > 0 &&
+			folderSystem.updateFolderName(changedFolderNameRef.current.value, id);
+	};
+
+	const handleChangeFolderDescription = (e, id) => {
+		e.preventDefault();
+		setEditFolderDescription(false);
+
+		folderSystem.updateFolderDescription(
+			changedFolderDescriptionRef.current.value,
+			id
+		);
 	};
 
 	return (
@@ -144,21 +201,11 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 									</div>
 
 									<div className="flex flex-col justify-center items-start gap-1 w-full">
-										<div className="flex justify-between items-center gap-2 w-full">
-											<div className="flex justify-center items-center gap-2">
-												<label className="font-medium" htmlFor="name">
-													Description
-												</label>
-												<p className="text-sm text-gray-400">optional</p>
-											</div>
-
-											<p
-												className={`text-sm ${
-													folderDescription.length > 400 && "text-red-500"
-												}`}
-											>
-												{folderDescription.length}/400
-											</p>
+										<div className="flex justify-between items-center gap-2">
+											<label className="font-medium" htmlFor="name">
+												Description
+											</label>
+											<p className="text-sm text-gray-400">optional</p>
 										</div>
 										<textarea
 											className="input-field w-full min-h-[150px] max-h-[150px]"
@@ -244,7 +291,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 								createPortal(
 									<>
 										<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-											<div className="folder-child-modal w-full md:w-fit h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
+											<div className="folder-child-modal w-full md:w-[700px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
 												{folderSystem.allFolders
 													.filter((folder) => folder.uid === user.uid)
 													.map((folder) => {
@@ -252,37 +299,161 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 															<React.Fragment key={folder.id}>
 																{folderID === folder.id && (
 																	<>
-																		<form className="flex flex-col justify-center items-start gap-1 w-full">
+																		<form className="flex flex-col justify-center items-start gap-4 w-full">
 																			<div className="flex justify-between items-center gap-2 w-full">
-																				<h1
-																					onClick={null}
-																					className="text-btn title-h1"
-																				>
-																					{folder.name}
-																				</h1>
+																				{editFolderName ? (
+																					<div className="flex justify-center items-center gap-2 w-full">
+																						<input
+																							className="input-field w-full folder-delete-dropdown"
+																							placeholder={folder.name}
+																							type="text"
+																							ref={changedFolderNameRef}
+																							onKeyDown={(e) =>
+																								e.key === "Enter" &&
+																								handleChangeFolderName(
+																									e,
+																									folder.id
+																								)
+																							}
+																						/>
+																						<div className="flex justify-center items-center gap-2">
+																							<button
+																								onClick={(e) =>
+																									handleChangeFolderName(
+																										e,
+																										folder.id
+																									)
+																								}
+																								className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+																							>
+																								Change
+																							</button>
+																							<button
+																								onClick={handleEditFolderName}
+																								className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1"
+																							>
+																								Cancel
+																							</button>
+																						</div>
+																					</div>
+																				) : (
+																					<h1
+																						onClick={handleEditFolderName}
+																						className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1"
+																					>
+																						{folder.name}
+																					</h1>
+																				)}
 
-																				<button
-																					onClick={null}
-																					className="btn !bg-red-500"
-																				>
-																					Delete Folder
-																				</button>
+																				{!editFolderName && (
+																					<div className="relative">
+																						<button
+																							onClick={
+																								handleFolderDeleteDropdown
+																							}
+																							className="folder-delete-dropdown btn !bg-transparent !text-red-500 border border-red-500 text-sm sm:text-base flex justify-center items-center gap-1"
+																						>
+																							<p>Delete Folder</p>
+																							<Image
+																								className={`object-contain relative ${
+																									folderDeleteDropdown &&
+																									"rotate-180"
+																								}`}
+																								src={
+																									"/icons/expand_more_red.svg"
+																								}
+																								alt="icon"
+																								width={27}
+																								height={27}
+																							/>
+																						</button>
+
+																						{folderDeleteDropdown && (
+																							<div className="folder-delete-dropdown absolute top-10 left-0 w-full h-fit shadow-xl rounded-xl z-10 bg-white p-2 flex flex-col justify-center items-start gap-2 text-sm">
+																								<button
+																									onClick={(e) =>
+																										handleDeleteFolder(
+																											e,
+																											folder.id
+																										)
+																									}
+																									className="btn w-full !bg-red-500"
+																								>
+																									Delete
+																								</button>
+																								<button
+																									onClick={
+																										handleFolderDeleteDropdown
+																									}
+																									className="btn w-full folder-delete-dropdown"
+																								>
+																									Cancel
+																								</button>
+																							</div>
+																						)}
+																					</div>
+																				)}
 																			</div>
 
-																			<p
-																				onClick={null}
-																				className="text-btn text-gray-500"
-																			>
-																				{folder.description}
-																			</p>
+																			{editFolderDescription ? (
+																				<div className="flex justify-center items-center gap-2 w-full">
+																					<input
+																						className="input-field w-full folder-delete-dropdown"
+																						placeholder={folder.description}
+																						type="text"
+																						ref={changedFolderDescriptionRef}
+																						onKeyDown={(e) =>
+																							e.key === "Enter" &&
+																							handleChangeFolderDescription(
+																								e,
+																								folder.id
+																							)
+																						}
+																					/>
+																					<div className="flex justify-center items-center gap-2">
+																						<button
+																							onClick={(e) =>
+																								handleChangeFolderDescription(
+																									e,
+																									folder.id
+																								)
+																							}
+																							className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+																						>
+																							Change
+																						</button>
+																						<button
+																							onClick={
+																								handleEditFolderDescription
+																							}
+																							className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1 folder-delete-dropdown"
+																						>
+																							Cancel
+																						</button>
+																					</div>
+																				</div>
+																			) : (
+																				<div className="w-full h-fit max-h-[100px] overflow-with-width overflow-x-hidden overflow-y-scroll">
+																					<p
+																						onClick={
+																							handleEditFolderDescription
+																						}
+																						className="text-btn text-gray-500"
+																					>
+																						{folder.description}
+																					</p>
+																				</div>
+																			)}
 																		</form>
+
+																		{/* CODE BELOW */}
 
 																		<div
 																			className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative `}
 																		>
-																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 																				<h1 className="text-xl font-semibold">
-																					Tests
+																					Flash Cards
 																				</h1>
 																				<p>2 Items</p>
 																				<button
@@ -293,7 +464,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				</button>
 																			</div>
 
-																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 																				<h1 className="text-xl font-semibold">
 																					Quizzes
 																				</h1>
@@ -306,9 +477,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				</button>
 																			</div>
 
-																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-200 p-4 flex flex-col justify-start items-start">
+																			<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 																				<h1 className="text-xl font-semibold">
-																					Flash Cards
+																					Tests
 																				</h1>
 																				<p>2 Items</p>
 																				<button
@@ -394,6 +565,8 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 				handleCreateFolderModal={handleCreateFolderModal}
 				folderSystem={folderSystem}
 				NavbarFolders={NavbarFolders}
+				handleOpenFolderModal={handleOpenFolderModal}
+				handleViewAllFolders={handleViewAllFolders}
 			/>
 		</>
 	);
@@ -406,6 +579,8 @@ const ShortNavbar = ({
 	libraryDropdown,
 	handleCreateFolderModal,
 	folderSystem,
+	handleOpenFolderModal,
+	handleViewAllFolders,
 }) => {
 	return (
 		<>
@@ -452,13 +627,23 @@ const ShortNavbar = ({
 									<div className="library-dropdown flex flex-col justify-center items-start gap-1 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
 										{folderSystem.allFolders
 											.filter((folder) => folder.uid === user.uid)
+											.slice(0, 5)
 											.map((folder) => {
 												return (
-													<NavbarFolders key={folder.id} folder={folder} />
+													<NavbarFolders
+														key={folder.id}
+														folder={folder}
+														handleOpenFolderModal={handleOpenFolderModal}
+													/>
 												);
 											})}
 
-										<button className="btn w-full">View All</button>
+										<button
+											onClick={handleViewAllFolders}
+											className="btn w-full text-sm"
+										>
+											View All
+										</button>
 									</div>
 								</>
 							)}

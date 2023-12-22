@@ -319,7 +319,7 @@ const SignUp = ({
 						</div>
 					</div>
 
-					<button onClick={handleSubmitForm} className="btn w-full">
+					<button onClick={handleSubmitForm} className="btn w-full !py-2">
 						Create Account
 					</button>
 					<button

@@ -23,7 +23,7 @@
 }
 
 .btn {
-	@apply px-3 py-2 rounded-lg base-bg text-white hover:opacity-70 transition-opacity;
+	@apply px-3 py-1 rounded-lg base-bg text-white hover:opacity-70 transition-opacity;
 }
 .text-btn {
 	@apply hover:opacity-70 transition-opacity cursor-pointer;
@@ -35,4 +35,12 @@
 }
 .overflow-no-height::-webkit-scrollbar {
 	height: 0px;
+}
+
+.overflow-with-width::-webkit-scrollbar {
+	width: 5px;
+}
+.overflow-with-width::-webkit-scrollbar-thumb {
+	background-color: #dfdfdf;
+	border-radius: 100px;
 }

@@ -67,9 +67,9 @@ export default function StudyTips({ user }) {
 															className="w-full sm:w-[400px] h-[300px] rounded-xl"
 															src={tips.link}
 															title="YouTube video player"
-															frameborder="0"
+															frameBorder="0"
 															allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-															allowfullscreen
+															allowFullScreen
 														></iframe>
 													</React.Fragment>
 												);

@@ -83,7 +83,7 @@ export default function FirebaseAPI() {
 			const folders = [];
 
 			ss.docs.map((doc) => {
-				folders.push({
+				folders.unshift({
 					...doc.data(),
 					id: doc.id,
 				});
@@ -308,10 +308,55 @@ export default function FirebaseAPI() {
 				}, dashboardErrMsgTime);
 			});
 		};
+
+		updateCreatedTime = async (id: string) => {
+			const docRef = doc(colRefFolder, id);
+			await updateDoc(docRef, {
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateFolderName = async (name: string, id: string) => {
+			const docRef = doc(colRefFolder, id);
+			await updateDoc(docRef, {
+				name: name,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateFolderDescription = async (description: string, id: string) => {
+			const docRef = doc(colRefFolder, id);
+			await updateDoc(docRef, {
+				description: description || "No Description",
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
 	}
 	const FS = new FolderSystem();
 	const addingFolder = FS.addingFolder;
 	const deletingFolder = FS.deletingFolder;
+	const updateCreatedTime = FS.updateCreatedTime;
+	const updateFolderName = FS.updateFolderName;
+	const updateFolderDescription = FS.updateFolderDescription;
 
 	return {
 		auth,
@@ -335,6 +380,9 @@ export default function FirebaseAPI() {
 			allFolders,
 			addingFolder,
 			deletingFolder,
+			updateCreatedTime,
+			updateFolderName,
+			updateFolderDescription,
 		},
 	};
 }
