@@ -19,7 +19,7 @@
 }
 
 .input-field {
-	@apply px-3 py-2 rounded-lg bg-gray-100 outline-none text-black;
+	@apply px-3 py-1.5 rounded-lg bg-gray-100 outline-none text-black;
 }
 
 .btn {
@@ -33,6 +33,7 @@
 .overflow-no-width::-webkit-scrollbar {
 	width: 0px;
 }
+
 .overflow-no-height::-webkit-scrollbar {
 	height: 0px;
 }
@@ -41,6 +42,21 @@
 	width: 5px;
 }
 .overflow-with-width::-webkit-scrollbar-thumb {
-	background-color: #dfdfdf;
+	background-color: #979797;
 	border-radius: 100px;
+}
+
+.overflow-with-height::-webkit-scrollbar {
+	height: 5px;
+}
+.overflow-with-height::-webkit-scrollbar-thumb {
+	background-color: #979797;
+	border-radius: 100px;
+}
+
+.modified-overflow-with-height::-webkit-scrollbar {
+	@apply h-[5px] sm:h-0;
+}
+.modified-overflow-with-height::-webkit-scrollbar-thumb {
+	@apply bg-[#dfdfdf] rounded-3xl;
 }

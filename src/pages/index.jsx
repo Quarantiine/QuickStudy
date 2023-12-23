@@ -10,6 +10,9 @@ import KhanAcademy from "../components/Dashboard/KhanAcademy";
 import LoaderSymbol from "../components/LoaderSymbol";
 import StudyTips from "../components/Dashboard/StudyTips";
 import { createPortal } from "react-dom";
+import FlashCards from "../components/Dashboard/FlashCards";
+import Quizzes from "../components/Dashboard/Quizzes";
+import Tests from "../components/Dashboard/Tests";
 
 export const UserCredentialsCtx = createContext();
 
@@ -22,6 +25,9 @@ export default function Home() {
 	const [libraryDropdown, setLibraryDropdown] = useState(false);
 	const [viewAllFolders, setViewAllFolders] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [openFlashCardModal, setOpenFlashCardModal] = useState(false);
+	const [openQuizzesModal, setOpenQuizzesModal] = useState(false);
+	const [openTestsModal, setOpenTestsModal] = useState(false);
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
@@ -45,6 +51,9 @@ export default function Home() {
 		setLibraryDropdown(false);
 		setCreateFolderModal(false);
 		setViewAllFolders(false);
+		setOpenFlashCardModal(false);
+		setOpenQuizzesModal(false);
+		setOpenTestsModal(false);
 	};
 
 	useEffect(() => {
@@ -57,6 +66,54 @@ export default function Home() {
 
 		document.addEventListener("mousedown", closeViewAllFolders);
 		return () => document.removeEventListener("mousedown", closeViewAllFolders);
+	}, []);
+
+	const handleOpenFlashCardsModal = () => {
+		setOpenFlashCardModal(!openFlashCardModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeFlashCardModal = (e) => {
+			if (!e.target.closest(".flash-card-modal")) {
+				setOpenFlashCardModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeFlashCardModal);
+		return () => document.removeEventListener("mousedown", closeFlashCardModal);
+	}, []);
+
+	const handleOpenQuizzesModal = () => {
+		setOpenQuizzesModal(!openQuizzesModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeQuizzesModal = (e) => {
+			if (!e.target.closest(".quizzes-modal")) {
+				setOpenQuizzesModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeQuizzesModal);
+		return () => document.removeEventListener("mousedown", closeQuizzesModal);
+	}, []);
+
+	const handleOpenTestsModal = () => {
+		setOpenTestsModal(!openTestsModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeTestModal = (e) => {
+			if (!e.target.closest(".test-modal")) {
+				setOpenTestsModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTestModal);
+		return () => document.removeEventListener("mousedown", closeTestModal);
 	}, []);
 
 	return (
@@ -92,8 +149,164 @@ export default function Home() {
 									setLibraryDropdown,
 									viewAllFolders,
 									setViewAllFolders,
+									openFlashCardModal,
+									setOpenFlashCardModal,
+									handleOpenFlashCardsModal,
+									handleOpenQuizzesModal,
+									handleOpenTestsModal,
 								}}
 							>
+								<>
+									{openFlashCardModal &&
+										createPortal(
+											folderSystem.allFolders
+												.filter(
+													(folder) =>
+														folder.uid === user.uid && folder.id === folderID
+												)
+												.map((folder) => {
+													return (
+														<React.Fragment key={folder.id}>
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+																<div
+																	className={`flash-card-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+																>
+																	<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
+																		<div className="flex justify-between items-start gap-2 w-full z-10">
+																			<div className="flex flex-col justify-center items-start">
+																				<p className="text-sm text-gray-500">
+																					{folder.name}
+																				</p>
+																				<h1 className="title-h1">
+																					Flash Cards
+																				</h1>
+																			</div>
+																			<button
+																				onClick={() =>
+																					handleOpenFolderModal(folder.id)
+																				}
+																				className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+																			>
+																				<Image
+																					className="object-contain"
+																					src={"/icons/arrow_back_blue.svg"}
+																					alt="icon"
+																					width={17}
+																					height={17}
+																				/>
+																				<p>Back</p>
+																			</button>
+																		</div>
+
+																		<FlashCards folder={folder} user={user} />
+																	</div>
+																</div>
+															</div>
+														</React.Fragment>
+													);
+												}),
+											document.body
+										)}
+
+									{openQuizzesModal &&
+										createPortal(
+											folderSystem.allFolders
+												.filter(
+													(folder) =>
+														folder.uid === user.uid && folder.id === folderID
+												)
+												.map((folder) => {
+													return (
+														<React.Fragment key={folder.id}>
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+																<div
+																	className={`quizzes-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white p-5`}
+																>
+																	<div className="flex flex-col justify-center items-start gap-3 w-full">
+																		<div className="flex justify-between items-start gap-2 w-full z-10">
+																			<div className="flex flex-col justify-center items-start">
+																				<p className="text-sm text-gray-500">
+																					{folder.name}
+																				</p>
+																				<h1 className="title-h1">Quizzes</h1>
+																			</div>
+																			<button
+																				onClick={() =>
+																					handleOpenFolderModal(folder.id)
+																				}
+																				className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+																			>
+																				<Image
+																					className="object-contain"
+																					src={"/icons/arrow_back_blue.svg"}
+																					alt="icon"
+																					width={17}
+																					height={17}
+																				/>
+																				<p>Back</p>
+																			</button>
+																		</div>
+
+																		<Quizzes />
+																	</div>
+																</div>
+															</div>
+														</React.Fragment>
+													);
+												}),
+											document.body
+										)}
+
+									{openTestsModal &&
+										createPortal(
+											folderSystem.allFolders
+												.filter(
+													(folder) =>
+														folder.uid === user.uid && folder.id === folderID
+												)
+												.map((folder) => {
+													return (
+														<React.Fragment key={folder.id}>
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+																<div
+																	className={`test-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white p-5`}
+																>
+																	<div className="flex flex-col justify-center items-start gap-3 w-full">
+																		<div className="flex justify-between items-start gap-2 w-full z-10">
+																			<div className="flex flex-col justify-center items-start">
+																				<p className="text-sm text-gray-500">
+																					{folder.name}
+																				</p>
+																				<h1 className="title-h1">Tests</h1>
+																			</div>
+																			<button
+																				onClick={() =>
+																					handleOpenFolderModal(folder.id)
+																				}
+																				className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+																			>
+																				<Image
+																					className="object-contain"
+																					src={"/icons/arrow_back_blue.svg"}
+																					alt="icon"
+																					width={17}
+																					height={17}
+																				/>
+																				<p>Back</p>
+																			</button>
+																		</div>
+
+																		<Tests />
+																	</div>
+																</div>
+															</div>
+														</React.Fragment>
+													);
+												}),
+											document.body
+										)}
+								</>
+
 								{viewAllFolders &&
 									createPortal(
 										<>
@@ -148,7 +361,7 @@ export default function Home() {
 																						onClick={() =>
 																							handleOpenFolderModal(folder.id)
 																						}
-																						className="flex justify-between items-center gap-2 w-full text-btn"
+																						className="flex justify-between items-center gap-2 w-full text-btn text-start"
 																					>
 																						<h1 className="text-xl line-clamp-1">
 																							{folder.name}

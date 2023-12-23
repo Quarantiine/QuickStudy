@@ -18,11 +18,18 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		setLibraryDropdown,
 		setViewAllFolders,
 		setFolderID,
+		handleOpenFlashCardsModal,
+		handleOpenQuizzesModal,
+		handleOpenTestsModal,
 	} = useContext(UserCredentialsCtx);
 
 	const [folderName, setFolderName] = useState("");
 	const [folderDescription, setFolderDescription] = useState("");
 	const [folderDeleteDropdown, setFolderDeleteDropdown] = useState(false);
+	const [editFolderName, setEditFolderName] = useState(false);
+	const [editFolderDescription, setEditFolderDescription] = useState(false);
+	const changedFolderNameRef = useRef();
+	const changedFolderDescriptionRef = useRef();
 
 	const [msgError, setMsgError] = useState("");
 	const msgErrorRef = useRef();
@@ -72,8 +79,12 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		e.preventDefault();
 		clearTimeout(msgErrorRef.current);
 
-		if (folderName.length <= 42 && folderName.length > 1) {
-			folderSystem.addingFolder(folderName, folderDescription, user.uid);
+		if (folderName.length <= 32 && folderName.length > 1) {
+			folderSystem.addingFolder(
+				folderName.trim(),
+				folderDescription.trim(),
+				user.uid
+			);
 			setCreateFolderModal(false);
 
 			setFolderName("");
@@ -117,11 +128,6 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		setFolderDeleteDropdown(false);
 		setOpenFolderModal(false);
 	};
-
-	const [editFolderName, setEditFolderName] = useState(false);
-	const [editFolderDescription, setEditFolderDescription] = useState(false);
-	const changedFolderNameRef = useRef();
-	const changedFolderDescriptionRef = useRef();
 
 	const handleEditFolderName = (e) => {
 		e.preventDefault();
@@ -187,10 +193,10 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 											<p
 												className={`text-sm ${
-													folderName.length > 42 && "text-red-500"
+													folderName.length > 32 && "text-red-500"
 												}`}
 											>
-												{folderName.length}/42
+												{folderName.length}/32
 											</p>
 										</div>
 										<input
@@ -301,7 +307,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																{folderID === folder.id && (
 																	<>
 																		<form className="flex flex-col justify-center items-start gap-4 w-full">
-																			<div className="flex justify-between items-center gap-2 w-full">
+																			<div className="flex flex-col sm:flex-row justify-center sm:justify-between items-start sm:items-center gap-2 w-full">
 																				{editFolderName ? (
 																					<div className="flex justify-center items-center gap-2 w-full">
 																						<input
@@ -346,54 +352,56 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																					</h1>
 																				)}
 
-																				{!editFolderName && (
-																					<div className="relative">
-																						<button
-																							onClick={
-																								handleFolderDeleteDropdown
-																							}
-																							className="folder-delete-dropdown btn !bg-transparent !text-red-500 border border-red-500 text-sm sm:text-base flex justify-center items-center gap-1"
-																						>
-																							<p>Delete Folder</p>
-																							<Image
-																								className={`object-contain relative ${
-																									folderDeleteDropdown &&
-																									"rotate-180"
-																								}`}
-																								src={
-																									"/icons/expand_more_red.svg"
+																				<div className="w-full h-fit flex justify-end items-center">
+																					{!editFolderName && (
+																						<div className="relative">
+																							<button
+																								onClick={
+																									handleFolderDeleteDropdown
 																								}
-																								alt="icon"
-																								width={27}
-																								height={27}
-																							/>
-																						</button>
+																								className="folder-delete-dropdown btn !bg-transparent !text-red-500 border border-red-500 text-sm sm:text-base flex justify-center items-center gap-1 w-[150px] sm:w-[160px]"
+																							>
+																								<p>Delete Folder</p>
+																								<Image
+																									className={`object-contain relative ${
+																										folderDeleteDropdown &&
+																										"rotate-180"
+																									}`}
+																									src={
+																										"/icons/expand_more_red.svg"
+																									}
+																									alt="icon"
+																									width={27}
+																									height={27}
+																								/>
+																							</button>
 
-																						{folderDeleteDropdown && (
-																							<div className="folder-delete-dropdown absolute top-10 left-0 w-full h-fit shadow-xl rounded-xl z-10 bg-white p-2 flex flex-col justify-center items-start gap-2 text-sm">
-																								<button
-																									onClick={(e) =>
-																										handleDeleteFolder(
-																											e,
-																											folder.id
-																										)
-																									}
-																									className="btn w-full !bg-red-500"
-																								>
-																									Delete
-																								</button>
-																								<button
-																									onClick={
-																										handleFolderDeleteDropdown
-																									}
-																									className="btn w-full folder-delete-dropdown"
-																								>
-																									Cancel
-																								</button>
-																							</div>
-																						)}
-																					</div>
-																				)}
+																							{folderDeleteDropdown && (
+																								<div className="folder-delete-dropdown absolute top-10 left-0 w-full h-fit shadow-xl rounded-xl z-10 bg-white p-2 flex flex-col justify-center items-start gap-2 text-sm">
+																									<button
+																										onClick={(e) =>
+																											handleDeleteFolder(
+																												e,
+																												folder.id
+																											)
+																										}
+																										className="btn w-full !bg-red-500"
+																									>
+																										Delete
+																									</button>
+																									<button
+																										onClick={
+																											handleFolderDeleteDropdown
+																										}
+																										className="btn w-full folder-delete-dropdown"
+																									>
+																										Cancel
+																									</button>
+																								</div>
+																							)}
+																						</div>
+																					)}
+																				</div>
 																			</div>
 
 																			{editFolderDescription ? (
@@ -447,8 +455,6 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																			)}
 																		</form>
 
-																		{/* CODE BELOW */}
-
 																		<div
 																			className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative `}
 																		>
@@ -456,9 +462,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				<h1 className="text-xl font-semibold">
 																					Flash Cards
 																				</h1>
-																				<p>2 Items</p>
+																				<p>0 Items</p>
 																				<button
-																					onClick={null}
+																					onClick={handleOpenFlashCardsModal}
 																					className="btn w-full mt-auto"
 																				>
 																					Open
@@ -469,9 +475,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				<h1 className="text-xl font-semibold">
 																					Quizzes
 																				</h1>
-																				<p>2 Items</p>
+																				<p>0 Items</p>
 																				<button
-																					onClick={null}
+																					onClick={handleOpenQuizzesModal}
 																					className="btn w-full mt-auto"
 																				>
 																					Open
@@ -482,9 +488,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				<h1 className="text-xl font-semibold">
 																					Tests
 																				</h1>
-																				<p>2 Items</p>
+																				<p>0 Items</p>
 																				<button
-																					onClick={null}
+																					onClick={handleOpenTestsModal}
 																					className="btn w-full mt-auto"
 																				>
 																					Open

@@ -50,9 +50,19 @@ const queryRegistration: Query = query(
 const colRefFolder: CollectionReference = collection(db, "folders");
 const queryFolder: Query = query(colRefFolder, orderBy("createdTime"));
 
+const colRefFolderMaterials: CollectionReference = collection(
+	db,
+	"folder-materials"
+);
+const queryFolderMaterials: Query = query(
+	colRefFolderMaterials,
+	orderBy("createdTime")
+);
+
 export default function FirebaseAPI() {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 	const [allFolders, setAllFolders] = useState<any[]>([]);
+	const [allFolderMaterials, setAllFolderMaterials] = useState<any[]>([]);
 
 	const [registrationErrMsg, setRegistrationErrMsg] = useState<string>("");
 	const [dashboardErrMsg, setDashboardErrMsg] = useState<string>("");
@@ -90,6 +100,21 @@ export default function FirebaseAPI() {
 			});
 
 			setAllFolders(folders);
+		});
+	}, []);
+
+	useEffect(() => {
+		onSnapshot(queryFolderMaterials, (ss) => {
+			const folderMaterials = [];
+
+			ss.docs.map((doc) => {
+				folderMaterials.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+
+			setAllFolderMaterials(folderMaterials);
 		});
 	}, []);
 
@@ -358,6 +383,55 @@ export default function FirebaseAPI() {
 	const updateFolderName = FS.updateFolderName;
 	const updateFolderDescription = FS.updateFolderDescription;
 
+	class FolderMaterialsSystem {
+		constructor() {}
+
+		createFlashCard = async (
+			title: string,
+			completion: number,
+			grade: number,
+			currentFolderID: string,
+			questions: any[],
+			answers: any[],
+			materialType: string
+		) => {
+			await addDoc(colRefFolderMaterials, {
+				title: title,
+				completion: completion || 0,
+				grade: grade || 0,
+				currentFolderID: currentFolderID,
+				uid: auth.currentUser.uid,
+				questions: questions || "No Question",
+				answers: answers || "No Question",
+				materialType: materialType,
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		deleteFlashCard = async (id: string) => {
+			const docRef = doc(colRefFolderMaterials, id);
+
+			await deleteDoc(docRef).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+	}
+	const FMS = new FolderMaterialsSystem();
+	const createFlashCard = FMS.createFlashCard;
+	const deleteFlashCard = FMS.deleteFlashCard;
+
 	return {
 		auth,
 		registration: {
@@ -383,6 +457,12 @@ export default function FirebaseAPI() {
 			updateCreatedTime,
 			updateFolderName,
 			updateFolderDescription,
+		},
+
+		folderMaterialSystem: {
+			allFolderMaterials,
+			createFlashCard,
+			deleteFlashCard,
 		},
 	};
 }
