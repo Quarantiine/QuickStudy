@@ -1,0 +1,223 @@
+import React from "react";
+import Image from "next/image";
+
+export default function MainFolderModal({
+	user,
+	folderSystem,
+	folderID,
+	editFolderName,
+	changedFolderNameRef,
+	handleChangeFolderName,
+	handleEditFolderName,
+	handleFolderDeleteDropdown,
+	folderDeleteDropdown,
+	handleViewAllFolders,
+	editFolderDescription,
+	changedFolderDescriptionRef,
+	handleChangeFolderDescription,
+	handleEditFolderDescription,
+	folderMaterialSystem,
+	handleOpenFlashCardsModal,
+	handleOpenQuizzesModal,
+	handleOpenTestsModal,
+	handleDeleteFolder,
+}) {
+	return (
+		<>
+			<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+				<div className="folder-child-modal w-full md:w-[700px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
+					{folderSystem.allFolders
+						.filter((folder) => folder.uid === user.uid)
+						.map((folder) => {
+							return (
+								<React.Fragment key={folder.id}>
+									{folderID === folder.id && (
+										<>
+											<form className="flex flex-col justify-center items-start gap-4 w-full">
+												<div className="flex flex-col sm:flex-row justify-center sm:justify-between items-start sm:items-center gap-2 w-full">
+													{editFolderName ? (
+														<div className="flex justify-center items-center gap-2 w-full">
+															<input
+																className="folder-delete-dropdown input-field w-full"
+																placeholder={folder.name}
+																type="text"
+																ref={changedFolderNameRef}
+																onKeyDown={(e) =>
+																	e.key === "Enter" &&
+																	handleChangeFolderName(e, folder.id)
+																}
+															/>
+															<div className="flex justify-center items-center gap-2 w-fit">
+																<button
+																	onClick={(e) =>
+																		handleChangeFolderName(e, folder.id)
+																	}
+																	className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+																>
+																	Change
+																</button>
+																<button
+																	onClick={handleEditFolderName}
+																	className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1"
+																>
+																	Cancel
+																</button>
+															</div>
+														</div>
+													) : (
+														<h1
+															onClick={handleEditFolderName}
+															className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1"
+														>
+															{folder.name}
+														</h1>
+													)}
+
+													<div className="w-fit h-fit flex justify-end items-center">
+														{!editFolderName && (
+															<div className="relative">
+																<button
+																	onClick={handleFolderDeleteDropdown}
+																	className="folder-delete-dropdown btn !bg-transparent !text-[#2871FF] border border-[#2871FF] text-sm flex justify-center items-center gap-1 w-[130px] !py-1"
+																>
+																	<p>Show More</p>
+																	<Image
+																		className={`object-contain relative ${
+																			folderDeleteDropdown && "rotate-180"
+																		}`}
+																		src={"/icons/expand_more_blue.svg"}
+																		alt="icon"
+																		width={27}
+																		height={27}
+																	/>
+																</button>
+
+																{folderDeleteDropdown && (
+																	<div className="folder-delete-dropdown absolute top-10 left-0 w-full h-fit shadow-xl rounded-xl z-10 bg-white p-2 flex flex-col justify-center items-start gap-2 text-sm">
+																		<button
+																			onClick={(e) =>
+																				handleDeleteFolder(e, folder.id)
+																			}
+																			className="btn w-full !bg-red-500"
+																		>
+																			Delete Folder
+																		</button>
+																		<button
+																			onClick={handleViewAllFolders}
+																			className="btn !bg-transparent !text-[#2871FF] border border-[#2871FF] w-full folder-delete-dropdown"
+																		>
+																			View All Folders
+																		</button>
+																		<button
+																			onClick={handleFolderDeleteDropdown}
+																			className="btn w-full folder-delete-dropdown"
+																		>
+																			Cancel
+																		</button>
+																	</div>
+																)}
+															</div>
+														)}
+													</div>
+												</div>
+
+												{editFolderDescription ? (
+													<div className="flex justify-center items-center gap-2 w-full">
+														<input
+															className="input-field w-full folder-delete-dropdown"
+															placeholder={folder.description}
+															type="text"
+															ref={changedFolderDescriptionRef}
+															onKeyDown={(e) =>
+																e.key === "Enter" &&
+																handleChangeFolderDescription(e, folder.id)
+															}
+														/>
+														<div className="flex justify-center items-center gap-2">
+															<button
+																onClick={(e) =>
+																	handleChangeFolderDescription(e, folder.id)
+																}
+																className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+															>
+																Change
+															</button>
+															<button
+																onClick={handleEditFolderDescription}
+																className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1 folder-delete-dropdown"
+															>
+																Cancel
+															</button>
+														</div>
+													</div>
+												) : (
+													<div className="w-full h-fit max-h-[100px] overflow-with-width overflow-x-hidden overflow-y-scroll">
+														<p
+															onClick={handleEditFolderDescription}
+															className="text-btn text-gray-500"
+														>
+															{folder.description}
+														</p>
+													</div>
+												)}
+											</form>
+
+											<div
+												className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative `}
+											>
+												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+													<h1 className="text-xl font-semibold">Flash Cards</h1>
+													<p>
+														{
+															folderMaterialSystem.allFolderMaterials
+																?.filter(
+																	(folderMaterial) =>
+																		folderMaterial.uid === user.uid &&
+																		folderMaterial.materialType ===
+																			"flash-card" &&
+																		folderMaterial.currentFolderID === folderID
+																)
+																.map((folderMaterial) => folderMaterial).length
+														}{" "}
+														Items
+													</p>
+													<button
+														onClick={handleOpenFlashCardsModal}
+														className="btn w-full mt-auto"
+													>
+														Open
+													</button>
+												</div>
+
+												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+													<h1 className="text-xl font-semibold">Quizzes</h1>
+													<p>0 Items</p>
+													<button
+														onClick={handleOpenQuizzesModal}
+														className="btn w-full mt-auto"
+													>
+														Open
+													</button>
+												</div>
+
+												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+													<h1 className="text-xl font-semibold">Tests</h1>
+													<p>0 Items</p>
+													<button
+														onClick={handleOpenTestsModal}
+														className="btn w-full mt-auto"
+													>
+														Open
+													</button>
+												</div>
+											</div>
+										</>
+									)}
+								</React.Fragment>
+							);
+						})}
+				</div>
+			</div>
+		</>
+	);
+}

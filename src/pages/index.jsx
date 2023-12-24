@@ -1,19 +1,17 @@
 import Head from "next/head";
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Navbar from "../components/Dashboard/Navbar";
 import FirebaseAPI from "../pages/api/firebaseAPI";
-import Bar from "../components/Dashboard/Bar";
 import Image from "next/image";
-import RecentActivities from "../components/Dashboard/RecentActivities";
-import Folders from "../components/Dashboard/Folders";
-import KhanAcademy from "../components/Dashboard/KhanAcademy";
 import LoaderSymbol from "../components/LoaderSymbol";
-import StudyTips from "../components/Dashboard/StudyTips";
 import { createPortal } from "react-dom";
 import FlashCards from "../components/Dashboard/FlashCards";
 import Quizzes from "../components/Dashboard/Quizzes";
 import Tests from "../components/Dashboard/Tests";
-import FlashCardEditing from "../components/Dashboard/FlashCardEditing";
+import MainFlashcardEditing from "../components/Dashboard/MainFlashcardEditing";
+import MainFlashcardStart from "../components/Dashboard/MainFlashcardStart";
+import AllFolders from "../components/Dashboard/AllFolders";
+import MainDashboard from "../components/Dashboard/MainDashboard";
 
 export const UserCredentialsCtx = createContext();
 
@@ -36,6 +34,7 @@ export default function Home() {
 		useState(false);
 	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
 	const [questionNAnswerID, setQuestionNAnswerID] = useState("");
+	const [openFlashCardStart, setOpenFlashCardStart] = useState(false);
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
@@ -141,8 +140,8 @@ export default function Home() {
 	const handleOpenFlashCardStart = (id) => {
 		folderMaterialSystem.updateFlashCardCreatedTime(id);
 		setFlashCardID(id);
-		// setOpenFlashCardEdit(!openFlashCardEdit);
-		// setOpenFlashCardModal(false);
+		setOpenFlashCardStart(!openFlashCardStart);
+		setOpenFlashCardModal(false);
 	};
 
 	useEffect(() => {
@@ -156,9 +155,15 @@ export default function Home() {
 		return () => document.removeEventListener("mousedown", closeFlashCardEdit);
 	}, []);
 
-	const backToFlashCardModal = () => {
+	const editBackToFlashCardModal = () => {
 		setOpenFlashCardModal(true);
 		setOpenFlashCardEdit(false);
+		setFlashCardID("");
+	};
+
+	const startBackToFlashCardModal = () => {
+		setOpenFlashCardModal(true);
+		setOpenFlashCardStart(false);
 		setFlashCardID("");
 	};
 
@@ -238,158 +243,56 @@ export default function Home() {
 									setQuestionNAnswerID,
 								}}
 							>
-								{openFlashCardEdit &&
-									folderSystem.allFolders
-										.filter(
-											(folder) =>
-												folder.uid === user.uid && folder.id === folderID
-										)
-										.map((folder) => {
-											return (
-												<React.Fragment key={folder.id}>
-													<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-														<div
-															className={`flash-card-edit-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
-														>
-															<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
-																<div className="flex justify-between items-start gap-2 w-full z-10 relative">
-																	<div className="flex flex-col justify-center items-start z-10">
-																		<p className="text-sm text-gray-500">
-																			{folder.name} - Editing Flash Cards
-																		</p>
-																		<div className="relative">
-																			<button
-																				onClick={handleEditFlashCardTitle}
-																				className="text-btn flash-card-edit-dropdown"
-																			>
-																				<h1 className="title-h1">
-																					{folderMaterialSystem.allFolderMaterials
-																						.filter(
-																							(folderMaterial) =>
-																								folderMaterial.uid ===
-																									user.uid &&
-																								folderMaterial.materialType ===
-																									"flash-card" &&
-																								folderMaterial.currentFolderID ===
-																									folder.id &&
-																								folderMaterial.id ===
-																									flashCardID
-																						)
-																						.map(
-																							(folderMaterial) =>
-																								folderMaterial.title
-																						)
-																						.toString()}
-																				</h1>
-																			</button>
+								<>
+									{openFlashCardEdit &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardEditing
+														key={folder.id}
+														folder={folder}
+														user={user}
+														handleEditFlashCardTitle={handleEditFlashCardTitle}
+														folderMaterialSystem={folderMaterialSystem}
+														openEditFlashCardDropdown={
+															openEditFlashCardDropdown
+														}
+														flashcardQNATitle={flashcardQNATitle}
+														setFlashcardQNATitle={setFlashcardQNATitle}
+														handleChangeFlashcardTitle={
+															handleChangeFlashcardTitle
+														}
+														editBackToFlashCardModal={editBackToFlashCardModal}
+														flashCardID={flashCardID}
+													/>
+												);
+											})}
 
-																			{openEditFlashCardDropdown &&
-																				folderMaterialSystem.allFolderMaterials
-																					.filter(
-																						(folderMaterial) =>
-																							folderMaterial.uid === user.uid &&
-																							folderMaterial.materialType ===
-																								"flash-card" &&
-																							folderMaterial.currentFolderID ===
-																								folder.id &&
-																							folderMaterial.id === flashCardID
-																					)
-																					.map((folderMaterial) => {
-																						return (
-																							<React.Fragment
-																								key={folderMaterial.id}
-																							>
-																								<form className="flash-card-edit-dropdown w-[200px] h-fit bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center">
-																									<div className="w-full flex flex-col justify-center items-center gap-3">
-																										<div className="flex flex-col justify-center items-start gap-1 w-full">
-																											<div className="flex justify-between items-center gap-2 w-full">
-																												<label htmlFor="Title">
-																													Title
-																												</label>
-																												<p
-																													className={`text-sm ${
-																														flashcardQNATitle.length >
-																														32
-																															? "text-red-500"
-																															: "text-gray-400"
-																													}`}
-																												>
-																													{
-																														flashcardQNATitle.length
-																													}
-																													/32
-																												</p>
-																											</div>
-																											<input
-																												className="input-field w-full"
-																												placeholder="Flash Card Title"
-																												type="text"
-																												onChange={(e) =>
-																													setFlashcardQNATitle(
-																														e.target.value
-																													)
-																												}
-																											/>
-																										</div>
-
-																										<button
-																											onClick={(e) =>
-																												handleChangeFlashcardTitle(
-																													e,
-																													folderMaterial.id
-																												)
-																											}
-																											className="btn w-full"
-																										>
-																											Change
-																										</button>
-																									</div>
-																								</form>
-																							</React.Fragment>
-																						);
-																					})}
-																		</div>
-																	</div>
-
-																	<button
-																		onClick={backToFlashCardModal}
-																		className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-																	>
-																		<Image
-																			className="object-contain"
-																			src={"/icons/arrow_back_blue.svg"}
-																			alt="icon"
-																			width={17}
-																			height={17}
-																		/>
-																		<p>Back</p>
-																	</button>
-																</div>
-
-																{folderMaterialSystem.allFolderMaterials
-																	.filter(
-																		(folderMaterial) =>
-																			folderMaterial.uid === user.uid &&
-																			folderMaterial.materialType ===
-																				"flash-card" &&
-																			folderMaterial.currentFolderID ===
-																				folder.id &&
-																			folderMaterial.id === flashCardID
-																	)
-																	.map((folderMaterial) => {
-																		return (
-																			<FlashCardEditing
-																				key={folderMaterial.id}
-																				folderMaterial={folderMaterial}
-																			/>
-																		);
-																	})}
-															</div>
-														</div>
-													</div>
-												</React.Fragment>
-											);
-										})}
+									{openFlashCardStart &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardStart
+														key={folder.id}
+														folder={folder}
+														user={user}
+														folderMaterialSystem={folderMaterialSystem}
+														flashCardID={flashCardID}
+														startBackToFlashCardModal={
+															startBackToFlashCardModal
+														}
+													/>
+												);
+											})}
+								</>
 
 								<>
 									{openFlashCardModal &&
@@ -544,103 +447,13 @@ export default function Home() {
 
 								{viewAllFolders &&
 									createPortal(
-										<>
-											<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-												<div
-													className={`all-folders-modal w-[80%] sm:w-[45%] h-fit flex flex-col justify-center items-center rounded-xl bg-white p-5 ${
-														searchQuery.length < 1 ? "gap-4" : "gap-2"
-													}`}
-												>
-													{folderSystem.allFolders
-														.filter((folder) => folder.uid === user.uid)
-														.map((folder) => folder).length < 1 ? (
-														<div
-															className={`w-full h-fit rounded-xl flex flex-col gap-2 justify-center items-center`}
-														>
-															<Image
-																className="object-cover grayscale opacity-50"
-																src={"/images/logo.png"}
-																alt="logo"
-																width={60}
-																height={60}
-																priority="true"
-															/>
-															<p className="text-lg text-gray-400">
-																You have no folders
-															</p>
-														</div>
-													) : (
-														<>
-															<h1 className="title-h1">Your Folders</h1>
-															<input
-																className="input-field w-full"
-																type="text"
-																placeholder="Search Folder"
-																onChange={(e) => setSearchQuery(e.target.value)}
-															/>
-
-															<div className="flex flex-col justify-start items-center gap-1 w-full min-h-[fit-content] max-h-[250px] overflow-no-width overflow-x-hidden overflow-y-scroll">
-																{folderSystem.allFolders
-																	.filter((folder) => folder.uid === user.uid)
-																	.map((folder) => {
-																		if (
-																			folder.name
-																				.normalize("NFD")
-																				.replace(/\p{Diacritic}/gu, "")
-																				.toLowerCase()
-																				.includes(searchQuery.toLowerCase())
-																		) {
-																			return (
-																				<React.Fragment key={folder.id}>
-																					<button
-																						onClick={() =>
-																							handleOpenFolderModal(folder.id)
-																						}
-																						className="flex justify-between items-center gap-2 w-full text-btn text-start"
-																					>
-																						<h1 className="text-xl line-clamp-1">
-																							{folder.name}
-																						</h1>
-																						<Image
-																							className="object-contain"
-																							src={"/icons/folder.svg"}
-																							alt="icon"
-																							width={23}
-																							height={23}
-																						/>
-																					</button>
-																				</React.Fragment>
-																			);
-																		}
-																	})}
-															</div>
-														</>
-													)}
-
-													{folderSystem.allFolders
-														.filter(
-															(folder) =>
-																folder.uid === user.uid &&
-																folder.name
-																	.normalize("NFD")
-																	.replace(/\p{Diacritic}/gu, "")
-																	.toLowerCase()
-																	.includes(searchQuery.toLowerCase())
-														)
-														.map((folder) => folder).length < 1 &&
-														folderSystem.allFolders
-															.filter((folder) => folder.uid === user.uid)
-															.map((folder) => folder).length > 0 && (
-															<div className="flex flex-col justify-center items-center text-lg">
-																<p className="text-gray-400">
-																	No Folder Named:
-																</p>
-																<p className="font-medium">{searchQuery}</p>
-															</div>
-														)}
-												</div>
-											</div>
-										</>,
+										<AllFolders
+											user={user}
+											searchQuery={searchQuery}
+											folderSystem={folderSystem}
+											setSearchQuery={setSearchQuery}
+											handleOpenFolderModal={handleOpenFolderModal}
+										/>,
 										document.body
 									)}
 
@@ -666,36 +479,7 @@ export default function Home() {
 												/>
 											)}
 
-											<div
-												className={`w-[90%] sm:w-[80%] lg:w-[900px] mx-auto h-auto flex flex-col justify-center items-center gap-16 pt-16 pb-20 ${
-													user.theme ? "text-[#bbb]" : "text-black"
-												}`}
-											>
-												<Bar user={user} />
-												{!user.hideSection1 &&
-													!user.hideSection2 &&
-													!user.hideSection3 &&
-													!user.hideSection4 && (
-														<div className="flex flex-col justify-center items-center gap-4 opacity-50">
-															<Image
-																className="object-contain grayscale"
-																src={"/images/logo.png"}
-																alt="logo"
-																width={70}
-																height={70}
-																draggable={false}
-															/>
-															<h1 className="text-lg">
-																<span>All Sections Are Hidden, </span>
-																<span>{user.username || user.displayName}</span>
-															</h1>
-														</div>
-													)}
-												{user.hideSection1 && <RecentActivities user={user} />}
-												{user.hideSection2 && <Folders user={user} />}
-												{user.hideSection3 && <KhanAcademy user={user} />}
-												{user.hideSection4 && <StudyTips user={user} />}
-											</div>
+											<MainDashboard user={user} />
 										</>
 									)}
 								</main>

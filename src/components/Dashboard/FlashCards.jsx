@@ -241,7 +241,6 @@ export default function FlashCards({ user, folder }) {
 															Edit
 														</button>
 
-														{/* TODO: CODE HERE */}
 														<button
 															onClick={() =>
 																handleOpenFlashCardStart(folderMaterial.id)
