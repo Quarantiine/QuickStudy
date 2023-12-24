@@ -6,21 +6,27 @@ import { UserCredentialsCtx } from "../../pages";
 import NavbarFolders from "./NavbarFolders";
 
 export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
-	const { registration, folderSystem } = FirebaseAPI();
+	const {
+		registration,
+		folderSystem,
+		folderMaterialSystem,
+		questionNAnswerSystem,
+	} = FirebaseAPI();
 	const {
 		createFolderModal,
 		setCreateFolderModal,
 		openFolderModal,
 		setOpenFolderModal,
 		folderID,
+		flashCardID,
 		handleOpenFolderModal,
 		libraryDropdown,
 		setLibraryDropdown,
-		setViewAllFolders,
 		setFolderID,
 		handleOpenFlashCardsModal,
 		handleOpenQuizzesModal,
 		handleOpenTestsModal,
+		handleViewAllFolders,
 	} = useContext(UserCredentialsCtx);
 
 	const [folderName, setFolderName] = useState("");
@@ -98,11 +104,6 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		}
 	};
 
-	const handleViewAllFolders = () => {
-		setViewAllFolders(true);
-		setLibraryDropdown(false);
-	};
-
 	const handleFolderDeleteDropdown = (e) => {
 		e.preventDefault();
 		setFolderDeleteDropdown(!folderDeleteDropdown);
@@ -127,6 +128,28 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		folderSystem.deletingFolder(id);
 		setFolderDeleteDropdown(false);
 		setOpenFolderModal(false);
+
+		folderMaterialSystem.allFolderMaterials
+			.filter(
+				(folderMaterial) =>
+					folderMaterial.uid === user.uid &&
+					folderMaterial.materialType === "flash-card" &&
+					folderMaterial.currentFolderID === id
+			)
+			.map((folderMaterial) =>
+				folderMaterialSystem.deleteFlashCard(folderMaterial.id)
+			);
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === user.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.materialType === "flash-card"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.deleteQuestionNAnswer(questionNAnswer.id)
+			);
 	};
 
 	const handleEditFolderName = (e) => {
@@ -311,7 +334,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				{editFolderName ? (
 																					<div className="flex justify-center items-center gap-2 w-full">
 																						<input
-																							className="input-field w-full folder-delete-dropdown"
+																							className="folder-delete-dropdown input-field w-full"
 																							placeholder={folder.name}
 																							type="text"
 																							ref={changedFolderNameRef}
@@ -323,7 +346,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																								)
 																							}
 																						/>
-																						<div className="flex justify-center items-center gap-2">
+																						<div className="flex justify-center items-center gap-2 w-fit">
 																							<button
 																								onClick={(e) =>
 																									handleChangeFolderName(
@@ -352,23 +375,23 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																					</h1>
 																				)}
 
-																				<div className="w-full h-fit flex justify-end items-center">
+																				<div className="w-fit h-fit flex justify-end items-center">
 																					{!editFolderName && (
 																						<div className="relative">
 																							<button
 																								onClick={
 																									handleFolderDeleteDropdown
 																								}
-																								className="folder-delete-dropdown btn !bg-transparent !text-red-500 border border-red-500 text-sm sm:text-base flex justify-center items-center gap-1 w-[150px] sm:w-[160px]"
+																								className="folder-delete-dropdown btn !bg-transparent !text-[#2871FF] border border-[#2871FF] text-sm flex justify-center items-center gap-1 w-[130px] !py-1"
 																							>
-																								<p>Delete Folder</p>
+																								<p>Show More</p>
 																								<Image
 																									className={`object-contain relative ${
 																										folderDeleteDropdown &&
 																										"rotate-180"
 																									}`}
 																									src={
-																										"/icons/expand_more_red.svg"
+																										"/icons/expand_more_blue.svg"
 																									}
 																									alt="icon"
 																									width={27}
@@ -387,7 +410,15 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																										}
 																										className="btn w-full !bg-red-500"
 																									>
-																										Delete
+																										Delete Folder
+																									</button>
+																									<button
+																										onClick={
+																											handleViewAllFolders
+																										}
+																										className="btn !bg-transparent !text-[#2871FF] border border-[#2871FF] w-full folder-delete-dropdown"
+																									>
+																										View All Folders
 																									</button>
 																									<button
 																										onClick={
@@ -462,7 +493,25 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 																				<h1 className="text-xl font-semibold">
 																					Flash Cards
 																				</h1>
-																				<p>0 Items</p>
+																				<p>
+																					{
+																						folderMaterialSystem.allFolderMaterials
+																							?.filter(
+																								(folderMaterial) =>
+																									folderMaterial.uid ===
+																										user.uid &&
+																									folderMaterial.materialType ===
+																										"flash-card" &&
+																									folderMaterial.currentFolderID ===
+																										folderID
+																							)
+																							.map(
+																								(folderMaterial) =>
+																									folderMaterial
+																							).length
+																					}{" "}
+																					Items
+																				</p>
 																				<button
 																					onClick={handleOpenFlashCardsModal}
 																					className="btn w-full mt-auto"

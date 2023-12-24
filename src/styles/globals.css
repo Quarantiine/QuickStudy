@@ -29,6 +29,10 @@
 	@apply hover:opacity-70 transition-opacity cursor-pointer;
 }
 
+.passive-btn {
+	@apply !text-[#2871FF] !bg-transparent border border-[#2871FF];
+}
+
 /* Css */
 .overflow-no-width::-webkit-scrollbar {
 	width: 0px;

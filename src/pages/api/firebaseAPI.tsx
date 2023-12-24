@@ -59,10 +59,20 @@ const queryFolderMaterials: Query = query(
 	orderBy("createdTime")
 );
 
+const colRefQuestionNAnswers: CollectionReference = collection(
+	db,
+	"questions-n-answers"
+);
+const queryQuestionNAnswers: Query = query(
+	colRefQuestionNAnswers,
+	orderBy("createdTime")
+);
+
 export default function FirebaseAPI() {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 	const [allFolders, setAllFolders] = useState<any[]>([]);
 	const [allFolderMaterials, setAllFolderMaterials] = useState<any[]>([]);
+	const [allQuestionsNAnswers, setAllQuestionsNAnswers] = useState<any[]>([]);
 
 	const [registrationErrMsg, setRegistrationErrMsg] = useState<string>("");
 	const [dashboardErrMsg, setDashboardErrMsg] = useState<string>("");
@@ -115,6 +125,21 @@ export default function FirebaseAPI() {
 			});
 
 			setAllFolderMaterials(folderMaterials);
+		});
+	}, []);
+
+	useEffect(() => {
+		onSnapshot(queryQuestionNAnswers, (ss) => {
+			const questionsNAnswers = [];
+
+			ss.docs.map((doc) => {
+				questionsNAnswers.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+
+			setAllQuestionsNAnswers(questionsNAnswers);
 		});
 	}, []);
 
@@ -388,21 +413,19 @@ export default function FirebaseAPI() {
 
 		createFlashCard = async (
 			title: string,
+			currentFolderName: string,
 			completion: number,
 			grade: number,
 			currentFolderID: string,
-			questions: any[],
-			answers: any[],
 			materialType: string
 		) => {
 			await addDoc(colRefFolderMaterials, {
 				title: title,
+				currentFolderName: currentFolderName,
 				completion: completion || 0,
 				grade: grade || 0,
 				currentFolderID: currentFolderID,
 				uid: auth.currentUser.uid,
-				questions: questions || "No Question",
-				answers: answers || "No Question",
 				materialType: materialType,
 				createdTime: serverTimestamp(),
 			}).catch((err) => {
@@ -427,10 +450,104 @@ export default function FirebaseAPI() {
 				}, dashboardErrMsgTime);
 			});
 		};
+
+		updateFlashCardCreatedTime = async (id: string) => {
+			const docRef = doc(colRefFolderMaterials, id);
+			await updateDoc(docRef, {
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateFlashCardTitle = async (title: string, id: string) => {
+			const docRef = doc(colRefFolderMaterials, id);
+			await updateDoc(docRef, {
+				title: title,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
 	}
 	const FMS = new FolderMaterialsSystem();
 	const createFlashCard = FMS.createFlashCard;
 	const deleteFlashCard = FMS.deleteFlashCard;
+	const updateFlashCardCreatedTime = FMS.updateFlashCardCreatedTime;
+	const updateFlashCardTitle = FMS.updateFlashCardTitle;
+
+	class QuestionNAnswerSystem {
+		constructor() {}
+
+		createQuestionNAnswer = async (
+			question: string,
+			answer: string,
+			currentFolderID: string,
+			currentMaterialID: string,
+			materialType: string
+		) => {
+			addDoc(colRefQuestionNAnswers, {
+				question: question,
+				answer: answer,
+				currentFolderID: currentFolderID,
+				currentMaterialID: currentMaterialID,
+				materialType: materialType,
+				uid: auth.currentUser.uid,
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		deleteQuestionNAnswer = async (id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+			await deleteDoc(docRef).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		editQuestionNAnswer = async (
+			question: string,
+			answer: string,
+			id: string
+		) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+			await updateDoc(docRef, {
+				question: question,
+				answer: answer,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+	}
+	const QNAS = new QuestionNAnswerSystem();
+	const createQuestionNAnswer = QNAS.createQuestionNAnswer;
+	const deleteQuestionNAnswer = QNAS.deleteQuestionNAnswer;
+	const editQuestionNAnswer = QNAS.editQuestionNAnswer;
 
 	return {
 		auth,
@@ -463,6 +580,15 @@ export default function FirebaseAPI() {
 			allFolderMaterials,
 			createFlashCard,
 			deleteFlashCard,
+			updateFlashCardCreatedTime,
+			updateFlashCardTitle,
+		},
+
+		questionNAnswerSystem: {
+			allQuestionsNAnswers,
+			createQuestionNAnswer,
+			deleteQuestionNAnswer,
+			editQuestionNAnswer,
 		},
 	};
 }

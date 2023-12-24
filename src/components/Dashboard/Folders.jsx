@@ -5,15 +5,11 @@ import { UserCredentialsCtx } from "../../pages";
 
 export default function Folders({ user }) {
 	const { registration, folderSystem } = FirebaseAPI();
-	const { handleOpenFolderModal, viewAllFolders, setViewAllFolders } =
+	const { handleOpenFolderModal, handleViewAllFolders } =
 		useContext(UserCredentialsCtx);
 
 	const handleHideFolder = () => {
 		registration.hidingSection2(user.hideSection2, user.id);
-	};
-
-	const handleViewAllFolders = () => {
-		setViewAllFolders(!viewAllFolders);
 	};
 
 	return (

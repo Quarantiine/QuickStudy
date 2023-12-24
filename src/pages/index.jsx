@@ -13,11 +13,13 @@ import { createPortal } from "react-dom";
 import FlashCards from "../components/Dashboard/FlashCards";
 import Quizzes from "../components/Dashboard/Quizzes";
 import Tests from "../components/Dashboard/Tests";
+import FlashCardEditing from "../components/Dashboard/FlashCardEditing";
 
 export const UserCredentialsCtx = createContext();
 
 export default function Home() {
-	const { auth, registration, folderSystem } = FirebaseAPI();
+	const { auth, registration, folderSystem, folderMaterialSystem } =
+		FirebaseAPI();
 	const [openShortNavbar, setOpenShortNavbar] = useState(false);
 	const [createFolderModal, setCreateFolderModal] = useState(false);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
@@ -28,6 +30,12 @@ export default function Home() {
 	const [openFlashCardModal, setOpenFlashCardModal] = useState(false);
 	const [openQuizzesModal, setOpenQuizzesModal] = useState(false);
 	const [openTestsModal, setOpenTestsModal] = useState(false);
+	const [openFlashCardEdit, setOpenFlashCardEdit] = useState(false);
+	const [flashCardID, setFlashCardID] = useState("");
+	const [openEditFlashCardDropdown, setOpenEditFlashCardDropdown] =
+		useState(false);
+	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
+	const [questionNAnswerID, setQuestionNAnswerID] = useState("");
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
@@ -116,6 +124,70 @@ export default function Home() {
 		return () => document.removeEventListener("mousedown", closeTestModal);
 	}, []);
 
+	const handleViewAllFolders = (e) => {
+		e.preventDefault();
+		setViewAllFolders(!viewAllFolders);
+		setOpenFolderModal(false);
+		setLibraryDropdown(false);
+	};
+
+	const handleOpenFlashCardEdit = (id) => {
+		folderMaterialSystem.updateFlashCardCreatedTime(id);
+		setFlashCardID(id);
+		setOpenFlashCardEdit(!openFlashCardEdit);
+		setOpenFlashCardModal(false);
+	};
+
+	const handleOpenFlashCardStart = (id) => {
+		folderMaterialSystem.updateFlashCardCreatedTime(id);
+		setFlashCardID(id);
+		// setOpenFlashCardEdit(!openFlashCardEdit);
+		// setOpenFlashCardModal(false);
+	};
+
+	useEffect(() => {
+		const closeFlashCardEdit = (e) => {
+			if (!e.target.closest(".flash-card-edit-modal")) {
+				setOpenFlashCardEdit(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeFlashCardEdit);
+		return () => document.removeEventListener("mousedown", closeFlashCardEdit);
+	}, []);
+
+	const backToFlashCardModal = () => {
+		setOpenFlashCardModal(true);
+		setOpenFlashCardEdit(false);
+		setFlashCardID("");
+	};
+
+	const handleEditFlashCardTitle = (e) => {
+		e.preventDefault();
+		setOpenEditFlashCardDropdown(!openEditFlashCardDropdown);
+	};
+
+	useEffect(() => {
+		const closeFlashCardEditDropdown = (e) => {
+			if (!e.target.closest(".flash-card-edit-dropdown")) {
+				setOpenEditFlashCardDropdown(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeFlashCardEditDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeFlashCardEditDropdown);
+	}, []);
+
+	const handleChangeFlashcardTitle = (e, id) => {
+		e.preventDefault();
+		if (flashcardQNATitle.length > 0 && flashcardQNATitle.length <= 32) {
+			folderMaterialSystem.updateFlashCardTitle(flashcardQNATitle, id);
+			setOpenEditFlashCardDropdown(false);
+			setFlashcardQNATitle("");
+		}
+	};
+
 	return (
 		<>
 			<Head>
@@ -154,8 +226,171 @@ export default function Home() {
 									handleOpenFlashCardsModal,
 									handleOpenQuizzesModal,
 									handleOpenTestsModal,
+									handleViewAllFolders,
+									handleOpenFlashCardEdit,
+									handleOpenFlashCardStart,
+									flashCardID,
+									setFlashCardID,
+									openEditFlashCardDropdown,
+									setOpenEditFlashCardDropdown,
+									setOpenFlashCardEdit,
+									questionNAnswerID,
+									setQuestionNAnswerID,
 								}}
 							>
+								{openFlashCardEdit &&
+									folderSystem.allFolders
+										.filter(
+											(folder) =>
+												folder.uid === user.uid && folder.id === folderID
+										)
+										.map((folder) => {
+											return (
+												<React.Fragment key={folder.id}>
+													<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+														<div
+															className={`flash-card-edit-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+														>
+															<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
+																<div className="flex justify-between items-start gap-2 w-full z-10 relative">
+																	<div className="flex flex-col justify-center items-start z-10">
+																		<p className="text-sm text-gray-500">
+																			{folder.name} - Editing Flash Cards
+																		</p>
+																		<div className="relative">
+																			<button
+																				onClick={handleEditFlashCardTitle}
+																				className="text-btn flash-card-edit-dropdown"
+																			>
+																				<h1 className="title-h1">
+																					{folderMaterialSystem.allFolderMaterials
+																						.filter(
+																							(folderMaterial) =>
+																								folderMaterial.uid ===
+																									user.uid &&
+																								folderMaterial.materialType ===
+																									"flash-card" &&
+																								folderMaterial.currentFolderID ===
+																									folder.id &&
+																								folderMaterial.id ===
+																									flashCardID
+																						)
+																						.map(
+																							(folderMaterial) =>
+																								folderMaterial.title
+																						)
+																						.toString()}
+																				</h1>
+																			</button>
+
+																			{openEditFlashCardDropdown &&
+																				folderMaterialSystem.allFolderMaterials
+																					.filter(
+																						(folderMaterial) =>
+																							folderMaterial.uid === user.uid &&
+																							folderMaterial.materialType ===
+																								"flash-card" &&
+																							folderMaterial.currentFolderID ===
+																								folder.id &&
+																							folderMaterial.id === flashCardID
+																					)
+																					.map((folderMaterial) => {
+																						return (
+																							<React.Fragment
+																								key={folderMaterial.id}
+																							>
+																								<form className="flash-card-edit-dropdown w-[200px] h-fit bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center">
+																									<div className="w-full flex flex-col justify-center items-center gap-3">
+																										<div className="flex flex-col justify-center items-start gap-1 w-full">
+																											<div className="flex justify-between items-center gap-2 w-full">
+																												<label htmlFor="Title">
+																													Title
+																												</label>
+																												<p
+																													className={`text-sm ${
+																														flashcardQNATitle.length >
+																														32
+																															? "text-red-500"
+																															: "text-gray-400"
+																													}`}
+																												>
+																													{
+																														flashcardQNATitle.length
+																													}
+																													/32
+																												</p>
+																											</div>
+																											<input
+																												className="input-field w-full"
+																												placeholder="Flash Card Title"
+																												type="text"
+																												onChange={(e) =>
+																													setFlashcardQNATitle(
+																														e.target.value
+																													)
+																												}
+																											/>
+																										</div>
+
+																										<button
+																											onClick={(e) =>
+																												handleChangeFlashcardTitle(
+																													e,
+																													folderMaterial.id
+																												)
+																											}
+																											className="btn w-full"
+																										>
+																											Change
+																										</button>
+																									</div>
+																								</form>
+																							</React.Fragment>
+																						);
+																					})}
+																		</div>
+																	</div>
+
+																	<button
+																		onClick={backToFlashCardModal}
+																		className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+																	>
+																		<Image
+																			className="object-contain"
+																			src={"/icons/arrow_back_blue.svg"}
+																			alt="icon"
+																			width={17}
+																			height={17}
+																		/>
+																		<p>Back</p>
+																	</button>
+																</div>
+
+																{folderMaterialSystem.allFolderMaterials
+																	.filter(
+																		(folderMaterial) =>
+																			folderMaterial.uid === user.uid &&
+																			folderMaterial.materialType ===
+																				"flash-card" &&
+																			folderMaterial.currentFolderID ===
+																				folder.id &&
+																			folderMaterial.id === flashCardID
+																	)
+																	.map((folderMaterial) => {
+																		return (
+																			<FlashCardEditing
+																				key={folderMaterial.id}
+																				folderMaterial={folderMaterial}
+																			/>
+																		);
+																	})}
+															</div>
+														</div>
+													</div>
+												</React.Fragment>
+											);
+										})}
+
 								<>
 									{openFlashCardModal &&
 										createPortal(
@@ -169,7 +404,7 @@ export default function Home() {
 														<React.Fragment key={folder.id}>
 															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
 																<div
-																	className={`flash-card-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+																	className={`flash-card-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 																>
 																	<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 																		<div className="flex justify-between items-start gap-2 w-full z-10">
@@ -392,12 +627,17 @@ export default function Home() {
 																	.toLowerCase()
 																	.includes(searchQuery.toLowerCase())
 														)
-														.map((folder) => folder).length < 1 && (
-														<div className="flex flex-col justify-center items-center text-lg">
-															<p className="text-gray-400">No Folder Named:</p>
-															<p className="font-medium">{searchQuery}</p>
-														</div>
-													)}
+														.map((folder) => folder).length < 1 &&
+														folderSystem.allFolders
+															.filter((folder) => folder.uid === user.uid)
+															.map((folder) => folder).length > 0 && (
+															<div className="flex flex-col justify-center items-center text-lg">
+																<p className="text-gray-400">
+																	No Folder Named:
+																</p>
+																<p className="font-medium">{searchQuery}</p>
+															</div>
+														)}
 												</div>
 											</div>
 										</>,

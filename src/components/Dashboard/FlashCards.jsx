@@ -4,8 +4,9 @@ import FirebaseAPI from "../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../pages";
 
 export default function FlashCards({ user, folder }) {
-	const { folderMaterialSystem } = FirebaseAPI();
-	const { folderID } = useContext(UserCredentialsCtx);
+	const { folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
+	const { folderID, handleOpenFlashCardEdit, handleOpenFlashCardStart } =
+		useContext(UserCredentialsCtx);
 
 	const [openDropDown, setOpenDropDown] = useState(false);
 	const [flashCardTitle, setFlashCardTitle] = useState("");
@@ -21,11 +22,10 @@ export default function FlashCards({ user, folder }) {
 		if (flashCardTitle.length > 1 && flashCardTitle.length < 32) {
 			folderMaterialSystem.createFlashCard(
 				flashCardTitle,
+				folder.name,
 				0,
 				0,
 				folder.id,
-				JSON.stringify([]),
-				JSON.stringify([]),
 				"flash-card"
 			);
 
@@ -47,15 +47,18 @@ export default function FlashCards({ user, folder }) {
 
 	const handleDeleteFlashCard = (id) => {
 		folderMaterialSystem.deleteFlashCard(id);
-	};
 
-	// useEffect(() => {
-	// 	console.log(
-	// 		folderMaterialSystem.allFolderMaterials
-	// 			?.filter((folderMaterial) => folderMaterial.uid === user.uid)
-	// 			.map((folderMaterial) => folderMaterial)
-	// 	);
-	// });
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === user.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.materialType === "flash-card"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.deleteQuestionNAnswer(questionNAnswer.id)
+			);
+	};
 
 	return (
 		<>
@@ -222,19 +225,31 @@ export default function FlashCards({ user, folder }) {
 															className="btn !bg-red-500 w-full"
 														>
 															<Image
-																className={`object-contain min-w-[20px] min-h-[20px] ${
-																	openDropDown && "rotate-180"
-																}`}
+																className={`object-contain min-w-[20px] min-h-[20px]`}
 																src={"/icons/delete.svg"}
 																alt="icon"
 																width={20}
 																height={20}
 															/>
 														</button>
-														<button className="btn !text-[#2871FF] !bg-transparent border border-[#2871FF] w-full">
+														<button
+															onClick={() =>
+																handleOpenFlashCardEdit(folderMaterial.id)
+															}
+															className="btn !text-[#2871FF] !bg-transparent border border-[#2871FF] w-full"
+														>
 															Edit
 														</button>
-														<button className="btn w-full">Start</button>
+
+														{/* TODO: CODE HERE */}
+														<button
+															onClick={() =>
+																handleOpenFlashCardStart(folderMaterial.id)
+															}
+															className="btn w-full"
+														>
+															Start
+														</button>
 													</div>
 												</div>
 											</div>
@@ -277,7 +292,12 @@ export default function FlashCards({ user, folder }) {
 				</div>
 
 				{folderMaterialSystem.allFolderMaterials
-					?.filter((folderMaterial) => folderMaterial.uid === user.uid)
+					?.filter(
+						(folderMaterial) =>
+							folderMaterial.uid === user.uid &&
+							folderMaterial.materialType === "flash-card" &&
+							folderMaterial.currentFolderID === folderID
+					)
 					.map((folderMaterial) => folderMaterial).length < 1 && (
 					<div
 						className={`absolute top-1/2 -translate-y-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center`}
