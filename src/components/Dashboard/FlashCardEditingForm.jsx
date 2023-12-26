@@ -139,7 +139,7 @@ export default function FlashCardEditingForm({
 						</>
 					) : (
 						<div className="flex justify-between items-center gap-2">
-							<div className="flex justify-center items-center relative">
+							<div className="hidden sm:flex justify-center items-center relative">
 								<button
 									onClick={(e) => {
 										handleUploadDropdown(e);
