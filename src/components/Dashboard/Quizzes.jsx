@@ -10,7 +10,7 @@ export default function Quizzes({}) {
 						Create Quiz
 					</button> */}
 
-					<div className="relative w-full sm:w-fit">
+					{/* <div className="relative w-full sm:w-fit">
 						<Image
 							className="object-contain absolute top-1/2 -translate-y-1/2 left-3"
 							src={"/icons/search.svg"}
@@ -19,12 +19,12 @@ export default function Quizzes({}) {
 							height={20}
 						/>
 
-						{/* <input
+						<input
 							className="input-field !pl-10 w-full"
 							placeholder="Search Quizzes"
 							type="text"
-						/> */}
-					</div>
+						/>
+					</div> */}
 				</div>
 
 				<div

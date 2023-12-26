@@ -64,7 +64,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 						onClick={() => {
 							handleOpenFlashCardStart(folderMaterial.id);
 						}}
-						className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
+						className="passive-btn w-full sm:w-fit question-n-answer-dropdown z-10"
 					>
 						Start Studying
 					</button>
