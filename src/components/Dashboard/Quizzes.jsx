@@ -6,9 +6,9 @@ export default function Quizzes({}) {
 		<>
 			<div className="flex flex-col justify-center items-start gap-7 w-full">
 				<div className="flex flex-col sm:flex-row justify-start sm:justify-between item-start sm:items-center gap-3 w-full z-10">
-					<button onClick={null} className="btn">
+					{/* <button onClick={null} className="btn">
 						Create Quiz
-					</button>
+					</button> */}
 
 					<div className="relative w-full sm:w-fit">
 						<Image
@@ -19,11 +19,11 @@ export default function Quizzes({}) {
 							height={20}
 						/>
 
-						<input
+						{/* <input
 							className="input-field !pl-10 w-full"
 							placeholder="Search Quizzes"
 							type="text"
-						/>
+						/> */}
 					</div>
 				</div>
 
@@ -38,7 +38,8 @@ export default function Quizzes({}) {
 						height={60}
 						priority="true"
 					/>
-					<p className="text-lg text-gray-400">You have no quizzes</p>
+					{/* <p className="text-lg text-gray-400">You have no quizzes</p> */}
+					<p className="text-lg text-gray-400">Quizzes coming soon</p>
 				</div>
 			</div>
 		</>
