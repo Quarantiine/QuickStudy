@@ -30,7 +30,7 @@
 }
 
 .passive-btn {
-	@apply !text-[#2871FF] !bg-transparent border border-[#2871FF];
+	@apply px-3 py-1 rounded-lg !text-[#2871FF] !bg-transparent border border-[#2871FF] hover:opacity-70;
 }
 
 /* Css */
@@ -54,7 +54,7 @@
 	height: 5px;
 }
 .overflow-with-height::-webkit-scrollbar-thumb {
-	background-color: #979797;
+	background-color: #d3d3d3;
 	border-radius: 100px;
 }
 
@@ -63,4 +63,11 @@
 }
 .modified-overflow-with-height::-webkit-scrollbar-thumb {
 	@apply bg-[#dfdfdf] rounded-3xl;
+}
+
+.question-n-answers-container {
+	scroll-snap-type: x mandatory;
+}
+.question-n-answers-child {
+	scroll-snap-align: center;
 }

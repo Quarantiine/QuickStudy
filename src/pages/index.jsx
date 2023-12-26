@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import Navbar from "../components/Dashboard/Navbar";
 import FirebaseAPI from "../pages/api/firebaseAPI";
 import Image from "next/image";
@@ -16,8 +16,13 @@ import MainDashboard from "../components/Dashboard/MainDashboard";
 export const UserCredentialsCtx = createContext();
 
 export default function Home() {
-	const { auth, registration, folderSystem, folderMaterialSystem } =
-		FirebaseAPI();
+	const {
+		auth,
+		registration,
+		folderSystem,
+		folderMaterialSystem,
+		questionNAnswerSystem,
+	} = FirebaseAPI();
 	const [openShortNavbar, setOpenShortNavbar] = useState(false);
 	const [createFolderModal, setCreateFolderModal] = useState(false);
 	const [openFolderModal, setOpenFolderModal] = useState(false);
@@ -35,6 +40,7 @@ export default function Home() {
 	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
 	const [questionNAnswerID, setQuestionNAnswerID] = useState("");
 	const [openFlashCardStart, setOpenFlashCardStart] = useState(false);
+	const questionNAnswerContainerRef = useRef(null);
 
 	const handleChangeTheme = (theme, id) => {
 		registration.themeChange(theme, id);
@@ -135,6 +141,7 @@ export default function Home() {
 		setFlashCardID(id);
 		setOpenFlashCardEdit(!openFlashCardEdit);
 		setOpenFlashCardModal(false);
+		setOpenFlashCardStart(false);
 	};
 
 	const handleOpenFlashCardStart = (id) => {
@@ -142,6 +149,7 @@ export default function Home() {
 		setFlashCardID(id);
 		setOpenFlashCardStart(!openFlashCardStart);
 		setOpenFlashCardModal(false);
+		setOpenFlashCardEdit(false);
 	};
 
 	useEffect(() => {
@@ -193,6 +201,58 @@ export default function Home() {
 		}
 	};
 
+	const handleResetFlashcards = () => {
+		questionNAnswerContainerRef.current?.scrollTo(0, 0);
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === auth.currentUser.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.currentMaterialID === flashCardID &&
+					questionNAnswer.materialType === "flash-card"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.updateUnderstand(false, questionNAnswer.id)
+			);
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === auth.currentUser.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.currentMaterialID === flashCardID &&
+					questionNAnswer.materialType === "flash-card"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.updateDidntUnderstand(false, questionNAnswer.id)
+			);
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === auth.currentUser.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.currentMaterialID === flashCardID &&
+					questionNAnswer.materialType === "flash-card"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.updateCompleted(false, questionNAnswer.id)
+			);
+
+		folderMaterialSystem.allFolderMaterials
+			.filter(
+				(folderMaterial) =>
+					folderMaterial.uid === auth.currentUser.uid &&
+					folderMaterial.materialType === "flash-card" &&
+					folderMaterial.currentFolderID === folderID &&
+					folderMaterial.id === flashCardID
+			)
+			.map((folderMaterial) =>
+				folderMaterialSystem.updateFlashcardCompletion(0, folderMaterial.id)
+			);
+	};
+
 	return (
 		<>
 			<Head>
@@ -241,6 +301,8 @@ export default function Home() {
 									setOpenFlashCardEdit,
 									questionNAnswerID,
 									setQuestionNAnswerID,
+									handleResetFlashcards,
+									questionNAnswerContainerRef,
 								}}
 							>
 								<>

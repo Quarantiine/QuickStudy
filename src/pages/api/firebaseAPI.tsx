@@ -415,7 +415,6 @@ export default function FirebaseAPI() {
 			title: string,
 			currentFolderName: string,
 			completion: number,
-			grade: number,
 			currentFolderID: string,
 			materialType: string
 		) => {
@@ -423,7 +422,6 @@ export default function FirebaseAPI() {
 				title: title,
 				currentFolderName: currentFolderName,
 				completion: completion || 0,
-				grade: grade || 0,
 				currentFolderID: currentFolderID,
 				uid: auth.currentUser.uid,
 				materialType: materialType,
@@ -478,12 +476,27 @@ export default function FirebaseAPI() {
 				}, dashboardErrMsgTime);
 			});
 		};
+
+		updateFlashcardCompletion = async (completion: number, id: string) => {
+			const docRef = doc(colRefFolderMaterials, id);
+			await updateDoc(docRef, {
+				completion: completion,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
 	}
 	const FMS = new FolderMaterialsSystem();
 	const createFlashCard = FMS.createFlashCard;
 	const deleteFlashCard = FMS.deleteFlashCard;
 	const updateFlashCardCreatedTime = FMS.updateFlashCardCreatedTime;
 	const updateFlashCardTitle = FMS.updateFlashCardTitle;
+	const updateFlashcardCompletion = FMS.updateFlashcardCompletion;
 
 	class QuestionNAnswerSystem {
 		constructor() {}
@@ -501,6 +514,9 @@ export default function FirebaseAPI() {
 				currentFolderID: currentFolderID,
 				currentMaterialID: currentMaterialID,
 				materialType: materialType,
+				understand: false,
+				didntUnderstand: false,
+				completed: false,
 				uid: auth.currentUser.uid,
 				createdTime: serverTimestamp(),
 			}).catch((err) => {
@@ -543,11 +559,75 @@ export default function FirebaseAPI() {
 				}, dashboardErrMsgTime);
 			});
 		};
+
+		updateUnderstand = async (understand: boolean, id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+
+			await updateDoc(docRef, {
+				understand: understand,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateDidntUnderstand = async (didntUnderstand: boolean, id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+
+			await updateDoc(docRef, {
+				didntUnderstand: didntUnderstand,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateCompleted = async (completed: boolean, id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+
+			await updateDoc(docRef, {
+				completed: completed,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		updateImage = async (image: string, id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+
+			await updateDoc(docRef, {
+				image: image,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
 	}
 	const QNAS = new QuestionNAnswerSystem();
 	const createQuestionNAnswer = QNAS.createQuestionNAnswer;
 	const deleteQuestionNAnswer = QNAS.deleteQuestionNAnswer;
 	const editQuestionNAnswer = QNAS.editQuestionNAnswer;
+	const updateUnderstand = QNAS.updateUnderstand;
+	const updateDidntUnderstand = QNAS.updateDidntUnderstand;
+	const updateCompleted = QNAS.updateCompleted;
+	const updateImage = QNAS.updateImage;
 
 	return {
 		auth,
@@ -582,6 +662,7 @@ export default function FirebaseAPI() {
 			deleteFlashCard,
 			updateFlashCardCreatedTime,
 			updateFlashCardTitle,
+			updateFlashcardCompletion,
 		},
 
 		questionNAnswerSystem: {
@@ -589,6 +670,10 @@ export default function FirebaseAPI() {
 			createQuestionNAnswer,
 			deleteQuestionNAnswer,
 			editQuestionNAnswer,
+			updateUnderstand,
+			updateDidntUnderstand,
+			updateCompleted,
+			updateImage,
 		},
 	};
 }

@@ -199,19 +199,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			<div
 				className={`w-full h-fit flex sm:justify-start items-center bg-[#373f4e] px-7 py-7 z-50`}
 			>
-				<div className="flex justify-center items-center gap-2 w-fit">
-					<h1 className="text-white italic font-semibold text-2xl hidden sm:block">
-						QuickStudy
-					</h1>
-					<Image
-						className="object-contain"
-						src={"/images/logo.png"}
-						alt="logo"
-						width={30}
-						height={30}
-						draggable={false}
-					/>
-				</div>
+				<h1 className="text-white italic font-semibold text-2xl hidden sm:block">
+					QuickStudy
+				</h1>
 
 				<div className="flex justify-center items-center gap-4 sm:gap-5 ml-auto text-white">
 					<button onClick={handleOpenShortNavbar} className="text-btn">

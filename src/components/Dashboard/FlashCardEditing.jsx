@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../pages";
 import Image from "next/image";
+import FlashCardEditingForm from "./FlashCardEditingForm";
 
 export default function FlashCardEditing({ folderMaterial }) {
 	const { questionNAnswerSystem } = FirebaseAPI();
@@ -12,18 +13,12 @@ export default function FlashCardEditing({ folderMaterial }) {
 		openEditFlashCardDropdown,
 		questionNAnswerID,
 		setQuestionNAnswerID,
+		handleOpenFlashCardStart,
 	} = useContext(UserCredentialsCtx);
 
 	const [dropdown, setDropdown] = useState(false);
 	const [questionTxt, setQuestionTxt] = useState("");
 	const [answerTxt, setAnswerTxt] = useState("");
-	const [questionEditTxt, setQuestionEditTxt] = useState("");
-	const [answerEditTxt, setAnswerEditTxt] = useState("");
-	const [edit, setEdit] = useState(false);
-
-	const handleDropdown = () => {
-		setDropdown(!dropdown);
-	};
 
 	useEffect(() => {
 		const closeDropdown = (e) => {
@@ -37,6 +32,10 @@ export default function FlashCardEditing({ folderMaterial }) {
 		document.addEventListener("mousedown", closeDropdown);
 		return () => document.removeEventListener("mousedown", closeDropdown);
 	}, []);
+
+	const handleDropdown = () => {
+		setDropdown(!dropdown);
+	};
 
 	const handleCreateQuestionNAnswer = (e) => {
 		e.preventDefault();
@@ -57,33 +56,19 @@ export default function FlashCardEditing({ folderMaterial }) {
 		}
 	};
 
-	const handleEditQuestionNAnswer = (e, id) => {
-		e.preventDefault();
-		setEdit(!edit);
-		setQuestionNAnswerID(id);
-	};
-
-	const handleDeletion = (e, id) => {
-		e.preventDefault();
-		questionNAnswerSystem.deleteQuestionNAnswer(id);
-	};
-
-	const handleEditing = (e, questionNAnswer) => {
-		e.preventDefault();
-		setEdit(false);
-
-		questionNAnswerSystem.editQuestionNAnswer(
-			questionEditTxt || questionNAnswer.question,
-			answerEditTxt || questionNAnswer.answer,
-			questionNAnswer.id
-		);
-	};
-
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center gap-5 w-full pb-5">
 				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 w-full">
-					<h1 className="text-lg font-medium">Questions</h1>
+					<button
+						onClick={() => {
+							handleOpenFlashCardStart(folderMaterial.id);
+						}}
+						className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
+					>
+						Start Studying
+					</button>
+
 					<div
 						className={`relative ${
 							openEditFlashCardDropdown === false && "z-10"
@@ -91,7 +76,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 					>
 						<button
 							onClick={handleDropdown}
-							className="btn w-fit question-n-answer-dropdown"
+							className="btn w-full sm:w-fit question-n-answer-dropdown"
 						>
 							Create Questions/Answers
 						</button>
@@ -141,35 +126,41 @@ export default function FlashCardEditing({ folderMaterial }) {
 								questionNAnswer.materialType === "flash-card"
 						)
 						.map((questionNAnswer) => questionNAnswer).length === 1 ? (
-						<p>
-							{
-								questionNAnswerSystem.allQuestionsNAnswers
-									.filter(
-										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
-											questionNAnswer.currentFolderID === folderID &&
-											questionNAnswer.currentMaterialID === flashCardID &&
-											questionNAnswer.materialType === "flash-card"
-									)
-									.map((questionNAnswer) => questionNAnswer).length
-							}{" "}
-							Item
-						</p>
+						<div className="flex justify-between items-center gap-2 w-full">
+							<h1 className="text-lg font-medium">Questions</h1>
+							<p>
+								{
+									questionNAnswerSystem.allQuestionsNAnswers
+										.filter(
+											(questionNAnswer) =>
+												questionNAnswer.uid === user.uid &&
+												questionNAnswer.currentFolderID === folderID &&
+												questionNAnswer.currentMaterialID === flashCardID &&
+												questionNAnswer.materialType === "flash-card"
+										)
+										.map((questionNAnswer) => questionNAnswer).length
+								}{" "}
+								Item
+							</p>
+						</div>
 					) : (
-						<p>
-							{
-								questionNAnswerSystem.allQuestionsNAnswers
-									.filter(
-										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
-											questionNAnswer.currentFolderID === folderID &&
-											questionNAnswer.currentMaterialID === flashCardID &&
-											questionNAnswer.materialType === "flash-card"
-									)
-									.map((questionNAnswer) => questionNAnswer).length
-							}{" "}
-							Items
-						</p>
+						<div className="flex justify-between items-center gap-2 w-full">
+							<h1 className="text-lg font-medium">Questions</h1>
+							<p>
+								{
+									questionNAnswerSystem.allQuestionsNAnswers
+										.filter(
+											(questionNAnswer) =>
+												questionNAnswer.uid === user.uid &&
+												questionNAnswer.currentFolderID === folderID &&
+												questionNAnswer.currentMaterialID === flashCardID &&
+												questionNAnswer.materialType === "flash-card"
+										)
+										.map((questionNAnswer) => questionNAnswer).length
+								}{" "}
+								Items
+							</p>
+						</div>
 					)}
 				</div>
 
@@ -184,90 +175,14 @@ export default function FlashCardEditing({ folderMaterial }) {
 						)
 						.map((questionNAnswer, index) => {
 							return (
-								<React.Fragment key={questionNAnswer.id}>
-									<form className="flex flex-col justify-center items-start gap-2 bg-white border-2 rounded-xl p-3 w-full hover:bg-gray-200 transition-colors">
-										<div className="flex justify-center items-start gap-2 w-full">
-											<p className="font-semibold text-gray-400">{index + 1}</p>
-
-											<div className="flex flex-col justify-center items-center gap-1 w-full">
-												<div className="flex justify-start items-start gap-2 w-full">
-													<p className="font-semibold">Q</p>
-													{questionNAnswerID === questionNAnswer.id && edit ? (
-														<input
-															className="input-field w-full"
-															placeholder={questionNAnswer.question}
-															type="text"
-															onChange={(e) =>
-																setQuestionEditTxt(e.target.value)
-															}
-														/>
-													) : (
-														<p>{questionNAnswer.question}</p>
-													)}
-												</div>
-												<div className="flex justify-start items-start gap-2 w-full">
-													<p className="font-semibold">A</p>
-													{questionNAnswerID === questionNAnswer.id && edit ? (
-														<input
-															className="input-field w-full"
-															placeholder={questionNAnswer.answer}
-															type="text"
-															onChange={(e) => setAnswerEditTxt(e.target.value)}
-														/>
-													) : (
-														<p>{questionNAnswer.answer}</p>
-													)}
-												</div>
-											</div>
-										</div>
-
-										<div className="flex justify-center items-center gap-2 ml-auto">
-											{questionNAnswerID === questionNAnswer.id && edit ? (
-												<>
-													<button
-														onClick={(e) => handleEditing(e, questionNAnswer)}
-														className="btn ml-auto"
-													>
-														Change
-													</button>
-													<button
-														onClick={(e) =>
-															handleEditQuestionNAnswer(e, questionNAnswer.id)
-														}
-														className="btn passive-btn ml-auto"
-													>
-														Cancel
-													</button>
-												</>
-											) : (
-												<>
-													<button
-														onClick={(e) =>
-															handleDeletion(e, questionNAnswer.id)
-														}
-														className="btn !bg-red-500 h-full"
-													>
-														<Image
-															className={`object-contain min-w-[20px] min-h-[20px]`}
-															src={"/icons/delete.svg"}
-															alt="icon"
-															width={20}
-															height={20}
-														/>
-													</button>
-													<button
-														onClick={(e) =>
-															handleEditQuestionNAnswer(e, questionNAnswer.id)
-														}
-														className="btn"
-													>
-														Edit
-													</button>
-												</>
-											)}
-										</div>
-									</form>
-								</React.Fragment>
+								<FlashCardEditingForm
+									key={questionNAnswer.id}
+									index={index}
+									questionNAnswer={questionNAnswer}
+									questionNAnswerID={questionNAnswerID}
+									setQuestionNAnswerID={setQuestionNAnswerID}
+									questionNAnswerSystem={questionNAnswerSystem}
+								/>
 							);
 						})}
 

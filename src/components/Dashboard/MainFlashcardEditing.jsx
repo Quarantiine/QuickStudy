@@ -20,7 +20,7 @@ export default function MainFlashcardEditing({
 				className={`flash-card-edit-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 			>
 				<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
-					<div className="flex justify-between items-start gap-2 w-full z-10 relative">
+					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full z-10 relative">
 						<div className="flex flex-col justify-center items-start z-10">
 							<p className="text-sm text-gray-500">
 								{folder.name} - Editing Flash Cards
