@@ -64,7 +64,7 @@ export default function Folders({ user }) {
 							height={60}
 							priority="true"
 						/>
-						<p className="text-lg">You have no folders</p>
+						<p className="text-lg">You have no recent activities</p>
 					</div>
 				)}
 			</div>
