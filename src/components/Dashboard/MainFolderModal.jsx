@@ -205,7 +205,7 @@ export default function MainFolderModal({
 														Items
 													</p>
 													<button
-														onClick={handleOpenQuizzesModal}
+														onClick={null && handleOpenQuizzesModal}
 														className="btn w-full mt-auto"
 													>
 														Open
@@ -228,7 +228,7 @@ export default function MainFolderModal({
 														Items
 													</p>
 													<button
-														onClick={handleOpenTestsModal}
+														onClick={null && handleOpenTestsModal}
 														className="btn w-full mt-auto"
 													>
 														Open
