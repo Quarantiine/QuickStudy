@@ -28,7 +28,7 @@ export default function Tests({}) {
 				</div>
 
 				<div
-					className={`absolute top-1/2 -translate-y-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center`}
+					className={`absolute top-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center`}
 				>
 					<Image
 						className="object-cover grayscale opacity-50"

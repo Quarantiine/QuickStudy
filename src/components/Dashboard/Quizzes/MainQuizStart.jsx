@@ -1,30 +1,30 @@
 import React, { useContext } from "react";
-import FlashCardStarting from "./FlashCardStarting";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
+import QuizStarting from "./QuizStarting";
 
-export default function MainFlashcardStart({
+export default function MainQuizStart({
 	folder,
 	user,
 	folderMaterialSystem,
 	mainMaterialID,
-	startBackToFlashCardModal,
+	startBackToQuizModal,
 }) {
 	const { questionNAnswerSystem } = FirebaseAPI();
-	const { handleResetFlashcards } = useContext(UserCredentialsCtx);
+	const { handleResetQuizzes } = useContext(UserCredentialsCtx);
 
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
 			<div
-				className={`flash-card-edit-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll ${
+				className={`quiz-edit-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll ${
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
 								questionNAnswer.uid === user.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
+								questionNAnswer.materialType === "quiz"
 						)
 						.map((questionNAnswer) => questionNAnswer).length > 0 &&
 					questionNAnswerSystem.allQuestionsNAnswers
@@ -33,7 +33,7 @@ export default function MainFlashcardStart({
 								questionNAnswer.uid === user.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card" &&
+								questionNAnswer.materialType === "quiz" &&
 								questionNAnswer.completed === false
 						)
 						.map((questionNAnswer) => questionNAnswer).length === 0 &&
@@ -45,14 +45,14 @@ export default function MainFlashcardStart({
 						<div className="flex flex-col justify-center items-start gap-5 z-10">
 							<div className="flex flex-col justify-center items-start">
 								<p className="text-sm text-gray-500">
-									{folder.name} - Studying Flash Cards
+									{folder.name} - Taking Quiz
 								</p>
 								<h1 className="title-h1">
 									{folderMaterialSystem.allFolderMaterials
 										.filter(
 											(folderMaterial) =>
 												folderMaterial.uid === user.uid &&
-												folderMaterial.materialType === "flash-card" &&
+												folderMaterial.materialType === "quiz" &&
 												folderMaterial.currentFolderID === folder.id &&
 												folderMaterial.id === mainMaterialID
 										)
@@ -63,7 +63,7 @@ export default function MainFlashcardStart({
 
 							<button
 								onClick={() => {
-									handleResetFlashcards();
+									handleResetQuizzes();
 								}}
 								className="btn flex justify-center items-center gap-1 w-full sm:w-fit"
 							>
@@ -74,13 +74,13 @@ export default function MainFlashcardStart({
 									width={20}
 									height={20}
 								/>
-								<p>Reset Flashcards</p>
+								<p>Reset Quiz</p>
 							</button>
 						</div>
 
 						<button
 							onClick={() => {
-								startBackToFlashCardModal();
+								startBackToQuizModal();
 							}}
 							className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
 						>
@@ -99,13 +99,13 @@ export default function MainFlashcardStart({
 						.filter(
 							(folderMaterial) =>
 								folderMaterial.uid === user.uid &&
-								folderMaterial.materialType === "flash-card" &&
+								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.id === mainMaterialID
 						)
 						.map((folderMaterial) => {
 							return (
-								<FlashCardStarting
+								<QuizStarting
 									key={folderMaterial.id}
 									folderMaterial={folderMaterial}
 								/>

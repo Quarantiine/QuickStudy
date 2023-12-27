@@ -191,7 +191,19 @@ export default function MainFolderModal({
 
 												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 													<h1 className="text-xl font-semibold">Quizzes</h1>
-													<p>0 Items</p>
+													<p>
+														{
+															folderMaterialSystem.allFolderMaterials
+																?.filter(
+																	(folderMaterial) =>
+																		folderMaterial.uid === user.uid &&
+																		folderMaterial.materialType === "quiz" &&
+																		folderMaterial.currentFolderID === folderID
+																)
+																.map((folderMaterial) => folderMaterial).length
+														}{" "}
+														Items
+													</p>
 													<button
 														onClick={handleOpenQuizzesModal}
 														className="btn w-full mt-auto"
@@ -202,7 +214,19 @@ export default function MainFolderModal({
 
 												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 													<h1 className="text-xl font-semibold">Tests</h1>
-													<p>0 Items</p>
+													<p>
+														{
+															folderMaterialSystem.allFolderMaterials
+																?.filter(
+																	(folderMaterial) =>
+																		folderMaterial.uid === user.uid &&
+																		folderMaterial.materialType === "test" &&
+																		folderMaterial.currentFolderID === folderID
+																)
+																.map((folderMaterial) => folderMaterial).length
+														}{" "}
+														Items
+													</p>
 													<button
 														onClick={handleOpenTestsModal}
 														className="btn w-full mt-auto"

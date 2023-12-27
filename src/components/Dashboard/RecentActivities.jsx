@@ -5,19 +5,28 @@ import { UserCredentialsCtx } from "../../pages";
 
 export default function Folders({ user }) {
 	const { registration, folderSystem, folderMaterialSystem } = FirebaseAPI();
-	const { setFolderID, setFlashCardID, setOpenFlashCardEdit } =
-		useContext(UserCredentialsCtx);
+	const {
+		setFolderID,
+		setMainMaterialID,
+		setOpenFlashCardEdit,
+		setOpenQuizEdit,
+	} = useContext(UserCredentialsCtx);
 
 	const handleHideFolder = () => {
 		registration.hidingSection1(user.hideSection1, user.id);
 	};
 
-	const handleOpenFlashCardEdit = (folderID, id) => {
+	const handleOpenMaterialEdit = (folderID, id, materialType) => {
 		folderSystem.updateCreatedTime(folderID);
 		folderMaterialSystem.updateMainMaterialCreatedTime(id);
 		setFolderID(folderID);
-		setFlashCardID(id);
-		setOpenFlashCardEdit(true);
+		setMainMaterialID(id);
+
+		if (materialType === "flash-card") {
+			setOpenFlashCardEdit(true);
+		} else if (materialType === "quiz") {
+			setOpenQuizEdit(true);
+		}
 	};
 
 	return (
@@ -42,7 +51,7 @@ export default function Folders({ user }) {
 									key={folderMaterial.id}
 									folderMaterial={folderMaterial}
 									user={user}
-									handleOpenFlashCardEdit={handleOpenFlashCardEdit}
+									handleOpenMaterialEdit={handleOpenMaterialEdit}
 								/>
 							);
 						})}
@@ -72,14 +81,15 @@ export default function Folders({ user }) {
 	);
 }
 
-const ChildRecent = ({ folderMaterial, user, handleOpenFlashCardEdit }) => {
+const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 	return (
 		<>
 			<button
 				onClick={() =>
-					handleOpenFlashCardEdit(
+					handleOpenMaterialEdit(
 						folderMaterial.currentFolderID,
-						folderMaterial.id
+						folderMaterial.id,
+						folderMaterial.materialType
 					)
 				}
 				className={`flex flex-col justify-start items-start text-start text-btn w-[280px] h-full rounded-xl px-6 py-4 ${
@@ -94,14 +104,21 @@ const ChildRecent = ({ folderMaterial, user, handleOpenFlashCardEdit }) => {
 					{folderMaterial.currentFolderName}
 				</p>
 
-				<div className="flex justify-between items-center gap-1 w-full">
+				<div className="flex justify-between items-center gap-5 w-full">
 					<h1 className="text-xl font-semibold line-clamp-1">
 						{folderMaterial.title}
 					</h1>
+
 					<Image
 						className="object-contain"
 						src={
-							user.theme ? "/icons/flashcard.png" : "/icons/flashcard_black.png"
+							folderMaterial.materialType === "flash-card"
+								? user.theme
+									? "/icons/flashcard.png"
+									: "/icons/flashcard_black.png"
+								: user.theme
+								? "/icons/quiz.png"
+								: "/icons/quiz_black.png"
 						}
 						alt="icon"
 						width={25}

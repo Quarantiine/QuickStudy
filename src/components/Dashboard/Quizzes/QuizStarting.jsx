@@ -3,14 +3,10 @@ import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
 
-export default function FlashCardStarting({ folderMaterial }) {
+export default function QuizStarting({ folderMaterial }) {
 	const { questionNAnswerSystem } = FirebaseAPI();
-	const {
-		user,
-		folderID,
-		handleOpenFlashCardEdit,
-		questionNAnswerContainerRef,
-	} = useContext(UserCredentialsCtx);
+	const { user, folderID, handleOpenQuizEdit, questionNAnswerContainerRef } =
+		useContext(UserCredentialsCtx);
 
 	const completionPercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
@@ -19,7 +15,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 					questionNAnswer.uid === user.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
-					questionNAnswer.materialType === "flash-card" &&
+					questionNAnswer.materialType === "quiz" &&
 					questionNAnswer.completed === true
 			)
 			.map((questionNAnswer) => questionNAnswer.understand).length /
@@ -29,7 +25,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 						questionNAnswer.uid === user.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
-						questionNAnswer.materialType === "flash-card"
+						questionNAnswer.materialType === "quiz"
 				)
 				.map((questionNAnswer) => questionNAnswer.understand).length) *
 			100
@@ -42,7 +38,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 					questionNAnswer.uid === user.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
-					questionNAnswer.materialType === "flash-card" &&
+					questionNAnswer.materialType === "quiz" &&
 					questionNAnswer.completed === true &&
 					questionNAnswer.understand
 			)
@@ -53,7 +49,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 						questionNAnswer.uid === user.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
-						questionNAnswer.materialType === "flash-card" &&
+						questionNAnswer.materialType === "quiz" &&
 						questionNAnswer.completed === true
 				)
 				.map((questionNAnswer) => questionNAnswer.understand).length) *
@@ -68,7 +64,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 						questionNAnswer.uid === user.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
-						questionNAnswer.materialType === "flash-card" &&
+						questionNAnswer.materialType === "quiz" &&
 						questionNAnswer.completed === false
 				)
 				.map((questionNAnswer) => questionNAnswer).length !== 0 && (
@@ -83,7 +79,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 						questionNAnswer.uid === user.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
-						questionNAnswer.materialType === "flash-card"
+						questionNAnswer.materialType === "quiz"
 				)
 				.map((questionNAnswer) => questionNAnswer).length > 0 &&
 				questionNAnswerSystem.allQuestionsNAnswers
@@ -92,16 +88,14 @@ export default function FlashCardStarting({ folderMaterial }) {
 							questionNAnswer.uid === user.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
-							questionNAnswer.materialType === "flash-card" &&
+							questionNAnswer.materialType === "quiz" &&
 							questionNAnswer.completed === false
 					)
 					.map((questionNAnswer) => questionNAnswer).length === 0 && (
 					<>
 						<div className="flex flex-col justify-start items-start sm:flex-row sm:justify-center sm:items-center sm:gap-2 text-center w-full text-lg sm:text-xl">
 							<div className="flex justify-center items-center gap-2 text-center">
-								<h1 className="font-medium text-[#05da4c]">
-									Completed Flashcard
-								</h1>
+								<h1 className="font-medium text-[#05da4c]">Completed Quiz</h1>
 								<Image
 									className="object-cover"
 									src={"/icons/task.svg"}
@@ -125,7 +119,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 							questionNAnswer.uid === user.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
-							questionNAnswer.materialType === "flash-card"
+							questionNAnswer.materialType === "quiz"
 					)
 					.map((questionNAnswer) => questionNAnswer).length > 0 ? (
 					<>
@@ -142,7 +136,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 											questionNAnswer.uid === user.uid &&
 											questionNAnswer.currentFolderID === folderID &&
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
-											questionNAnswer.materialType === "flash-card"
+											questionNAnswer.materialType === "quiz"
 									)
 									.map((questionNAnswer) => {
 										return (
@@ -176,7 +170,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 							You have no questions/answers
 						</p>
 						<button
-							onClick={() => handleOpenFlashCardEdit(folderMaterial.id)}
+							onClick={() => handleOpenQuizEdit(folderMaterial.id)}
 							className="btn"
 						>
 							Add Questions/Answers
@@ -205,7 +199,7 @@ const QuestionsNAnswers = ({
 					questionNAnswer.uid === user.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
-					questionNAnswer.materialType === "flash-card" &&
+					questionNAnswer.materialType === "quiz" &&
 					questionNAnswer.completed === true
 			)
 			.map((questionNAnswer) => questionNAnswer.understand).length /
@@ -215,7 +209,7 @@ const QuestionsNAnswers = ({
 						questionNAnswer.uid === user.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
-						questionNAnswer.materialType === "flash-card"
+						questionNAnswer.materialType === "quiz"
 				)
 				.map((questionNAnswer) => questionNAnswer.understand).length) *
 			100

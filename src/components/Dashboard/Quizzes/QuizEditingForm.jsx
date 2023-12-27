@@ -9,14 +9,14 @@ import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { UserCredentialsCtx } from "../../../pages";
 
-export default function FlashCardEditingForm({
+export default function QuizEditingForm({
 	index,
 	questionNAnswer,
 	questionNAnswerID,
 	setQuestionNAnswerID,
 	questionNAnswerSystem,
 }) {
-	const { handleResetFlashcards } = useContext(UserCredentialsCtx);
+	const { handleResetQuizzes } = useContext(UserCredentialsCtx);
 	const [questionEditTxt, setQuestionEditTxt] = useState("");
 	const [answerEditTxt, setAnswerEditTxt] = useState("");
 	const [edit, setEdit] = useState(false);
@@ -56,7 +56,7 @@ export default function FlashCardEditingForm({
 
 	const handleDeletion = (e, id) => {
 		e.preventDefault();
-		handleResetFlashcards();
+		handleResetQuizzes();
 		questionNAnswerSystem.deleteQuestionNAnswer(id);
 	};
 

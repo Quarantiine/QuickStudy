@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
 import Image from "next/image";
-import FlashCardEditingForm from "./FlashCardEditingForm";
+import QuizEditingForm from "./QuizEditingForm";
 
-export default function FlashCardEditing({ folderMaterial }) {
+export default function QuizEditing({ folderMaterial }) {
 	const { questionNAnswerSystem } = FirebaseAPI();
 	const {
 		user,
 		folderID,
 		mainMaterialID,
-		openEditFlashCardDropdown,
+		openEditQuizDropdown,
 		questionNAnswerID,
 		setQuestionNAnswerID,
-		handleOpenFlashCardStart,
+		handleOpenQuizStart,
 	} = useContext(UserCredentialsCtx);
 
 	const [dropdown, setDropdown] = useState(false);
@@ -62,17 +62,15 @@ export default function FlashCardEditing({ folderMaterial }) {
 				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 w-full">
 					<button
 						onClick={() => {
-							handleOpenFlashCardStart(folderMaterial.id);
+							handleOpenQuizStart(folderMaterial.id);
 						}}
 						className="passive-btn w-full sm:w-fit question-n-answer-dropdown z-10"
 					>
-						Start Studying
+						Take Quiz
 					</button>
 
 					<div
-						className={`relative ${
-							openEditFlashCardDropdown === false && "z-10"
-						}`}
+						className={`relative ${openEditQuizDropdown === false && "z-10"}`}
 					>
 						<button
 							onClick={handleDropdown}
@@ -123,7 +121,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 								questionNAnswer.uid === user.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
+								questionNAnswer.materialType === "quiz"
 						)
 						.map((questionNAnswer) => questionNAnswer).length === 1 ? (
 						<div className="flex justify-between items-center gap-2 w-full">
@@ -136,7 +134,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 												questionNAnswer.uid === user.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
-												questionNAnswer.materialType === "flash-card"
+												questionNAnswer.materialType === "quiz"
 										)
 										.map((questionNAnswer) => questionNAnswer).length
 								}{" "}
@@ -154,7 +152,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 												questionNAnswer.uid === user.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
-												questionNAnswer.materialType === "flash-card"
+												questionNAnswer.materialType === "quiz"
 										)
 										.map((questionNAnswer) => questionNAnswer).length
 								}{" "}
@@ -171,11 +169,11 @@ export default function FlashCardEditing({ folderMaterial }) {
 								questionNAnswer.uid === user.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
+								questionNAnswer.materialType === "quiz"
 						)
 						.map((questionNAnswer, index) => {
 							return (
-								<FlashCardEditingForm
+								<QuizEditingForm
 									key={questionNAnswer.id}
 									index={index}
 									questionNAnswer={questionNAnswer}
@@ -192,7 +190,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 								questionNAnswer.uid === user.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
+								questionNAnswer.materialType === "quiz"
 						)
 						.map((questionNAnswer) => questionNAnswer).length < 1 && (
 						<div
