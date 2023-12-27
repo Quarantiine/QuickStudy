@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import FlashCardStarting from "./FlashCardStarting";
 import Image from "next/image";
-import FirebaseAPI from "../../pages/api/firebaseAPI";
-import { UserCredentialsCtx } from "../../pages";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
+import { UserCredentialsCtx } from "../../../pages";
 
 export default function MainFlashcardStart({
 	folder,

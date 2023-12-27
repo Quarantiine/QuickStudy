@@ -138,7 +138,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 					folderMaterial.currentFolderID === id
 			)
 			.map((folderMaterial) =>
-				folderMaterialSystem.deleteFlashCard(folderMaterial.id)
+				folderMaterialSystem.deleteMainMaterial(folderMaterial.id)
 			);
 
 		questionNAnswerSystem.allQuestionsNAnswers

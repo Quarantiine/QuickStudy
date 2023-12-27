@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import FirebaseAPI from "../../pages/api/firebaseAPI";
-import { UserCredentialsCtx } from "../../pages";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
+import { UserCredentialsCtx } from "../../../pages";
 import Image from "next/image";
 import FlashCardEditingForm from "./FlashCardEditingForm";
 

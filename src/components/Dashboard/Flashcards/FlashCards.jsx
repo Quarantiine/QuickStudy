@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import FirebaseAPI from "../../pages/api/firebaseAPI";
-import { UserCredentialsCtx } from "../../pages";
-import { createPortal } from "react-dom";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
+import { UserCredentialsCtx } from "../../../pages";
 import Flashcard from "./Flashcard";
 
 export default function FlashCards({ user, folder }) {
 	const { folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
-	const { handleOpenFlashCardEdit, handleOpenFlashCardStart, flashCardID } =
+	const { handleOpenFlashCardEdit, handleOpenFlashCardStart } =
 		useContext(UserCredentialsCtx);
 
 	const [openDropDown, setOpenDropDown] = useState(false);
@@ -17,11 +16,11 @@ export default function FlashCards({ user, folder }) {
 		setOpenDropDown(!openDropDown);
 	};
 
-	const createFlashCard = (e) => {
+	const createMainMaterial = (e) => {
 		e.preventDefault();
 
 		if (flashCardTitle.length > 1 && flashCardTitle.length <= 32) {
-			folderMaterialSystem.createFlashCard(
+			folderMaterialSystem.createMainMaterial(
 				flashCardTitle,
 				folder.name,
 				0,
@@ -88,7 +87,7 @@ export default function FlashCards({ user, folder }) {
 										/>
 									</div>
 
-									<button onClick={createFlashCard} className="btn w-full">
+									<button onClick={createMainMaterial} className="btn w-full">
 										Create
 									</button>
 								</div>

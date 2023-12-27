@@ -5,11 +5,11 @@ import FirebaseAPI from "../pages/api/firebaseAPI";
 import Image from "next/image";
 import LoaderSymbol from "../components/LoaderSymbol";
 import { createPortal } from "react-dom";
-import FlashCards from "../components/Dashboard/FlashCards";
-import Quizzes from "../components/Dashboard/Quizzes";
-import Tests from "../components/Dashboard/Tests";
-import MainFlashcardEditing from "../components/Dashboard/MainFlashcardEditing";
-import MainFlashcardStart from "../components/Dashboard/MainFlashcardStart";
+import FlashCards from "../components/Dashboard/Flashcards/FlashCards";
+import Quizzes from "../components/Dashboard/Quizzes/Quizzes";
+import Tests from "../components/Dashboard/TestsSection/Tests";
+import MainFlashcardEditing from "../components/Dashboard/Flashcards/MainFlashcardEditing";
+import MainFlashcardStart from "../components/Dashboard/Flashcards/MainFlashcardStart";
 import AllFolders from "../components/Dashboard/AllFolders";
 import MainDashboard from "../components/Dashboard/MainDashboard";
 
@@ -81,6 +81,13 @@ export default function Home() {
 		return () => document.removeEventListener("mousedown", closeViewAllFolders);
 	}, []);
 
+	const handleViewAllFolders = (e) => {
+		e.preventDefault();
+		setViewAllFolders(!viewAllFolders);
+		setOpenFolderModal(false);
+		setLibraryDropdown(false);
+	};
+
 	const handleOpenFlashCardsModal = () => {
 		setOpenFlashCardModal(!openFlashCardModal);
 		setOpenFolderModal(false);
@@ -97,47 +104,8 @@ export default function Home() {
 		return () => document.removeEventListener("mousedown", closeFlashCardModal);
 	}, []);
 
-	const handleOpenQuizzesModal = () => {
-		setOpenQuizzesModal(!openQuizzesModal);
-		setOpenFolderModal(false);
-	};
-
-	useEffect(() => {
-		const closeQuizzesModal = (e) => {
-			if (!e.target.closest(".quizzes-modal")) {
-				setOpenQuizzesModal(false);
-			}
-		};
-
-		document.addEventListener("mousedown", closeQuizzesModal);
-		return () => document.removeEventListener("mousedown", closeQuizzesModal);
-	}, []);
-
-	const handleOpenTestsModal = () => {
-		setOpenTestsModal(!openTestsModal);
-		setOpenFolderModal(false);
-	};
-
-	useEffect(() => {
-		const closeTestModal = (e) => {
-			if (!e.target.closest(".test-modal")) {
-				setOpenTestsModal(false);
-			}
-		};
-
-		document.addEventListener("mousedown", closeTestModal);
-		return () => document.removeEventListener("mousedown", closeTestModal);
-	}, []);
-
-	const handleViewAllFolders = (e) => {
-		e.preventDefault();
-		setViewAllFolders(!viewAllFolders);
-		setOpenFolderModal(false);
-		setLibraryDropdown(false);
-	};
-
 	const handleOpenFlashCardEdit = (id) => {
-		folderMaterialSystem.updateFlashCardCreatedTime(id);
+		folderMaterialSystem.updateMainMaterialCreatedTime(id);
 		setFlashCardID(id);
 		setOpenFlashCardEdit(!openFlashCardEdit);
 		setOpenFlashCardModal(false);
@@ -145,7 +113,7 @@ export default function Home() {
 	};
 
 	const handleOpenFlashCardStart = (id) => {
-		folderMaterialSystem.updateFlashCardCreatedTime(id);
+		folderMaterialSystem.updateMainMaterialCreatedTime(id);
 		setFlashCardID(id);
 		setOpenFlashCardStart(!openFlashCardStart);
 		setOpenFlashCardModal(false);
@@ -195,7 +163,7 @@ export default function Home() {
 	const handleChangeFlashcardTitle = (e, id) => {
 		e.preventDefault();
 		if (flashcardQNATitle.length > 0 && flashcardQNATitle.length <= 32) {
-			folderMaterialSystem.updateFlashCardTitle(flashcardQNATitle, id);
+			folderMaterialSystem.updateMainMaterialTitle(flashcardQNATitle, id);
 			setOpenEditFlashCardDropdown(false);
 			setFlashcardQNATitle("");
 		}
@@ -249,9 +217,41 @@ export default function Home() {
 					folderMaterial.id === flashCardID
 			)
 			.map((folderMaterial) =>
-				folderMaterialSystem.updateFlashcardCompletion(0, folderMaterial.id)
+				folderMaterialSystem.updateMainMaterialCompletion(0, folderMaterial.id)
 			);
 	};
+
+	const handleOpenQuizzesModal = () => {
+		setOpenQuizzesModal(!openQuizzesModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeQuizzesModal = (e) => {
+			if (!e.target.closest(".quiz-modal")) {
+				setOpenQuizzesModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeQuizzesModal);
+		return () => document.removeEventListener("mousedown", closeQuizzesModal);
+	}, []);
+
+	const handleOpenTestsModal = () => {
+		setOpenTestsModal(!openTestsModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeTestModal = (e) => {
+			if (!e.target.closest(".test-modal")) {
+				setOpenTestsModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeTestModal);
+		return () => document.removeEventListener("mousedown", closeTestModal);
+	}, []);
 
 	return (
 		<>
@@ -305,57 +305,7 @@ export default function Home() {
 									questionNAnswerContainerRef,
 								}}
 							>
-								<>
-									{openFlashCardEdit &&
-										folderSystem.allFolders
-											.filter(
-												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
-											)
-											.map((folder) => {
-												return (
-													<MainFlashcardEditing
-														key={folder.id}
-														folder={folder}
-														user={user}
-														handleEditFlashCardTitle={handleEditFlashCardTitle}
-														folderMaterialSystem={folderMaterialSystem}
-														openEditFlashCardDropdown={
-															openEditFlashCardDropdown
-														}
-														flashcardQNATitle={flashcardQNATitle}
-														setFlashcardQNATitle={setFlashcardQNATitle}
-														handleChangeFlashcardTitle={
-															handleChangeFlashcardTitle
-														}
-														editBackToFlashCardModal={editBackToFlashCardModal}
-														flashCardID={flashCardID}
-													/>
-												);
-											})}
-
-									{openFlashCardStart &&
-										folderSystem.allFolders
-											.filter(
-												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
-											)
-											.map((folder) => {
-												return (
-													<MainFlashcardStart
-														key={folder.id}
-														folder={folder}
-														user={user}
-														folderMaterialSystem={folderMaterialSystem}
-														flashCardID={flashCardID}
-														startBackToFlashCardModal={
-															startBackToFlashCardModal
-														}
-													/>
-												);
-											})}
-								</>
-
+								{/* FLASH CARD SECTION */}
 								<>
 									{openFlashCardModal &&
 										createPortal(
@@ -408,6 +358,57 @@ export default function Home() {
 											document.body
 										)}
 
+									{openFlashCardEdit &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardEditing
+														key={folder.id}
+														folder={folder}
+														user={user}
+														handleEditFlashCardTitle={handleEditFlashCardTitle}
+														folderMaterialSystem={folderMaterialSystem}
+														openEditFlashCardDropdown={
+															openEditFlashCardDropdown
+														}
+														flashcardQNATitle={flashcardQNATitle}
+														setFlashcardQNATitle={setFlashcardQNATitle}
+														handleChangeFlashcardTitle={
+															handleChangeFlashcardTitle
+														}
+														editBackToFlashCardModal={editBackToFlashCardModal}
+														flashCardID={flashCardID}
+													/>
+												);
+											})}
+
+									{openFlashCardStart &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardStart
+														key={folder.id}
+														folder={folder}
+														user={user}
+														folderMaterialSystem={folderMaterialSystem}
+														flashCardID={flashCardID}
+														startBackToFlashCardModal={
+															startBackToFlashCardModal
+														}
+													/>
+												);
+											})}
+								</>
+
+								<>
 									{openQuizzesModal &&
 										createPortal(
 											folderSystem.allFolders
@@ -420,9 +421,9 @@ export default function Home() {
 														<React.Fragment key={folder.id}>
 															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
 																<div
-																	className={`quizzes-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white p-5`}
+																	className={`quiz-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 																>
-																	<div className="flex flex-col justify-center items-start gap-3 w-full">
+																	<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 																		<div className="flex justify-between items-start gap-2 w-full z-10">
 																			<div className="flex flex-col justify-center items-start">
 																				<p className="text-sm text-gray-500">
@@ -447,7 +448,7 @@ export default function Home() {
 																			</button>
 																		</div>
 
-																		<Quizzes />
+																		<Quizzes folder={folder} user={user} />
 																	</div>
 																</div>
 															</div>
@@ -457,6 +458,57 @@ export default function Home() {
 											document.body
 										)}
 
+									{openFlashCardEdit &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardEditing
+														key={folder.id}
+														folder={folder}
+														user={user}
+														handleEditFlashCardTitle={handleEditFlashCardTitle}
+														folderMaterialSystem={folderMaterialSystem}
+														openEditFlashCardDropdown={
+															openEditFlashCardDropdown
+														}
+														flashcardQNATitle={flashcardQNATitle}
+														setFlashcardQNATitle={setFlashcardQNATitle}
+														handleChangeFlashcardTitle={
+															handleChangeFlashcardTitle
+														}
+														editBackToFlashCardModal={editBackToFlashCardModal}
+														flashCardID={flashCardID}
+													/>
+												);
+											})}
+
+									{openFlashCardStart &&
+										folderSystem.allFolders
+											.filter(
+												(folder) =>
+													folder.uid === user.uid && folder.id === folderID
+											)
+											.map((folder) => {
+												return (
+													<MainFlashcardStart
+														key={folder.id}
+														folder={folder}
+														user={user}
+														folderMaterialSystem={folderMaterialSystem}
+														flashCardID={flashCardID}
+														startBackToFlashCardModal={
+															startBackToFlashCardModal
+														}
+													/>
+												);
+											})}
+								</>
+
+								<>
 									{openTestsModal &&
 										createPortal(
 											folderSystem.allFolders

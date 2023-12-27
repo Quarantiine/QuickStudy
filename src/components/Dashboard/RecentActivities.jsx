@@ -14,7 +14,7 @@ export default function Folders({ user }) {
 
 	const handleOpenFlashCardEdit = (folderID, id) => {
 		folderSystem.updateCreatedTime(folderID);
-		folderMaterialSystem.updateFlashCardCreatedTime(id);
+		folderMaterialSystem.updateMainMaterialCreatedTime(id);
 		setFolderID(folderID);
 		setFlashCardID(id);
 		setOpenFlashCardEdit(true);

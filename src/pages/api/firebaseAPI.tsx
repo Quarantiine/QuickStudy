@@ -411,7 +411,7 @@ export default function FirebaseAPI() {
 	class FolderMaterialsSystem {
 		constructor() {}
 
-		createFlashCard = async (
+		createMainMaterial = async (
 			title: string,
 			currentFolderName: string,
 			completion: number,
@@ -436,7 +436,7 @@ export default function FirebaseAPI() {
 			});
 		};
 
-		deleteFlashCard = async (id: string) => {
+		deleteMainMaterial = async (id: string) => {
 			const docRef = doc(colRefFolderMaterials, id);
 
 			await deleteDoc(docRef).catch((err) => {
@@ -449,7 +449,7 @@ export default function FirebaseAPI() {
 			});
 		};
 
-		updateFlashCardCreatedTime = async (id: string) => {
+		updateMainMaterialCreatedTime = async (id: string) => {
 			const docRef = doc(colRefFolderMaterials, id);
 			await updateDoc(docRef, {
 				createdTime: serverTimestamp(),
@@ -463,7 +463,7 @@ export default function FirebaseAPI() {
 			});
 		};
 
-		updateFlashCardTitle = async (title: string, id: string) => {
+		updateMainMaterialTitle = async (title: string, id: string) => {
 			const docRef = doc(colRefFolderMaterials, id);
 			await updateDoc(docRef, {
 				title: title,
@@ -477,7 +477,7 @@ export default function FirebaseAPI() {
 			});
 		};
 
-		updateFlashcardCompletion = async (completion: number, id: string) => {
+		updateMainMaterialCompletion = async (completion: number, id: string) => {
 			const docRef = doc(colRefFolderMaterials, id);
 			await updateDoc(docRef, {
 				completion: completion,
@@ -492,11 +492,11 @@ export default function FirebaseAPI() {
 		};
 	}
 	const FMS = new FolderMaterialsSystem();
-	const createFlashCard = FMS.createFlashCard;
-	const deleteFlashCard = FMS.deleteFlashCard;
-	const updateFlashCardCreatedTime = FMS.updateFlashCardCreatedTime;
-	const updateFlashCardTitle = FMS.updateFlashCardTitle;
-	const updateFlashcardCompletion = FMS.updateFlashcardCompletion;
+	const createMainMaterial = FMS.createMainMaterial;
+	const deleteMainMaterial = FMS.deleteMainMaterial;
+	const updateMainMaterialCreatedTime = FMS.updateMainMaterialCreatedTime;
+	const updateMainMaterialTitle = FMS.updateMainMaterialTitle;
+	const updateMainMaterialCompletion = FMS.updateMainMaterialCompletion;
 
 	class QuestionNAnswerSystem {
 		constructor() {}
@@ -658,11 +658,11 @@ export default function FirebaseAPI() {
 
 		folderMaterialSystem: {
 			allFolderMaterials,
-			createFlashCard,
-			deleteFlashCard,
-			updateFlashCardCreatedTime,
-			updateFlashCardTitle,
-			updateFlashcardCompletion,
+			createMainMaterial,
+			deleteMainMaterial,
+			updateMainMaterialCreatedTime,
+			updateMainMaterialTitle,
+			updateMainMaterialCompletion,
 		},
 
 		questionNAnswerSystem: {

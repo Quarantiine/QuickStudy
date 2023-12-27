@@ -1,13 +1,13 @@
 import React from "react";
 import Image from "next/image";
 
-export default function Quizzes({}) {
+export default function Quiz({}) {
 	return (
 		<>
 			<div className="flex flex-col justify-center items-start gap-7 w-full">
 				<div className="flex flex-col sm:flex-row justify-start sm:justify-between item-start sm:items-center gap-3 w-full z-10">
 					{/* <button onClick={null} className="btn">
-						Create Quiz
+						Create Test
 					</button> */}
 
 					{/* <div className="relative w-full sm:w-fit">
@@ -21,7 +21,7 @@ export default function Quizzes({}) {
 
 						<input
 							className="input-field !pl-10 w-full"
-							placeholder="Search Quizzes"
+							placeholder="Search Quiz"
 							type="text"
 						/>
 					</div> */}
@@ -38,8 +38,8 @@ export default function Quizzes({}) {
 						height={60}
 						priority="true"
 					/>
-					{/* <p className="text-lg text-gray-400">You have no quizzes</p> */}
-					<p className="text-lg text-gray-400">Quizzes coming soon</p>
+					{/* <p className="text-lg text-gray-400">You have no Quiz</p> */}
+					<p className="text-lg text-gray-400">Quiz coming soon</p>
 				</div>
 			</div>
 		</>

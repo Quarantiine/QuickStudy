@@ -25,8 +25,8 @@ export default function Flashcard({
 		return () => document.removeEventListener("mousedown", closeDropdown);
 	}, []);
 
-	const handleDeleteFlashCard = (id) => {
-		folderMaterialSystem.deleteFlashCard(id);
+	const handledeleteMainMaterial = (id) => {
+		folderMaterialSystem.deleteMainMaterial(id);
 
 		questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
@@ -134,7 +134,9 @@ export default function Flashcard({
 
 										<div className="flex flex-col justify-center items-center gap-1 w-full">
 											<button
-												onClick={() => handleDeleteFlashCard(folderMaterial.id)}
+												onClick={() =>
+													handledeleteMainMaterial(folderMaterial.id)
+												}
 												className="btn !bg-red-500 w-full"
 											>
 												Delete

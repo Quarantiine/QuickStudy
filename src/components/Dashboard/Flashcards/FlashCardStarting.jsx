@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import FirebaseAPI from "../../pages/api/firebaseAPI";
-import { UserCredentialsCtx } from "../../pages";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
+import { UserCredentialsCtx } from "../../../pages";
 
 export default function FlashCardStarting({ folderMaterial }) {
 	const { questionNAnswerSystem } = FirebaseAPI();
@@ -248,7 +248,7 @@ const QuestionsNAnswers = ({
 	};
 
 	useEffect(() => {
-		folderMaterialSystem.updateFlashcardCompletion(
+		folderMaterialSystem.updateMainMaterialCompletion(
 			completionPercentage,
 			folderMaterial.id
 		);
