@@ -7,7 +7,6 @@ import LoaderSymbol from "../components/LoaderSymbol";
 import { createPortal } from "react-dom";
 import FlashCards from "../components/Dashboard/Flashcards/FlashCards";
 import Quizzes from "../components/Dashboard/Quizzes/Quizzes";
-import Tests from "../components/Dashboard/TestsSection/Tests";
 import MainFlashcardEditing from "../components/Dashboard/Flashcards/MainFlashcardEditing";
 import MainFlashcardStart from "../components/Dashboard/Flashcards/MainFlashcardStart";
 import AllFolders from "../components/Dashboard/AllFolders";
@@ -36,7 +35,6 @@ export default function Home() {
 	// MAIN MODAL SECTIONS
 	const [openFlashCardModal, setOpenFlashCardModal] = useState(false);
 	const [openQuizModal, setOpenQuizModal] = useState(false);
-	const [openTestsModal, setOpenTestsModal] = useState(false);
 
 	// ID SECTIONS
 	const [mainMaterialID, setMainMaterialID] = useState("");
@@ -81,7 +79,6 @@ export default function Home() {
 		setViewAllFolders(false);
 		setOpenFlashCardModal(false);
 		setOpenQuizModal(false);
-		setOpenTestsModal(false);
 	};
 
 	useEffect(() => {
@@ -292,6 +289,33 @@ export default function Home() {
 	};
 
 	const handleOpenQuizStart = (id) => {
+		const list = [
+			...questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === id &&
+						questionNAnswer.materialType === "quiz"
+				)
+				.map((questionNAnswer) => questionNAnswer.answer),
+		];
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === auth.currentUser.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.currentMaterialID === id &&
+					questionNAnswer.materialType === "quiz"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.updateDummyAnswers(
+					JSON.stringify(list),
+					questionNAnswer.id
+				)
+			);
+
 		folderMaterialSystem.updateMainMaterialCreatedTime(id);
 		setMainMaterialID(id);
 		setOpenQuizStart(!openFlashCardStart);
@@ -319,7 +343,7 @@ export default function Home() {
 	const handleChangeQuizTitle = (e, id) => {
 		e.preventDefault();
 		if (quizQNATitle.length > 0 && quizQNATitle.length <= 32) {
-			folderMaterialSystem.updateMainMaterialTitle(flashcardQNATitle, id);
+			folderMaterialSystem.updateMainMaterialTitle(quizQNATitle, id);
 			setOpenEditQuizDropdown(false);
 			setQuizQNATitle("");
 		}
@@ -376,26 +400,6 @@ export default function Home() {
 				folderMaterialSystem.updateMainMaterialCompletion(0, folderMaterial.id)
 			);
 	};
-
-	{
-		/* TESTS SECTION */
-	}
-
-	const handleOpenTestsModal = () => {
-		setOpenTestsModal(!openTestsModal);
-		setOpenFolderModal(false);
-	};
-
-	useEffect(() => {
-		const closeTestModal = (e) => {
-			if (!e.target.closest(".test-modal")) {
-				setOpenTestsModal(false);
-			}
-		};
-
-		document.addEventListener("mousedown", closeTestModal);
-		return () => document.removeEventListener("mousedown", closeTestModal);
-	}, []);
 
 	return (
 		<>
@@ -456,8 +460,6 @@ export default function Home() {
 									setOpenEditQuizDropdown,
 									setOpenQuizEdit,
 									handleResetQuizzes,
-
-									handleOpenTestsModal,
 								}}
 							>
 								{/* FLASH CARD SECTION */}
@@ -656,58 +658,6 @@ export default function Home() {
 													/>
 												);
 											})}
-								</>
-
-								{/* TEST SECTION */}
-								<>
-									{openTestsModal &&
-										createPortal(
-											folderSystem.allFolders
-												.filter(
-													(folder) =>
-														folder.uid === user.uid && folder.id === folderID
-												)
-												.map((folder) => {
-													return (
-														<React.Fragment key={folder.id}>
-															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-																<div
-																	className={`test-modal w-[90%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white p-5`}
-																>
-																	<div className="flex flex-col justify-center items-start gap-3 w-full">
-																		<div className="flex justify-between items-start gap-2 w-full z-10">
-																			<div className="flex flex-col justify-center items-start">
-																				<p className="text-sm text-gray-500">
-																					{folder.name}
-																				</p>
-																				<h1 className="title-h1">Tests</h1>
-																			</div>
-																			<button
-																				onClick={() =>
-																					handleOpenFolderModal(folder.id)
-																				}
-																				className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-																			>
-																				<Image
-																					className="object-contain"
-																					src={"/icons/arrow_back_blue.svg"}
-																					alt="icon"
-																					width={17}
-																					height={17}
-																				/>
-																				<p>Back</p>
-																			</button>
-																		</div>
-
-																		<Tests />
-																	</div>
-																</div>
-															</div>
-														</React.Fragment>
-													);
-												}),
-											document.body
-										)}
 								</>
 
 								{viewAllFolders &&

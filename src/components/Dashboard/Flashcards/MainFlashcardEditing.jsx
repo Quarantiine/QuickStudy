@@ -56,7 +56,7 @@ export default function MainFlashcardEditing({
 										.map((folderMaterial) => {
 											return (
 												<React.Fragment key={folderMaterial.id}>
-													<form className="flash-card-edit-dropdown w-[200px] h-fit bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center">
+													<form className="flash-card-edit-dropdown w-[200px] h-fit bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center z-10">
 														<div className="w-full flex flex-col justify-center items-center gap-3">
 															<div className="flex flex-col justify-center items-start gap-1 w-full">
 																<div className="flex justify-between items-center gap-2 w-full">

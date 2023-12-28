@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
@@ -121,13 +121,13 @@ export default function QuizStarting({ folderMaterial }) {
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "quiz"
 					)
-					.map((questionNAnswer) => questionNAnswer).length > 0 ? (
+					.map((questionNAnswer) => questionNAnswer).length > 4 ? (
 					<>
 						<div
-							className={`rounded-xl absolute left-0 w-full flex flex-col justify-center items-center px-4 pb-4 h-[80%]`}
+							className={`rounded-xl absolute left-0 w-full flex flex-col justify-center items-center px-4 pb-4 h-[100%]`}
 						>
 							<div
-								className={`question-n-answers-container flex gap-7 justify-start items-center w-[90%] overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative mx-auto h-full`}
+								className={`question-n-answers-quiz-container flex flex-col gap-7 justify-start items-start w-[100%] overflow-with-width overflow-y-scroll overflow-x-hidden rounded-xl relative mx-auto h-full`}
 								ref={questionNAnswerContainerRef}
 							>
 								{questionNAnswerSystem.allQuestionsNAnswers
@@ -167,7 +167,7 @@ export default function QuizStarting({ folderMaterial }) {
 						/>
 
 						<p className="text-lg text-gray-400">
-							You have no questions/answers
+							{"You have < 5 questions/answers"}
 						</p>
 						<button
 							onClick={() => handleOpenQuizEdit(folderMaterial.id)}
@@ -189,8 +189,11 @@ const QuestionsNAnswers = ({
 	user,
 	folderID,
 }) => {
-	const [showAnswer, setShowAnswer] = useState(false);
 	const { folderMaterialSystem } = FirebaseAPI();
+
+	const dummyAnswers = JSON.parse(questionNAnswer.dummyAnswers);
+
+	const shuffleAnswer = useRef(Math.round(Math.random() * 3));
 
 	const completionPercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
@@ -215,18 +218,11 @@ const QuestionsNAnswers = ({
 			100
 	);
 
-	const handleShowAnswer = () => {
-		setShowAnswer(true);
-	};
-
-	const handleCompletion = () => {};
-
 	const handleUnderstandQuestion = () => {
 		questionNAnswerSystem.updateUnderstand(
 			!questionNAnswer.understand,
 			questionNAnswer.id
 		);
-
 		questionNAnswerSystem.updateCompleted(
 			!questionNAnswer.completed,
 			questionNAnswer.id
@@ -250,19 +246,10 @@ const QuestionsNAnswers = ({
 
 	return (
 		<div
-			className={`question-n-answers-child flex flex-col justify-start items-center text-center gap-4 min-w-[100%] max-w-[100%] h-full mx-auto px-3 py-1 overflow-no-width overflow-y-scroll overflow-x-hidden ${
-				questionNAnswer.image ? "pt-0" : "pt-20"
-			} ${
-				questionNAnswer.didntUnderstand === true &&
-				questionNAnswer.understand === false
-					? "bg-[rgba(255,64,64,0.2)]"
-					: questionNAnswer.didntUnderstand === false &&
-					  questionNAnswer.understand === true &&
-					  "bg-[rgba(98,255,140,0.2)]"
-			}`}
+			className={`question-n-answers-quiz-child flex flex-col justify-start items-center text-center gap-4 w-[100%] min-h-[100%] max-h-[100%] h-full mx-auto px-3 py-10 overflow-with-width-secondary overflow-x-hidden overflow-y-scroll rounded-2xl`}
 		>
 			{questionNAnswer.image && (
-				<div className="w-[70%] h-[200px] relative rounded-lg">
+				<div className="w-[70%] min-h-[200px] relative">
 					<Image
 						className="object-contain"
 						src={questionNAnswer.image}
@@ -273,41 +260,226 @@ const QuestionsNAnswers = ({
 				</div>
 			)}
 
-			<p className="flex justify-center items-start gap-2">
-				<span className="font-semibold">Q:</span>{" "}
-				<span>{questionNAnswer.question}</span>
-			</p>
+			<div className="flex flex-col justify-center items-start w-fit mx-auto gap-5">
+				<p className="flex justify-start items-center gap-2 px-2">
+					<span className="font-semibold">Q:</span>
+					<span className="text-start">{questionNAnswer.question}</span>
+				</p>
 
-			{!showAnswer &&
+				<div className="flex flex-col justify-center items-start gap-2">
+					{shuffleAnswer.current === 0
+						? dummyAnswers
+								.filter((l) => l == questionNAnswer.answer)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === false &&
+													questionNAnswer.understand === true &&
+													"bg-[rgba(98,255,140,0.2)] text-green-700"
+												}`}
+											>
+												<span className="font-semibold">A:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})
+						: dummyAnswers
+								.filter((l) => l != questionNAnswer.answer)
+								.slice(0, 1)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleDidntUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === true &&
+													questionNAnswer.understand === false &&
+													"bg-[rgba(255,64,64,0.2)] text-red-700"
+												}`}
+											>
+												<span className="font-semibold">A:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})}
+
+					{shuffleAnswer.current === 1
+						? dummyAnswers
+								.filter((l) => l == questionNAnswer.answer)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === false &&
+													questionNAnswer.understand === true &&
+													"bg-[rgba(98,255,140,0.2)] text-green-700"
+												}`}
+											>
+												<span className="font-semibold">B:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})
+						: dummyAnswers
+								.filter((l) => l != questionNAnswer.answer)
+								.slice(1, 2)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleDidntUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === true &&
+													questionNAnswer.understand === false &&
+													"bg-[rgba(255,64,64,0.2)] text-red-700"
+												}`}
+											>
+												<span className="font-semibold">B:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})}
+
+					{shuffleAnswer.current === 2
+						? dummyAnswers
+								.filter((l) => l == questionNAnswer.answer)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === false &&
+													questionNAnswer.understand === true &&
+													"bg-[rgba(98,255,140,0.2)] text-green-700"
+												}`}
+											>
+												<span className="font-semibold">C:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})
+						: dummyAnswers
+								.filter((l) => l != questionNAnswer.answer)
+								.slice(2, 3)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleDidntUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === true &&
+													questionNAnswer.understand === false &&
+													"bg-[rgba(255,64,64,0.2)] text-red-700"
+												}`}
+											>
+												<span className="font-semibold">C:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})}
+
+					{shuffleAnswer.current === 3
+						? dummyAnswers
+								.filter((l) => l == questionNAnswer.answer)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === false &&
+													questionNAnswer.understand === true &&
+													"bg-[rgba(98,255,140,0.2)] text-green-700"
+												}`}
+											>
+												<span className="font-semibold">D:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})
+						: dummyAnswers
+								.filter((l) => l != questionNAnswer.answer)
+								.slice(3, 4)
+								.map((dummyAnswer, index) => {
+									return (
+										<React.Fragment key={index}>
+											<button
+												onClick={
+													questionNAnswer.completed
+														? null
+														: handleDidntUnderstandQuestion
+												}
+												className={`text-btn rounded-xl px-3 text-start py-2 ${
+													questionNAnswer.didntUnderstand === true &&
+													questionNAnswer.understand === false &&
+													"bg-[rgba(255,64,64,0.2)] text-red-700"
+												}`}
+											>
+												<span className="font-semibold">D:</span> {dummyAnswer}
+											</button>
+										</React.Fragment>
+									);
+								})}
+				</div>
+			</div>
+
+			{/* {!showAnswer &&
 				questionNAnswer.understand !== true &&
 				questionNAnswer.didntUnderstand !== true && (
 					<button onClick={handleShowAnswer} className="btn">
 						Show?
 					</button>
-				)}
+				)} */}
 
-			{questionNAnswer.understand === true && (
+			{/* {questionNAnswer.didntUnderstand === true && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
-			)}
+			)} */}
 
-			{questionNAnswer.didntUnderstand === true && (
+			{/* {showAnswer && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
-			)}
+			)} */}
 
-			{showAnswer && (
-				<p className="flex justify-center items-start gap-2">
-					<span className="font-semibold">A:</span>{" "}
-					<span>{questionNAnswer.answer}</span>
-				</p>
-			)}
-
-			{showAnswer && (
+			{/* {showAnswer && (
 				<div className="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
 					<button
 						onClick={() => {
@@ -330,7 +502,7 @@ const QuestionsNAnswers = ({
 						{"Didn't Understand"}
 					</button>
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 };

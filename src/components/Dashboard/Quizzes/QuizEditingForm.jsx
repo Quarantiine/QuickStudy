@@ -169,7 +169,7 @@ export default function QuizEditingForm({
 										)}
 
 										{questionNAnswer.image ? (
-											<div className="w-full h-full">
+											<div className="w-full h-full z-0">
 												<div
 													{...getRootProps()}
 													className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative"

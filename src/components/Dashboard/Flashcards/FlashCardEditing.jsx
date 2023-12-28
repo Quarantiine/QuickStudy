@@ -59,16 +59,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center gap-5 w-full pb-5">
-				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 w-full">
-					<button
-						onClick={() => {
-							handleOpenFlashCardStart(folderMaterial.id);
-						}}
-						className="passive-btn w-full sm:w-fit question-n-answer-dropdown z-10"
-					>
-						Start Studying
-					</button>
-
+				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 w-full z-0">
 					<div
 						className={`relative ${
 							openEditFlashCardDropdown === false && "z-10"
@@ -114,6 +105,15 @@ export default function FlashCardEditing({ folderMaterial }) {
 							</>
 						)}
 					</div>
+
+					<button
+						onClick={() => {
+							handleOpenFlashCardStart(folderMaterial.id);
+						}}
+						className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
+					>
+						Start Studying
+					</button>
 				</div>
 
 				<div className="flex justify-end items-center w-full">
@@ -186,31 +186,35 @@ export default function FlashCardEditing({ folderMaterial }) {
 							);
 						})}
 
-					{questionNAnswerSystem.allQuestionsNAnswers
-						.filter(
-							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
-								questionNAnswer.currentFolderID === folderID &&
-								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
-						)
-						.map((questionNAnswer) => questionNAnswer).length < 1 && (
-						<div
-							className={`relative top-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center text-center p-2 z-0`}
-						>
-							<Image
-								className="object-cover grayscale opacity-50"
-								src={"/images/logo.png"}
-								alt="logo"
-								width={60}
-								height={60}
-								priority="true"
-							/>
+					{!dropdown && (
+						<>
+							{questionNAnswerSystem.allQuestionsNAnswers
+								.filter(
+									(questionNAnswer) =>
+										questionNAnswer.uid === user.uid &&
+										questionNAnswer.currentFolderID === folderID &&
+										questionNAnswer.currentMaterialID === mainMaterialID &&
+										questionNAnswer.materialType === "flash-card"
+								)
+								.map((questionNAnswer) => questionNAnswer).length < 1 && (
+								<div
+									className={`relative top-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center text-center p-2 z-0`}
+								>
+									<Image
+										className="object-cover grayscale opacity-50"
+										src={"/images/logo.png"}
+										alt="logo"
+										width={60}
+										height={60}
+										priority="true"
+									/>
 
-							<p className="text-lg text-gray-400">
-								You have no questions/answers
-							</p>
-						</div>
+									<p className="text-lg text-gray-400">
+										You have no questions/answers
+									</p>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			</div>

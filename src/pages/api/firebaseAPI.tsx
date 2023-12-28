@@ -619,6 +619,21 @@ export default function FirebaseAPI() {
 				}, dashboardErrMsgTime);
 			});
 		};
+
+		updateDummyAnswers = async (dummyAnswers: string, id: string) => {
+			const docRef = doc(colRefQuestionNAnswers, id);
+
+			await updateDoc(docRef, {
+				dummyAnswers: dummyAnswers,
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
 	}
 	const QNAS = new QuestionNAnswerSystem();
 	const createQuestionNAnswer = QNAS.createQuestionNAnswer;
@@ -628,6 +643,7 @@ export default function FirebaseAPI() {
 	const updateDidntUnderstand = QNAS.updateDidntUnderstand;
 	const updateCompleted = QNAS.updateCompleted;
 	const updateImage = QNAS.updateImage;
+	const updateDummyAnswers = QNAS.updateDummyAnswers;
 
 	return {
 		auth,
@@ -674,6 +690,7 @@ export default function FirebaseAPI() {
 			updateDidntUnderstand,
 			updateCompleted,
 			updateImage,
+			updateDummyAnswers,
 		},
 	};
 }

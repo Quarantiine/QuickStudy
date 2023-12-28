@@ -72,9 +72,10 @@ export default function MainQuizEditing({
 																		/32
 																	</p>
 																</div>
+
 																<input
 																	className="input-field w-full"
-																	placeholder="Quiz Card Title"
+																	placeholder="Quiz Title"
 																	type="text"
 																	onChange={(e) =>
 																		setQuizQNATitle(e.target.value)

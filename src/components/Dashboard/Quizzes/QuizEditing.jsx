@@ -60,15 +60,6 @@ export default function QuizEditing({ folderMaterial }) {
 		<>
 			<div className="flex flex-col justify-center items-center gap-5 w-full pb-5">
 				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 w-full">
-					<button
-						onClick={() => {
-							handleOpenQuizStart(folderMaterial.id);
-						}}
-						className="passive-btn w-full sm:w-fit question-n-answer-dropdown z-10"
-					>
-						Take Quiz
-					</button>
-
 					<div
 						className={`relative ${openEditQuizDropdown === false && "z-10"}`}
 					>
@@ -81,7 +72,7 @@ export default function QuizEditing({ folderMaterial }) {
 
 						{dropdown && (
 							<>
-								<form className="question-n-answer-dropdown flex flex-col justify-center items-start gap-2 absolute top-10 right-0 w-full p-3 rounded-xl bg-white shadow-lg z-10">
+								<form className="question-n-answer-dropdown flex flex-col justify-start items-center gap-2 absolute top-10 right-0 w-full p-4 rounded-xl bg-white shadow-lg">
 									<div className="flex flex-col justify-center items-start gap-1 w-full">
 										<label htmlFor="question">Question</label>
 										<input
@@ -112,6 +103,15 @@ export default function QuizEditing({ folderMaterial }) {
 							</>
 						)}
 					</div>
+
+					<button
+						onClick={() => {
+							handleOpenQuizStart(folderMaterial.id);
+						}}
+						className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
+					>
+						Take Quiz
+					</button>
 				</div>
 
 				<div className="flex justify-end items-center w-full">
@@ -184,31 +184,35 @@ export default function QuizEditing({ folderMaterial }) {
 							);
 						})}
 
-					{questionNAnswerSystem.allQuestionsNAnswers
-						.filter(
-							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
-								questionNAnswer.currentFolderID === folderID &&
-								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "quiz"
-						)
-						.map((questionNAnswer) => questionNAnswer).length < 1 && (
-						<div
-							className={`relative top-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center text-center p-2 z-0`}
-						>
-							<Image
-								className="object-cover grayscale opacity-50"
-								src={"/images/logo.png"}
-								alt="logo"
-								width={60}
-								height={60}
-								priority="true"
-							/>
+					{!dropdown && (
+						<>
+							{questionNAnswerSystem.allQuestionsNAnswers
+								.filter(
+									(questionNAnswer) =>
+										questionNAnswer.uid === user.uid &&
+										questionNAnswer.currentFolderID === folderID &&
+										questionNAnswer.currentMaterialID === mainMaterialID &&
+										questionNAnswer.materialType === "quiz"
+								)
+								.map((questionNAnswer) => questionNAnswer).length < 1 && (
+								<div
+									className={`relative top-1/2 left-0 w-full h-full rounded-xl flex flex-col gap-2 justify-center items-center text-center p-2 z-0`}
+								>
+									<Image
+										className="object-cover grayscale opacity-50"
+										src={"/images/logo.png"}
+										alt="logo"
+										width={60}
+										height={60}
+										priority="true"
+									/>
 
-							<p className="text-lg text-gray-400">
-								You have no questions/answers
-							</p>
-						</div>
+									<p className="text-lg text-gray-400">
+										You have no questions/answers
+									</p>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			</div>

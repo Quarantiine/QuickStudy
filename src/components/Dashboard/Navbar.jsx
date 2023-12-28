@@ -26,7 +26,6 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		setFolderID,
 		handleOpenFlashCardsModal,
 		handleOpenQuizzesModal,
-		handleOpenTestsModal,
 		handleViewAllFolders,
 	} = useContext(UserCredentialsCtx);
 
@@ -151,6 +150,28 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			.map((questionNAnswer) =>
 				questionNAnswerSystem.deleteQuestionNAnswer(questionNAnswer.id)
 			);
+
+		folderMaterialSystem.allFolderMaterials
+			.filter(
+				(folderMaterial) =>
+					folderMaterial.uid === user.uid &&
+					folderMaterial.materialType === "quiz" &&
+					folderMaterial.currentFolderID === id
+			)
+			.map((folderMaterial) =>
+				folderMaterialSystem.deleteMainMaterial(folderMaterial.id)
+			);
+
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === user.uid &&
+					questionNAnswer.currentFolderID === folderID &&
+					questionNAnswer.materialType === "quiz"
+			)
+			.map((questionNAnswer) =>
+				questionNAnswerSystem.deleteQuestionNAnswer(questionNAnswer.id)
+			);
 	};
 
 	const handleEditFolderName = (e) => {
@@ -269,7 +290,6 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 										folderMaterialSystem={folderMaterialSystem}
 										handleOpenFlashCardsModal={handleOpenFlashCardsModal}
 										handleOpenQuizzesModal={handleOpenQuizzesModal}
-										handleOpenTestsModal={handleOpenTestsModal}
 										handleDeleteFolder={handleDeleteFolder}
 									/>,
 									document.body

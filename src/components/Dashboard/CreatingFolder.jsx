@@ -21,7 +21,7 @@ export default function CreatingFolder({
 				<div className="flex flex-col justify-center items-start gap-1 w-full">
 					<h1 className="title-h1">Create Folder</h1>
 					<p className="text-sm text-gray-500">
-						This folder will hold all of your quizzes, test, and flashcards.
+						This folder will hold all of your quizzes and flashcards.
 					</p>
 				</div>
 

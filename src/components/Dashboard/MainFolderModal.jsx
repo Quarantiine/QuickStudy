@@ -19,13 +19,12 @@ export default function MainFolderModal({
 	folderMaterialSystem,
 	handleOpenFlashCardsModal,
 	handleOpenQuizzesModal,
-	handleOpenTestsModal,
 	handleDeleteFolder,
 }) {
 	return (
 		<>
 			<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
-				<div className="folder-child-modal w-full md:w-[700px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
+				<div className="folder-child-modal w-[240px] sm:w-[470px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
 					{folderSystem.allFolders
 						.filter((folder) => folder.uid === user.uid)
 						.map((folder) => {
@@ -34,9 +33,9 @@ export default function MainFolderModal({
 									{folderID === folder.id && (
 										<>
 											<form className="flex flex-col justify-center items-start gap-4 w-full">
-												<div className="flex flex-col sm:flex-row justify-center sm:justify-between items-start sm:items-center gap-2 w-full">
+												<div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-2 w-full">
 													{editFolderName ? (
-														<div className="flex justify-center items-center gap-2 w-full">
+														<div className="flex flex-col justify-center items-center gap-2 w-full">
 															<input
 																className="folder-delete-dropdown input-field w-full"
 																placeholder={folder.name}
@@ -47,18 +46,19 @@ export default function MainFolderModal({
 																	handleChangeFolderName(e, folder.id)
 																}
 															/>
-															<div className="flex justify-center items-center gap-2 w-fit">
+
+															<div className="flex justify-center items-center gap-2 w-full">
 																<button
 																	onClick={(e) =>
 																		handleChangeFolderName(e, folder.id)
 																	}
-																	className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+																	className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1 w-full"
 																>
 																	Change
 																</button>
 																<button
 																	onClick={handleEditFolderName}
-																	className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1"
+																	className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1 w-full"
 																>
 																	Cancel
 																</button>
@@ -67,7 +67,7 @@ export default function MainFolderModal({
 													) : (
 														<h1
 															onClick={handleEditFolderName}
-															className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1"
+															className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1 text-center sm:text-start"
 														>
 															{folder.name}
 														</h1>
@@ -122,7 +122,7 @@ export default function MainFolderModal({
 												</div>
 
 												{editFolderDescription ? (
-													<div className="flex justify-center items-center gap-2 w-full">
+													<div className="flex flex-col justify-center items-center gap-2 w-full">
 														<input
 															className="input-field w-full folder-delete-dropdown"
 															placeholder={folder.description}
@@ -133,18 +133,18 @@ export default function MainFolderModal({
 																handleChangeFolderDescription(e, folder.id)
 															}
 														/>
-														<div className="flex justify-center items-center gap-2">
+														<div className="flex justify-center items-center gap-2 w-full">
 															<button
 																onClick={(e) =>
 																	handleChangeFolderDescription(e, folder.id)
 																}
-																className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1"
+																className="folder-delete-dropdown btn text-sm sm:text-base flex justify-center items-center gap-1 w-full"
 															>
 																Change
 															</button>
 															<button
 																onClick={handleEditFolderDescription}
-																className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1 folder-delete-dropdown"
+																className="folder-delete-dropdown btn !text-[#2871FF] !bg-white border border-[#2871FF] text-sm sm:text-base flex justify-center items-center gap-1 folder-delete-dropdown w-full"
 															>
 																Cancel
 															</button>
@@ -154,7 +154,7 @@ export default function MainFolderModal({
 													<div className="w-full h-fit max-h-[100px] overflow-with-width overflow-x-hidden overflow-y-scroll">
 														<p
 															onClick={handleEditFolderDescription}
-															className="text-btn text-gray-500"
+															className="text-btn text-gray-500 text-center sm:text-start"
 														>
 															{folder.description}
 														</p>
@@ -163,9 +163,9 @@ export default function MainFolderModal({
 											</form>
 
 											<div
-												className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start lg:justify-between items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative `}
+												className={`question-n-answers-container grid grid-cols-[auto_auto] gap-7 justify-start items-center w-full h-fit overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 											>
-												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 													<h1 className="text-xl font-semibold">Flash Cards</h1>
 													<p>
 														{
@@ -189,7 +189,7 @@ export default function MainFolderModal({
 													</button>
 												</div>
 
-												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 													<h1 className="text-xl font-semibold">Quizzes</h1>
 													<p>
 														{
@@ -205,30 +205,7 @@ export default function MainFolderModal({
 														Items
 													</p>
 													<button
-														onClick={null && handleOpenQuizzesModal}
-														className="btn w-full mt-auto"
-													>
-														Open
-													</button>
-												</div>
-
-												<div className="w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
-													<h1 className="text-xl font-semibold">Tests</h1>
-													<p>
-														{
-															folderMaterialSystem.allFolderMaterials
-																?.filter(
-																	(folderMaterial) =>
-																		folderMaterial.uid === user.uid &&
-																		folderMaterial.materialType === "test" &&
-																		folderMaterial.currentFolderID === folderID
-																)
-																.map((folderMaterial) => folderMaterial).length
-														}{" "}
-														Items
-													</p>
-													<button
-														onClick={null && handleOpenTestsModal}
+														onClick={handleOpenQuizzesModal}
 														className="btn w-full mt-auto"
 													>
 														Open
