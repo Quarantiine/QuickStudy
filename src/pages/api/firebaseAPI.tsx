@@ -26,6 +26,7 @@ import {
 	signOut,
 } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
+import math from "typographic-math-symbols";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDsdXJq8CKygXeD3ERXS3-MzhIqk_DC0V0",
@@ -509,8 +510,8 @@ export default function FirebaseAPI() {
 			materialType: string
 		) => {
 			addDoc(colRefQuestionNAnswers, {
-				question: question,
-				answer: answer,
+				question: math(question),
+				answer: math(answer),
 				currentFolderID: currentFolderID,
 				currentMaterialID: currentMaterialID,
 				materialType: materialType,
@@ -548,8 +549,8 @@ export default function FirebaseAPI() {
 		) => {
 			const docRef = doc(colRefQuestionNAnswers, id);
 			await updateDoc(docRef, {
-				question: question,
-				answer: answer,
+				question: math(question),
+				answer: math(answer),
 			}).catch((err) => {
 				clearTimeout(dashboardErrMsgRef.current);
 				setDashboardErrMsg(err.message);
@@ -624,7 +625,7 @@ export default function FirebaseAPI() {
 			const docRef = doc(colRefQuestionNAnswers, id);
 
 			await updateDoc(docRef, {
-				dummyAnswers: dummyAnswers,
+				dummyAnswers: math(dummyAnswers),
 			}).catch((err) => {
 				clearTimeout(dashboardErrMsgRef.current);
 				setDashboardErrMsg(err.message);
