@@ -21,6 +21,7 @@ export default function FlashCardEditingForm({
 	const [answerEditTxt, setAnswerEditTxt] = useState("");
 	const [edit, setEdit] = useState(false);
 	const [openUploadDropdown, setOpenUploadDropdown] = useState(false);
+	const [openMathSymbols, setOpenMathSymbols] = useState(false);
 	const fileRejectionSystemRef = useRef();
 
 	const onDrop = useCallback((acceptedFiles) => {
@@ -92,6 +93,22 @@ export default function FlashCardEditingForm({
 		questionNAnswerSystem.updateImage("", questionNAnswer.id);
 	};
 
+	const handleOpenMathSymbols = (e) => {
+		e.preventDefault();
+		setOpenMathSymbols(!openMathSymbols);
+	};
+
+	useEffect(() => {
+		const closeSymbolDropdown = (e) => {
+			if (!e.target.closest(".symbol-dropdown")) {
+				setOpenMathSymbols(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeSymbolDropdown);
+		return () => document.removeEventListener("mousedown", closeSymbolDropdown);
+	}, []);
+
 	return (
 		<>
 			<form className="flex flex-col justify-center items-start gap-2 bg-white border-2 rounded-xl p-3 w-full hover:bg-gray-200 transition-colors">
@@ -112,6 +129,7 @@ export default function FlashCardEditingForm({
 								<p>{questionNAnswer.question}</p>
 							)}
 						</div>
+
 						<div className="flex justify-start items-start gap-2 w-full">
 							<p className="font-semibold">A</p>
 							{questionNAnswerID === questionNAnswer.id && edit ? (
@@ -128,9 +146,9 @@ export default function FlashCardEditingForm({
 					</div>
 				</div>
 
-				<div className="flex justify-center items-center gap-2 ml-auto">
+				<div className="flex justify-end items-center gap-2 ml-auto w-full">
 					{questionNAnswerID === questionNAnswer.id && edit ? (
-						<>
+						<div className="flex justify-center items-center gap-2">
 							<button
 								onClick={(e) => handleEditing(e, questionNAnswer)}
 								className="btn ml-auto"
@@ -145,84 +163,86 @@ export default function FlashCardEditingForm({
 							>
 								Cancel
 							</button>
-						</>
+						</div>
 					) : (
-						<div className="flex justify-between items-center gap-2">
-							<div className="hidden sm:flex justify-center items-center relative">
-								<button
-									onClick={(e) => {
-										handleUploadDropdown(e);
-									}}
-									className="text-gray-400 text-btn upload-dropdown"
-								>
-									{questionNAnswer.image ? "Image" : "No Image"}
-								</button>
+						<div className="flex justify-end items-center gap-2 w-full">
+							<div className="flex justify-center items-center gap-2">
+								<div className="hidden sm:flex justify-center items-center relative">
+									<button
+										onClick={(e) => {
+											handleUploadDropdown(e);
+										}}
+										className="text-gray-400 text-btn upload-dropdown"
+									>
+										{questionNAnswer.image ? "Image" : "No Image"}
+									</button>
 
-								{openUploadDropdown && (
-									<div className="upload-dropdown w-[100px] h-[100px] absolute bottom-7 right-0 bg-white p-1 rounded-xl shadow-lg">
-										{fileRejectionSystem() && (
-											<>
-												<p className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-500 rounded-xl p-1 text-white z-50 text-[11px] w-[90%] text-center">
-													Image Too Big
-												</p>
-											</>
-										)}
+									{openUploadDropdown && (
+										<div className="upload-dropdown w-[100px] h-[100px] absolute bottom-7 right-0 bg-white p-1 rounded-xl shadow-lg">
+											{fileRejectionSystem() && (
+												<>
+													<p className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-500 rounded-xl p-1 text-white z-50 text-[11px] w-[90%] text-center">
+														Image Too Big
+													</p>
+												</>
+											)}
 
-										{questionNAnswer.image ? (
-											<div className="w-full h-full">
+											{questionNAnswer.image ? (
+												<div className="w-full h-full">
+													<div
+														{...getRootProps()}
+														className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative"
+													>
+														<Image
+															className="object-cover rounded-lg"
+															src={questionNAnswer.image}
+															alt="image"
+															fill
+															sizes="(max-width: 768px) 100vw, 33vw"
+														/>
+													</div>
+													<button
+														onClick={handleRemoveImage}
+														className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm w-[120px] bg-[#2871FF] text-white rounded-lg px-2"
+													>
+														Remove Image
+													</button>
+												</div>
+											) : (
 												<div
 													{...getRootProps()}
-													className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative"
+													className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1"
 												>
-													<Image
-														className="object-cover rounded-lg"
-														src={questionNAnswer.image}
-														alt="image"
-														fill
-														sizes="(max-width: 768px) 100vw, 33vw"
-													/>
+													<p>Upload Image</p>
 												</div>
-												<button
-													onClick={handleRemoveImage}
-													className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm w-[120px] bg-[#2871FF] text-white rounded-lg px-2"
-												>
-													Remove Image
-												</button>
-											</div>
-										) : (
-											<div
-												{...getRootProps()}
-												className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1"
-											>
-												<p>Upload Image</p>
-											</div>
-										)}
-									</div>
-								)}
-							</div>
+											)}
+										</div>
+									)}
+								</div>
 
-							<div className="flex justify-center items-center gap-2">
-								<button
-									onClick={(e) => handleDeletion(e, questionNAnswer.id)}
-									className="btn !bg-red-500"
-								>
-									<Image
-										className={`object-contain`}
-										src={"/icons/delete.svg"}
-										alt="icon"
-										width={24}
-										height={24}
-									/>
-								</button>
+								<div className="flex justify-center items-center gap-2">
+									<button
+										onClick={(e) => handleDeletion(e, questionNAnswer.id)}
+										className="btn !bg-red-500"
+									>
+										<Image
+											className={`object-contain`}
+											src={"/icons/delete.svg"}
+											alt="icon"
+											width={24}
+											height={24}
+										/>
+									</button>
 
-								<button
-									onClick={(e) =>
-										handleEditQuestionNAnswer(e, questionNAnswer.id)
-									}
-									className="btn"
-								>
-									Edit
-								</button>
+									<button
+										onClick={(e) =>
+											handleEditQuestionNAnswer(e, questionNAnswer.id)
+										}
+										className="btn"
+									>
+										Edit
+									</button>
+								</div>
 							</div>
 						</div>
 					)}

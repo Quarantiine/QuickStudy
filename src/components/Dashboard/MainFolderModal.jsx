@@ -166,7 +166,17 @@ export default function MainFolderModal({
 												className={`question-n-answers-container grid grid-cols-[auto_auto] gap-7 justify-start items-center w-full h-fit overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 											>
 												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
-													<h1 className="text-xl font-semibold">Flash Cards</h1>
+													<div className="flex justify-between items-center gap-2 w-full">
+														<h1 className="text-xl font-semibold">
+															Flash Cards
+														</h1>
+														<Image
+															src={"/icons/flashcard_black.png"}
+															alt="icon"
+															width={25}
+															height={25}
+														/>
+													</div>
 													<p>
 														{
 															folderMaterialSystem.allFolderMaterials
@@ -190,7 +200,16 @@ export default function MainFolderModal({
 												</div>
 
 												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
-													<h1 className="text-xl font-semibold">Quizzes</h1>
+													<div className="flex justify-between items-center gap-2 w-full">
+														<h1 className="text-xl font-semibold">Quizzes</h1>
+														<Image
+															src={"/icons/quiz_black.png"}
+															alt="icon"
+															width={25}
+															height={25}
+														/>
+													</div>
+
 													<p>
 														{
 															folderMaterialSystem.allFolderMaterials

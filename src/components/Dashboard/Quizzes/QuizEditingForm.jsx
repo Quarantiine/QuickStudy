@@ -214,7 +214,6 @@ export default function QuizEditingForm({
 										height={24}
 									/>
 								</button>
-
 								<button
 									onClick={(e) =>
 										handleEditQuestionNAnswer(e, questionNAnswer.id)
