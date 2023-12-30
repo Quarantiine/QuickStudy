@@ -474,9 +474,9 @@ export default function Home() {
 												.map((folder) => {
 													return (
 														<React.Fragment key={folder.id}>
-															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 																<div
-																	className={`flash-card-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+																	className={`flash-card-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 																>
 																	<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 																		<div className="flex justify-between items-start gap-2 w-full z-10">
@@ -577,9 +577,9 @@ export default function Home() {
 												.map((folder) => {
 													return (
 														<React.Fragment key={folder.id}>
-															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 																<div
-																	className={`quiz-modal w-[95%] h-[90%] flex flex-col justify-start items-start rounded-xl bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+																	className={`quiz-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 																>
 																	<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 																		<div className="flex justify-between items-start gap-2 w-full z-10">
