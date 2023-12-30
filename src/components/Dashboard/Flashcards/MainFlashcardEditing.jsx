@@ -63,13 +63,13 @@ export default function MainFlashcardEditing({
 																	<label htmlFor="Title">Title</label>
 																	<p
 																		className={`text-sm ${
-																			flashcardQNATitle.length > 32
+																			flashcardQNATitle.length > 100
 																				? "text-red-500"
 																				: "text-gray-400"
 																		}`}
 																	>
 																		{flashcardQNATitle.length}
-																		/32
+																		/100
 																	</p>
 																</div>
 																<input

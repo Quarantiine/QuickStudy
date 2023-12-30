@@ -85,7 +85,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		e.preventDefault();
 		clearTimeout(msgErrorRef.current);
 
-		if (folderName.length <= 32 && folderName.length > 1) {
+		if (folderName.length <= 100 && folderName.length > 1) {
 			folderSystem.addingFolder(
 				folderName.trim(),
 				folderDescription.trim(),

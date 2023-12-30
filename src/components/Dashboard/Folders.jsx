@@ -78,7 +78,7 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 		<>
 			<button
 				onClick={() => handleOpenFolderModal(folder.id)}
-				className={`flex flex-col justify-start items-start text-start text-btn gap-1 w-[280px] h-full rounded-xl px-6 py-4 ${
+				className={`flex flex-col justify-start items-start text-start text-btn gap-2.5 w-[280px] h-full rounded-xl px-6 py-4 ${
 					user.theme ? "bg-[#444]" : "bg-gray-100"
 				}`}
 			>

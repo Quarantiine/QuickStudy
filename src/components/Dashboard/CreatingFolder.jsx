@@ -37,10 +37,10 @@ export default function CreatingFolder({
 
 							<p
 								className={`text-sm ${
-									folderName.length > 32 && "text-red-500"
+									folderName.length > 100 && "text-red-500"
 								}`}
 							>
-								{folderName.length}/32
+								{folderName.length}/100
 							</p>
 						</div>
 						<input

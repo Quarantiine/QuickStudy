@@ -18,7 +18,7 @@ export default function Quizzes({ user, folder }) {
 
 	const createMainMaterial = (e) => {
 		e.preventDefault();
-		if (quizTitle.length > 1 && quizTitle.length <= 32) {
+		if (quizTitle.length > 1 && quizTitle.length <= 100) {
 			folderMaterialSystem.createMainMaterial(
 				quizTitle,
 				folder.name,
@@ -67,12 +67,12 @@ export default function Quizzes({ user, folder }) {
 											<label htmlFor="Title">Title</label>
 											<p
 												className={`text-sm ${
-													quizTitle.length > 32
+													quizTitle.length > 100
 														? "text-red-500"
 														: "text-gray-400"
 												}`}
 											>
-												{quizTitle.length}/32
+												{quizTitle.length}/100
 											</p>
 										</div>
 										<input

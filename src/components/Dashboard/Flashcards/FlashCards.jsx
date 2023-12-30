@@ -19,7 +19,7 @@ export default function FlashCards({ user, folder }) {
 	const createMainMaterial = (e) => {
 		e.preventDefault();
 
-		if (flashCardTitle.length > 1 && flashCardTitle.length <= 32) {
+		if (flashCardTitle.length > 1 && flashCardTitle.length <= 100) {
 			folderMaterialSystem.createMainMaterial(
 				flashCardTitle,
 				folder.name,
@@ -71,12 +71,12 @@ export default function FlashCards({ user, folder }) {
 											<label htmlFor="Title">Title</label>
 											<p
 												className={`text-sm ${
-													flashCardTitle.length > 32
+													flashCardTitle.length > 100
 														? "text-red-500"
 														: "text-gray-400"
 												}`}
 											>
-												{flashCardTitle.length}/32
+												{flashCardTitle.length}/100
 											</p>
 										</div>
 										<input

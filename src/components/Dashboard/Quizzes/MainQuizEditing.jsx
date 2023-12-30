@@ -63,13 +63,13 @@ export default function MainQuizEditing({
 																	<label htmlFor="Title">Title</label>
 																	<p
 																		className={`text-sm ${
-																			quizQNATitle.length > 32
+																			quizQNATitle.length > 100
 																				? "text-red-500"
 																				: "text-gray-400"
 																		}`}
 																	>
 																		{quizQNATitle.length}
-																		/32
+																		/100
 																	</p>
 																</div>
 

@@ -178,7 +178,7 @@ export default function Home() {
 
 	const handleChangeFlashcardTitle = (e, id) => {
 		e.preventDefault();
-		if (flashcardQNATitle.length > 0 && flashcardQNATitle.length <= 32) {
+		if (flashcardQNATitle.length > 0 && flashcardQNATitle.length <= 100) {
 			folderMaterialSystem.updateMainMaterialTitle(flashcardQNATitle, id);
 			setOpenEditFlashCardDropdown(false);
 			setFlashcardQNATitle("");
@@ -342,7 +342,7 @@ export default function Home() {
 
 	const handleChangeQuizTitle = (e, id) => {
 		e.preventDefault();
-		if (quizQNATitle.length > 0 && quizQNATitle.length <= 32) {
+		if (quizQNATitle.length > 0 && quizQNATitle.length <= 100) {
 			folderMaterialSystem.updateMainMaterialTitle(quizQNATitle, id);
 			setOpenEditQuizDropdown(false);
 			setQuizQNATitle("");
