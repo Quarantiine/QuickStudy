@@ -144,6 +144,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
 											questionNAnswer.materialType === "flash-card"
 									)
+									.reverse()
 									.map((questionNAnswer) => {
 										return (
 											<QuestionsNAnswers

@@ -121,6 +121,7 @@ export default function QuizStarting({ folderMaterial }) {
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "quiz"
 					)
+					.reverse()
 					.map((questionNAnswer) => questionNAnswer).length > 4 ? (
 					<>
 						<div

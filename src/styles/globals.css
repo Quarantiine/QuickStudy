@@ -46,7 +46,7 @@
 	width: 5px;
 }
 .overflow-with-width::-webkit-scrollbar-thumb {
-	background-color: #979797;
+	background-color: #dfdfdf;
 	border-radius: 100px;
 }
 
@@ -54,7 +54,7 @@
 	width: 5px;
 }
 .overflow-with-width-secondary::-webkit-scrollbar-thumb {
-	background-color: #8197c2;
+	background-color: #dfdfdf;
 	border-radius: 100px;
 }
 
@@ -62,7 +62,7 @@
 	height: 5px;
 }
 .overflow-with-height::-webkit-scrollbar-thumb {
-	background-color: #d3d3d3;
+	background-color: #dfdfdf;
 	border-radius: 100px;
 }
 
