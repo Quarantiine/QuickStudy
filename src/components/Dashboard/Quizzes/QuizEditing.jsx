@@ -143,7 +143,7 @@ export default function QuizEditing({ folderMaterial }) {
 						</div>
 					) : (
 						<div className="flex justify-between items-center gap-2 w-full">
-							<h1 className="text-lg font-medium">Questions</h1>
+							<h1 className="text-lg font-medium">Questions/Answers</h1>
 							<p>
 								{
 									questionNAnswerSystem.allQuestionsNAnswers

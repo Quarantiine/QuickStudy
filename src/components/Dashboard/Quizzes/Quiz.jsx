@@ -14,6 +14,31 @@ export default function Quiz({
 	const [openDeletionWarningDropdown, setOpenDeletionWarningDropdown] =
 		useState(false);
 
+	const gradePercentage = Math.round(
+		(questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(questionNAnswer) =>
+					questionNAnswer.uid === user.uid &&
+					questionNAnswer.currentFolderID === folder.id &&
+					questionNAnswer.currentMaterialID === folderMaterial.id &&
+					questionNAnswer.materialType === "quiz" &&
+					questionNAnswer.completed === true &&
+					questionNAnswer.understand
+			)
+			.map((questionNAnswer) => questionNAnswer.understand).length /
+			questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === user.uid &&
+						questionNAnswer.currentFolderID === folder.id &&
+						questionNAnswer.currentMaterialID === folderMaterial.id &&
+						questionNAnswer.materialType === "quiz" &&
+						questionNAnswer.completed === true
+				)
+				.map((questionNAnswer) => questionNAnswer.understand).length) *
+			100
+	);
+
 	useEffect(() => {
 		const closeDropdown = (e) => {
 			if (!e.target.closest(".deletion-warning")) {
@@ -33,6 +58,7 @@ export default function Quiz({
 				(questionNAnswer) =>
 					questionNAnswer.uid === user.uid &&
 					questionNAnswer.currentFolderID === folder.id &&
+					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz"
 			)
 			.map((questionNAnswer) =>
@@ -84,27 +110,43 @@ export default function Quiz({
 				</div>
 
 				<div className="flex flex-col sm:flex-row justify-center sm:justify-end items-end sm:items-center gap-2 w-fit">
-					{folderMaterial.completion < 0.1 ? (
-						<p
-							className={`bg-gray-500 py-1 px-3 rounded-xl text-white text-center min-w-full sm:min-w-[140px] text-sm`}
-						>
-							Completion: --%
-						</p>
-					) : (
-						<p
-							className={`py-1 px-3 rounded-xl text-center min-w-full sm:min-w-[150px] text-sm ${
-								folderMaterial.completion < 70
-									? "bg-red-200 text-red-800"
-									: folderMaterial.completion >= 70 &&
-									  folderMaterial.completion < 100
-									? "bg-yellow-200 text-yellow-800"
-									: folderMaterial.completion === 100 &&
-									  "bg-green-200 text-green-800"
-							}`}
-						>
-							Completion: {folderMaterial.completion}%
-						</p>
-					)}
+					<div className="flex flex-col sm:flex-row justify-center items-center gap-2">
+						{gradePercentage > 0 && (
+							<p
+								className={`py-1 px-3 rounded-xl text-center min-w-full sm:min-w-[150px] text-sm ${
+									gradePercentage < 70
+										? "bg-red-200 text-red-800"
+										: gradePercentage >= 70 && gradePercentage < 91
+										? "bg-yellow-200 text-yellow-800"
+										: gradePercentage >= 91 && "bg-green-200 text-green-800"
+								}`}
+							>
+								Grade: {gradePercentage}%
+							</p>
+						)}
+
+						{folderMaterial.completion < 0.1 ? (
+							<p
+								className={`bg-gray-500 py-1 px-3 rounded-xl text-white text-center min-w-full sm:min-w-[140px] text-sm`}
+							>
+								Completion: --%
+							</p>
+						) : (
+							<p
+								className={`py-1 px-3 rounded-xl text-center min-w-full sm:min-w-[150px] text-sm ${
+									folderMaterial.completion < 70
+										? "bg-red-200 text-red-800"
+										: folderMaterial.completion >= 70 &&
+										  folderMaterial.completion < 100
+										? "bg-yellow-200 text-yellow-800"
+										: folderMaterial.completion === 100 &&
+										  "bg-green-200 text-green-800"
+								}`}
+							>
+								Completion: {folderMaterial.completion}%
+							</p>
+						)}
+					</div>
 
 					<div className="flex justify-center items-center gap-2 w-fit text-sm relative">
 						<div className="relative">

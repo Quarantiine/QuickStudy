@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
@@ -191,10 +191,9 @@ const QuestionsNAnswers = ({
 	folderID,
 }) => {
 	const { folderMaterialSystem } = FirebaseAPI();
-
 	const dummyAnswers = JSON.parse(questionNAnswer.dummyAnswers);
-
 	const shuffleAnswer = useRef(Math.round(Math.random() * 3));
+	const [openFullscreenModal, setOpenFullscreenModal] = useState(false);
 
 	const completionPercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
@@ -245,10 +244,42 @@ const QuestionsNAnswers = ({
 		);
 	}, [questionNAnswer.understand, questionNAnswer.didntUnderstand]);
 
+	const handleOpenFullscreen = (e) => {
+		e.preventDefault();
+		setOpenFullscreenModal(!openFullscreenModal);
+	};
+
 	return (
 		<div
 			className={`question-n-answers-quiz-child flex flex-col justify-start items-center text-center gap-4 w-[100%] min-h-[100%] max-h-[100%] h-full mx-auto px-3 py-10 overflow-with-width-secondary overflow-x-hidden overflow-y-scroll rounded-2xl`}
 		>
+			{openFullscreenModal && (
+				<>
+					<div className="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+						<div className="flex justify-center items-center w-[90%] h-[90%] bg-transparent relative">
+							<div
+								onClick={handleOpenFullscreen}
+								className="p-1 rounded-full absolute top-5 left-5 base-bg z-10 text-btn"
+							>
+								<Image
+									src={"/icons/cancel.svg"}
+									alt="close"
+									width={30}
+									height={30}
+								/>
+							</div>
+							<Image
+								className="object-contain rounded-lg"
+								src={questionNAnswer.image}
+								alt="image"
+								fill
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+					</div>
+				</>
+			)}
+
 			{questionNAnswer.image && (
 				<div className="w-[70%] min-h-[200px] relative">
 					<Image
@@ -259,6 +290,22 @@ const QuestionsNAnswers = ({
 						sizes="(max-width: 768px) 100vw, 33vw"
 					/>
 				</div>
+			)}
+
+			{questionNAnswer.image && (
+				<>
+					<button
+						onClick={handleOpenFullscreen}
+						className="text-sm w-fit bg-[#2871FF] text-white rounded-lg p-2 text-btn flex"
+					>
+						<Image
+							src={"/icons/open_in_full.svg"}
+							alt="fullscreen"
+							width={15}
+							height={15}
+						/>
+					</button>
+				</>
 			)}
 
 			<div className="flex flex-col justify-center items-start w-fit mx-auto gap-5">
@@ -457,53 +504,6 @@ const QuestionsNAnswers = ({
 								})}
 				</div>
 			</div>
-
-			{/* {!showAnswer &&
-				questionNAnswer.understand !== true &&
-				questionNAnswer.didntUnderstand !== true && (
-					<button onClick={handleShowAnswer} className="btn">
-						Show?
-					</button>
-				)} */}
-
-			{/* {questionNAnswer.didntUnderstand === true && (
-				<p className="flex justify-center items-start gap-2">
-					<span className="font-semibold">A:</span>{" "}
-					<span>{questionNAnswer.answer}</span>
-				</p>
-			)} */}
-
-			{/* {showAnswer && (
-				<p className="flex justify-center items-start gap-2">
-					<span className="font-semibold">A:</span>{" "}
-					<span>{questionNAnswer.answer}</span>
-				</p>
-			)} */}
-
-			{/* {showAnswer && (
-				<div className="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
-					<button
-						onClick={() => {
-							setShowAnswer(false);
-							handleUnderstandQuestion();
-							handleCompletion();
-						}}
-						className="btn !bg-green-500 w-full sm:w-fit"
-					>
-						Understand
-					</button>
-					<button
-						onClick={() => {
-							setShowAnswer(false);
-							handleDidntUnderstandQuestion();
-							handleCompletion();
-						}}
-						className="btn !bg-red-500 w-full sm:w-fit"
-					>
-						{"Didn't Understand"}
-					</button>
-				</div>
-			)} */}
 		</div>
 	);
 };

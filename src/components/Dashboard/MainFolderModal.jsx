@@ -163,7 +163,7 @@ export default function MainFolderModal({
 											</form>
 
 											<div
-												className={`question-n-answers-container grid grid-cols-[auto_auto] gap-7 justify-start items-center w-full h-fit overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+												className={`question-n-answers-container grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 											>
 												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 													<div className="flex justify-between items-center gap-2 w-full">
@@ -203,7 +203,7 @@ export default function MainFolderModal({
 													<div className="flex justify-between items-center gap-2 w-full">
 														<h1 className="text-xl font-semibold">Quizzes</h1>
 														<Image
-															src={"/icons/quiz_black.png"}
+															src={"/icons/quiz.png"}
 															alt="icon"
 															width={25}
 															height={25}
@@ -228,6 +228,35 @@ export default function MainFolderModal({
 														className="btn w-full mt-auto"
 													>
 														Open
+													</button>
+												</div>
+
+												<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
+													<div className="flex justify-between items-center gap-2 w-full">
+														<h1 className="text-xl font-semibold">Notes</h1>
+														<Image
+															src={"/icons/notes.svg"}
+															alt="icon"
+															width={25}
+															height={25}
+														/>
+													</div>
+
+													<p>
+														{
+															folderMaterialSystem.allFolderMaterials
+																?.filter(
+																	(folderMaterial) =>
+																		folderMaterial.uid === user.uid &&
+																		folderMaterial.materialType === "note" &&
+																		folderMaterial.currentFolderID === folderID
+																)
+																.map((folderMaterial) => folderMaterial).length
+														}{" "}
+														Items
+													</p>
+													<button onClick={null} className="btn w-full mt-auto">
+														{`(Coming Soon)`}
 													</button>
 												</div>
 											</div>

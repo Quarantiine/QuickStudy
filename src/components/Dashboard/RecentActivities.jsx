@@ -109,21 +109,39 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 						{folderMaterial.title}
 					</h1>
 
-					<Image
-						className="object-contain"
-						src={
-							folderMaterial.materialType === "flash-card"
-								? user.theme
+					{folderMaterial.materialType === "flash-card" && (
+						<Image
+							className="object-contain"
+							src={
+								user.theme
 									? "/icons/flashcard.png"
 									: "/icons/flashcard_black.png"
-								: user.theme
-								? "/icons/quiz.png"
-								: "/icons/quiz_black.png"
-						}
-						alt="icon"
-						width={25}
-						height={25}
-					/>
+							}
+							alt="icon"
+							width={25}
+							height={25}
+						/>
+					)}
+
+					{folderMaterial.materialType === "quiz" && (
+						<Image
+							className="object-contain"
+							src={user.theme ? "/icons/quiz_white.png" : "/icons/quiz.png"}
+							alt="icon"
+							width={25}
+							height={25}
+						/>
+					)}
+
+					{folderMaterial.materialType === "note" && (
+						<Image
+							className="object-contain"
+							src={user.theme ? "/icons/notes_white.png" : "/icons/notes.png"}
+							alt="icon"
+							width={25}
+							height={25}
+						/>
+					)}
 				</div>
 			</button>
 		</>

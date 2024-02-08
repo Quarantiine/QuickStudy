@@ -21,7 +21,7 @@ export default function FlashCardEditingForm({
 	const [answerEditTxt, setAnswerEditTxt] = useState("");
 	const [edit, setEdit] = useState(false);
 	const [openUploadDropdown, setOpenUploadDropdown] = useState(false);
-	const [openMathSymbols, setOpenMathSymbols] = useState(false);
+	const [openFullscreenModal, setOpenFullscreenModal] = useState(false);
 	const fileRejectionSystemRef = useRef();
 
 	const onDrop = useCallback((acceptedFiles) => {
@@ -93,24 +93,40 @@ export default function FlashCardEditingForm({
 		questionNAnswerSystem.updateImage("", questionNAnswer.id);
 	};
 
-	const handleOpenMathSymbols = (e) => {
+	const handleOpenFullscreen = (e) => {
 		e.preventDefault();
-		setOpenMathSymbols(!openMathSymbols);
+		setOpenFullscreenModal(!openFullscreenModal);
 	};
-
-	useEffect(() => {
-		const closeSymbolDropdown = (e) => {
-			if (!e.target.closest(".symbol-dropdown")) {
-				setOpenMathSymbols(false);
-			}
-		};
-
-		document.addEventListener("mousedown", closeSymbolDropdown);
-		return () => document.removeEventListener("mousedown", closeSymbolDropdown);
-	}, []);
 
 	return (
 		<>
+			{openFullscreenModal && (
+				<>
+					<div className="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+						<div className="flex justify-center items-center w-[90%] h-[90%] bg-transparent relative">
+							<div
+								onClick={handleOpenFullscreen}
+								className="p-1 rounded-full absolute top-5 left-5 base-bg z-10 text-btn"
+							>
+								<Image
+									src={"/icons/cancel.svg"}
+									alt="close"
+									width={30}
+									height={30}
+								/>
+							</div>
+							<Image
+								className="object-contain rounded-lg"
+								src={questionNAnswer.image}
+								alt="image"
+								fill
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+					</div>
+				</>
+			)}
+
 			<form className="flex flex-col justify-center items-start gap-2 bg-white border-2 rounded-xl p-3 w-full hover:bg-gray-200 transition-colors">
 				<div className="flex justify-center items-start gap-2 w-full">
 					<p className="font-semibold text-gray-400">{index + 1}</p>
@@ -172,7 +188,7 @@ export default function FlashCardEditingForm({
 										onClick={(e) => {
 											handleUploadDropdown(e);
 										}}
-										className="text-gray-400 text-btn upload-dropdown"
+										className="text-gray-400 text-btn"
 									>
 										{questionNAnswer.image ? "Image" : "No Image"}
 									</button>
@@ -206,6 +222,18 @@ export default function FlashCardEditingForm({
 														className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm w-[120px] bg-[#2871FF] text-white rounded-lg px-2"
 													>
 														Remove Image
+													</button>
+
+													<button
+														onClick={handleOpenFullscreen}
+														className="absolute bottom-0 -left-10 text-sm w-fit bg-[#2871FF] text-white rounded-lg p-2 text-btn"
+													>
+														<Image
+															src={"/icons/open_in_full.svg"}
+															alt="fullscreen"
+															width={15}
+															height={15}
+														/>
 													</button>
 												</div>
 											) : (

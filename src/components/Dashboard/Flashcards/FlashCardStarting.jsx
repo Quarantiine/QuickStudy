@@ -198,6 +198,7 @@ const QuestionsNAnswers = ({
 }) => {
 	const [showAnswer, setShowAnswer] = useState(false);
 	const { folderMaterialSystem } = FirebaseAPI();
+	const [openFullscreenModal, setOpenFullscreenModal] = useState(false);
 
 	const completionPercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
@@ -255,6 +256,11 @@ const QuestionsNAnswers = ({
 		);
 	}, [questionNAnswer.understand, questionNAnswer.didntUnderstand]);
 
+	const handleOpenFullscreen = (e) => {
+		e.preventDefault();
+		setOpenFullscreenModal(!openFullscreenModal);
+	};
+
 	return (
 		<div
 			className={`question-n-answers-child flex flex-col justify-start items-center text-center gap-4 min-w-[100%] max-w-[100%] h-full mx-auto px-3 py-1 overflow-no-width overflow-y-scroll overflow-x-hidden ${
@@ -268,6 +274,33 @@ const QuestionsNAnswers = ({
 					  "bg-[rgba(98,255,140,0.2)]"
 			}`}
 		>
+			{openFullscreenModal && (
+				<>
+					<div className="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-50">
+						<div className="flex justify-center items-center w-[90%] h-[90%] bg-transparent relative">
+							<div
+								onClick={handleOpenFullscreen}
+								className="p-1 rounded-full absolute top-5 left-5 base-bg z-10 text-btn"
+							>
+								<Image
+									src={"/icons/cancel.svg"}
+									alt="close"
+									width={30}
+									height={30}
+								/>
+							</div>
+							<Image
+								className="object-contain rounded-lg"
+								src={questionNAnswer.image}
+								alt="image"
+								fill
+								sizes="(max-width: 768px) 100vw, 33vw"
+							/>
+						</div>
+					</div>
+				</>
+			)}
+
 			{questionNAnswer.image && (
 				<div className="w-[70%] h-[200px] relative rounded-lg">
 					<Image
@@ -280,11 +313,26 @@ const QuestionsNAnswers = ({
 				</div>
 			)}
 
+			{questionNAnswer.image && (
+				<>
+					<button
+						onClick={handleOpenFullscreen}
+						className="text-sm w-fit bg-[#2871FF] text-white rounded-lg p-2 text-btn flex"
+					>
+						<Image
+							src={"/icons/open_in_full.svg"}
+							alt="fullscreen"
+							width={15}
+							height={15}
+						/>
+					</button>
+				</>
+			)}
+
 			<p className="flex justify-center items-start gap-2">
 				<span className="font-semibold">Q:</span>{" "}
 				<span>{questionNAnswer.question}</span>
 			</p>
-
 			{!showAnswer &&
 				questionNAnswer.understand !== true &&
 				questionNAnswer.didntUnderstand !== true && (
@@ -292,28 +340,24 @@ const QuestionsNAnswers = ({
 						Show?
 					</button>
 				)}
-
 			{questionNAnswer.understand === true && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
-
 			{questionNAnswer.didntUnderstand === true && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
-
 			{showAnswer && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
-
 			{showAnswer && (
 				<div className="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
 					<button
