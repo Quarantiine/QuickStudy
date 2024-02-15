@@ -21,10 +21,27 @@ export default function MainFlashcardEditing({
 			>
 				<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full z-10 relative">
-						<div className="flex flex-col justify-center items-start z-10">
-							<p className="text-sm text-gray-500">
-								{folder.name} - Editing Flash Cards
-							</p>
+						<div className="flex flex-col justify-center items-start z-10 w-full">
+							<div className="flex justify-between items-center gap-2 w-full">
+								<p className="text-sm text-gray-500">
+									{folder.name} - Editing Flash Cards
+								</p>
+
+								<button
+									onClick={editBackToFlashCardModal}
+									className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+								>
+									<Image
+										className="object-contain"
+										src={"/icons/arrow_back_blue.svg"}
+										alt="icon"
+										width={17}
+										height={17}
+									/>
+									<p>Back</p>
+								</button>
+							</div>
+
 							<div className="relative">
 								<button
 									onClick={handleEditFlashCardTitle}
@@ -100,20 +117,6 @@ export default function MainFlashcardEditing({
 										})}
 							</div>
 						</div>
-
-						<button
-							onClick={editBackToFlashCardModal}
-							className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-						>
-							<Image
-								className="object-contain"
-								src={"/icons/arrow_back_blue.svg"}
-								alt="icon"
-								width={17}
-								height={17}
-							/>
-							<p>Back</p>
-						</button>
 					</div>
 
 					{folderMaterialSystem.allFolderMaterials

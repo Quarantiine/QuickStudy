@@ -106,20 +106,6 @@ export default function FlashCardEditing({ folderMaterial }) {
 						)}
 					</div>
 
-					{questionNAnswerSystem.allQuestionsNAnswers
-						.filter(
-							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
-								questionNAnswer.currentFolderID === folderID &&
-								questionNAnswer.currentMaterialID === mainMaterialID &&
-								questionNAnswer.materialType === "flash-card"
-						)
-						.map((questionNAnswer) => questionNAnswer).length > 4 && (
-						<button onClick={null} className="passive-btn w-fit mr-auto">
-							Transfer to Quiz
-						</button>
-					)}
-
 					<button
 						onClick={() => {
 							handleOpenFlashCardStart(folderMaterial.id);

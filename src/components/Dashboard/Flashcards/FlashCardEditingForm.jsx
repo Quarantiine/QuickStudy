@@ -96,6 +96,7 @@ export default function FlashCardEditingForm({
 	const handleOpenFullscreen = (e) => {
 		e.preventDefault();
 		setOpenFullscreenModal(!openFullscreenModal);
+		setOpenUploadDropdown(false);
 	};
 
 	return (
@@ -115,6 +116,7 @@ export default function FlashCardEditingForm({
 									height={30}
 								/>
 							</div>
+
 							<Image
 								className="object-contain rounded-lg"
 								src={questionNAnswer.image}

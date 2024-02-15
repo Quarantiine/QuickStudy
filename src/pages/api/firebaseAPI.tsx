@@ -507,7 +507,8 @@ export default function FirebaseAPI() {
 			answer: string,
 			currentFolderID: string,
 			currentMaterialID: string,
-			materialType: string
+			materialType: string,
+			image: string
 		) => {
 			addDoc(colRefQuestionNAnswers, {
 				question: math(question),
@@ -519,6 +520,7 @@ export default function FirebaseAPI() {
 				didntUnderstand: false,
 				completed: false,
 				uid: auth.currentUser.uid,
+				image: image || "",
 				createdTime: serverTimestamp(),
 			}).catch((err) => {
 				clearTimeout(dashboardErrMsgRef.current);

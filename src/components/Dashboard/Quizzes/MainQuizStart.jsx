@@ -42,11 +42,30 @@ export default function MainQuizStart({
 			>
 				<div className="flex flex-col justify-start items-start gap-3 w-full h-full">
 					<div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full z-10 relative">
-						<div className="flex flex-col justify-center items-start gap-5 z-10">
-							<div className="flex flex-col justify-center items-start">
-								<p className="text-sm text-gray-500">
-									{folder.name} - Taking Quiz
-								</p>
+						<div className="flex flex-col justify-center items-start gap-5 z-10 w-full">
+							<div className="flex flex-col justify-center items-start w-full">
+								<div className="flex justify-between items-center gap-2 w-full">
+									<p className="text-sm text-gray-500">
+										{folder.name} - Taking Quiz
+									</p>
+
+									<button
+										onClick={() => {
+											startBackToQuizModal();
+										}}
+										className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+									>
+										<Image
+											className="object-contain"
+											src={"/icons/arrow_back_blue.svg"}
+											alt="icon"
+											width={17}
+											height={17}
+										/>
+										<p>Back</p>
+									</button>
+								</div>
+
 								<h1 className="title-h1">
 									{folderMaterialSystem.allFolderMaterials
 										.filter(
@@ -77,22 +96,6 @@ export default function MainQuizStart({
 								<p>Reset Quiz</p>
 							</button>
 						</div>
-
-						<button
-							onClick={() => {
-								startBackToQuizModal();
-							}}
-							className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-						>
-							<Image
-								className="object-contain"
-								src={"/icons/arrow_back_blue.svg"}
-								alt="icon"
-								width={17}
-								height={17}
-							/>
-							<p>Back</p>
-						</button>
 					</div>
 
 					{folderMaterialSystem.allFolderMaterials
