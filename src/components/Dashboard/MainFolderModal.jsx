@@ -20,6 +20,7 @@ export default function MainFolderModal({
 	handleOpenFlashCardsModal,
 	handleOpenQuizzesModal,
 	handleDeleteFolder,
+	handleOpenNoteModal,
 }) {
 	return (
 		<>
@@ -255,8 +256,12 @@ export default function MainFolderModal({
 														}{" "}
 														Items
 													</p>
-													<button onClick={null} className="btn w-full mt-auto">
-														{`(Coming Soon)`}
+
+													<button
+														onClick={handleOpenNoteModal}
+														className="btn w-full mt-auto"
+													>
+														Open
 													</button>
 												</div>
 											</div>

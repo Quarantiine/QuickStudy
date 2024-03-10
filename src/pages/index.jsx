@@ -35,6 +35,7 @@ export default function Home() {
 	// MAIN MODAL SECTIONS
 	const [openFlashCardModal, setOpenFlashCardModal] = useState(false);
 	const [openQuizModal, setOpenQuizModal] = useState(false);
+	const [openNoteModal, setOpenNoteModal] = useState(false);
 
 	// ID SECTIONS
 	const [mainMaterialID, setMainMaterialID] = useState("");
@@ -46,6 +47,9 @@ export default function Home() {
 	const [openEditFlashCardDropdown, setOpenEditFlashCardDropdown] =
 		useState(false);
 	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
+
+	// NOTE SECTION
+	const [NoteTitle, setNoteTitle] = useState("");
 
 	// QUIZ SECTIONS
 	const [openQuizEdit, setOpenQuizEdit] = useState(false);
@@ -401,6 +405,26 @@ export default function Home() {
 			);
 	};
 
+	{
+		/* NOTE SECTION */
+	}
+
+	const handleOpenNoteModal = () => {
+		setOpenNoteModal(!openNoteModal);
+		setOpenFolderModal(false);
+	};
+
+	useEffect(() => {
+		const closeNoteModal = (e) => {
+			if (!e.target.closest(".note-modal")) {
+				setOpenNoteModal(false);
+			}
+		};
+
+		document.addEventListener("mousedown", closeNoteModal);
+		return () => document.removeEventListener("mousedown", closeNoteModal);
+	}, []);
+
 	return (
 		<>
 			<Head>
@@ -422,6 +446,7 @@ export default function Home() {
 						<React.Fragment key={user.id}>
 							<UserCredentialsCtx.Provider
 								value={{
+									// MISC SECTION
 									user,
 									createFolderModal,
 									questionNAnswerID,
@@ -441,6 +466,7 @@ export default function Home() {
 									setQuestionNAnswerID,
 									handleViewAllFolders,
 
+									// FLASHCARD SECTION
 									openFlashCardModal,
 									openEditFlashCardDropdown,
 									setOpenFlashCardModal,
@@ -451,6 +477,7 @@ export default function Home() {
 									setOpenFlashCardEdit,
 									handleResetFlashcards,
 
+									// QUIZ SECTION
 									openQuizModal,
 									openEditQuizDropdown,
 									setOpenQuizModal,
@@ -460,6 +487,9 @@ export default function Home() {
 									setOpenEditQuizDropdown,
 									setOpenQuizEdit,
 									handleResetQuizzes,
+
+									// NOTE SECTION
+									handleOpenNoteModal,
 								}}
 							>
 								{/* FLASH CARD SECTION */}
@@ -658,6 +688,21 @@ export default function Home() {
 													/>
 												);
 											})}
+								</>
+
+								{/* NOTE SECTION */}
+								<>
+									{openNoteModal &&
+										createPortal(
+											<>
+												<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
+													<div
+														className={`note-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+													></div>
+												</div>
+											</>,
+											document.body
+										)}
 								</>
 
 								{viewAllFolders &&

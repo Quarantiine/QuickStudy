@@ -27,6 +27,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		handleOpenFlashCardsModal,
 		handleOpenQuizzesModal,
 		handleViewAllFolders,
+		handleOpenNoteModal,
 	} = useContext(UserCredentialsCtx);
 
 	const [folderName, setFolderName] = useState("");
@@ -291,6 +292,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 										handleOpenFlashCardsModal={handleOpenFlashCardsModal}
 										handleOpenQuizzesModal={handleOpenQuizzesModal}
 										handleDeleteFolder={handleDeleteFolder}
+										handleOpenNoteModal={handleOpenNoteModal}
 									/>,
 									document.body
 								)}
