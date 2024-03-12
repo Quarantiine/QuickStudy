@@ -173,6 +173,17 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			.map((questionNAnswer) =>
 				questionNAnswerSystem.deleteQuestionNAnswer(questionNAnswer.id)
 			);
+
+		folderMaterialSystem.allFolderMaterials
+			.filter(
+				(folderMaterial) =>
+					folderMaterial.uid === user.uid &&
+					folderMaterial.materialType === "note" &&
+					folderMaterial.currentFolderID === id
+			)
+			.map((folderMaterial) =>
+				folderMaterialSystem.deleteMainMaterial(folderMaterial.id)
+			);
 	};
 
 	const handleEditFolderName = (e) => {

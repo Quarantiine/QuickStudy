@@ -105,7 +105,7 @@ export default function Quizzes({ user, folder }) {
 
 							<button
 								onClick={handleOpenDropdown2}
-								className="create-quiz-dropdown btn flex justify-center items-center gap-1 w-full"
+								className="create-quiz-dropdown-2 btn flex justify-center items-center gap-1 w-full"
 							>
 								<p>Create with Flash-card</p>
 								<Image

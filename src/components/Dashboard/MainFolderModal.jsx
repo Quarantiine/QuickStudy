@@ -172,7 +172,7 @@ export default function MainFolderModal({
 															Flash Cards
 														</h1>
 														<Image
-															src={"/icons/flashcard_black.png"}
+															src={"/icons/notes.svg"}
 															alt="icon"
 															width={25}
 															height={25}
@@ -236,7 +236,7 @@ export default function MainFolderModal({
 													<div className="flex justify-between items-center gap-2 w-full">
 														<h1 className="text-xl font-semibold">Notes</h1>
 														<Image
-															src={"/icons/notes.svg"}
+															src={"/icons/flashcard_black.png"}
 															alt="icon"
 															width={25}
 															height={25}

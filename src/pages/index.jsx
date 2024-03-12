@@ -13,6 +13,8 @@ import AllFolders from "../components/Dashboard/AllFolders";
 import MainDashboard from "../components/Dashboard/MainDashboard";
 import MainQuizEditing from "../components/Dashboard/Quizzes/MainQuizEditing";
 import MainQuizStart from "../components/Dashboard/Quizzes/MainQuizStart";
+import NoteMain from "../components/Dashboard/Notes/NoteMain";
+import Notes from "../components/Dashboard/Notes/Notes";
 
 export const UserCredentialsCtx = createContext();
 
@@ -49,7 +51,7 @@ export default function Home() {
 	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
 
 	// NOTE SECTION
-	const [NoteTitle, setNoteTitle] = useState("");
+	const [openNoteFolder, setOpenNoteFolder] = useState(false);
 
 	// QUIZ SECTIONS
 	const [openQuizEdit, setOpenQuizEdit] = useState(false);
@@ -83,6 +85,7 @@ export default function Home() {
 		setViewAllFolders(false);
 		setOpenFlashCardModal(false);
 		setOpenQuizModal(false);
+		setOpenNoteModal(false);
 	};
 
 	useEffect(() => {
@@ -414,6 +417,19 @@ export default function Home() {
 		setOpenFolderModal(false);
 	};
 
+	const handleOpenNoteFolder = (id) => {
+		folderMaterialSystem.updateMainMaterialCreatedTime(id);
+		setMainMaterialID(id);
+		setOpenNoteFolder(!openNoteFolder);
+		setOpenNoteModal(false);
+	};
+
+	const handleBackToNoteModal = () => {
+		setOpenNoteModal(true);
+		setOpenNoteFolder(false);
+		setMainMaterialID("");
+	};
+
 	useEffect(() => {
 		const closeNoteModal = (e) => {
 			if (!e.target.closest(".note-modal")) {
@@ -490,6 +506,10 @@ export default function Home() {
 
 									// NOTE SECTION
 									handleOpenNoteModal,
+									openNoteFolder,
+									setOpenNoteFolder,
+									handleOpenNoteFolder,
+									handleBackToNoteModal,
 								}}
 							>
 								{/* FLASH CARD SECTION */}
@@ -691,19 +711,60 @@ export default function Home() {
 								</>
 
 								{/* NOTE SECTION */}
+
 								<>
 									{openNoteModal &&
 										createPortal(
-											<>
-												<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
-													<div
-														className={`note-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
-													></div>
-												</div>
-											</>,
+											folderSystem.allFolders
+												.filter(
+													(folder) =>
+														folder.uid === user.uid && folder.id === folderID
+												)
+												.map((folder) => {
+													return (
+														<React.Fragment key={folder.id}>
+															<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
+																<div
+																	className={`note-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white py-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+																>
+																	<NoteMain
+																		folder={folder}
+																		user={user}
+																		openNoteFolder={openNoteFolder}
+																		setOpenNoteFolder={setOpenNoteFolder}
+																	/>
+																</div>
+															</div>
+														</React.Fragment>
+													);
+												}),
+											document.body
+										)}
+
+									{openNoteFolder &&
+										createPortal(
+											folderSystem.allFolders
+												.filter(
+													(folder) =>
+														folder.uid === user.uid && folder.id === folderID
+												)
+												.map((folder) => {
+													return (
+														<React.Fragment key={folder.id}>
+															<Notes
+																folder={folder}
+																user={user}
+																openNoteFolder={openNoteFolder}
+																setOpenNoteFolder={setOpenNoteFolder}
+															/>
+														</React.Fragment>
+													);
+												}),
 											document.body
 										)}
 								</>
+
+								{/* MISC SECTION */}
 
 								{viewAllFolders &&
 									createPortal(

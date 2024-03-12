@@ -33,6 +33,7 @@ export default function MainDashboard({ user }) {
 						</h1>
 					</div>
 				)}
+
 			{user.hideSection1 && <RecentActivities user={user} />}
 			{user.hideSection2 && <Folders user={user} />}
 			{user.hideSection3 && <KhanAcademy user={user} />}

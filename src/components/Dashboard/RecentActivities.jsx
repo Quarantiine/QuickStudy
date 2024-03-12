@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
 import Image from "next/image";
 import { UserCredentialsCtx } from "../../pages";
@@ -10,6 +10,7 @@ export default function Folders({ user }) {
 		setMainMaterialID,
 		setOpenFlashCardEdit,
 		setOpenQuizEdit,
+		setOpenNoteFolder,
 	} = useContext(UserCredentialsCtx);
 
 	const handleHideFolder = () => {
@@ -24,8 +25,14 @@ export default function Folders({ user }) {
 
 		if (materialType === "flash-card") {
 			setOpenFlashCardEdit(true);
-		} else if (materialType === "quiz") {
+		}
+
+		if (materialType === "quiz") {
 			setOpenQuizEdit(true);
+		}
+
+		if (materialType === "note") {
+			setOpenNoteFolder(true);
 		}
 	};
 
@@ -112,11 +119,7 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 					{folderMaterial.materialType === "flash-card" && (
 						<Image
 							className="object-contain"
-							src={
-								user.theme
-									? "/icons/flashcard.png"
-									: "/icons/flashcard_black.png"
-							}
+							src={user.theme ? "/icons/notes_white.svg" : "/icons/notes.svg"}
 							alt="icon"
 							width={25}
 							height={25}
@@ -136,7 +139,11 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 					{folderMaterial.materialType === "note" && (
 						<Image
 							className="object-contain"
-							src={user.theme ? "/icons/notes_white.png" : "/icons/notes.png"}
+							src={
+								user.theme
+									? "/icons/flashcard.png"
+									: "/icons/flashcard_black.png"
+							}
 							alt="icon"
 							width={25}
 							height={25}
