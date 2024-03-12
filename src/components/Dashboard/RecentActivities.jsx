@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
 import Image from "next/image";
 import { UserCredentialsCtx } from "../../pages";
@@ -99,55 +99,77 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 						folderMaterial.materialType
 					)
 				}
-				className={`flex flex-col justify-start items-start text-start text-btn w-[280px] h-full rounded-xl px-6 py-4 ${
+				className={`flex flex-col justify-start items-start text-start text-btn w-[280px] h-full rounded-xl px-6 py-4 gap-3 ${
 					user.theme ? "bg-[#444]" : "bg-gray-100"
 				}`}
 			>
-				<p
-					className={`line-clamp-1 ${
-						user.theme ? "text-[#777]" : "text-gray-400"
-					}`}
-				>
-					{folderMaterial.currentFolderName}
-				</p>
+				<div className="flex flex-col justify-center items-start w-full">
+					<p
+						className={`line-clamp-1 ${
+							user.theme ? "text-[#777]" : "text-gray-400"
+						}`}
+					>
+						{folderMaterial.currentFolderName}
+					</p>
 
-				<div className="flex justify-between items-center gap-5 w-full">
-					<h1 className="text-xl font-semibold line-clamp-1">
-						{folderMaterial.title}
-					</h1>
+					<div className="flex justify-between items-center gap-5 w-full">
+						<h1 className="text-xl font-semibold line-clamp-1">
+							{folderMaterial.title}
+						</h1>
 
+						{folderMaterial.materialType === "flash-card" && (
+							<Image
+								className="object-contain"
+								src={user.theme ? "/icons/notes_white.svg" : "/icons/notes.svg"}
+								alt="icon"
+								width={25}
+								height={25}
+							/>
+						)}
+
+						{folderMaterial.materialType === "quiz" && (
+							<Image
+								className="object-contain"
+								src={user.theme ? "/icons/quiz_white.png" : "/icons/quiz.png"}
+								alt="icon"
+								width={25}
+								height={25}
+							/>
+						)}
+
+						{folderMaterial.materialType === "note" && (
+							<Image
+								className="object-contain"
+								src={
+									user.theme
+										? "/icons/flashcard.png"
+										: "/icons/flashcard_black.png"
+								}
+								alt="icon"
+								width={25}
+								height={25}
+							/>
+						)}
+					</div>
+				</div>
+
+				<div className="flex flex-wrap justify-start items-center gap-2 w-full">
 					{folderMaterial.materialType === "flash-card" && (
-						<Image
-							className="object-contain"
-							src={user.theme ? "/icons/notes_white.svg" : "/icons/notes.svg"}
-							alt="icon"
-							width={25}
-							height={25}
-						/>
+						<p className="bg-blue-500 w-fit px-2 py-1 rounded-lg text-white">
+							Flashcard
+						</p>
 					)}
 
 					{folderMaterial.materialType === "quiz" && (
-						<Image
-							className="object-contain"
-							src={user.theme ? "/icons/quiz_white.png" : "/icons/quiz.png"}
-							alt="icon"
-							width={25}
-							height={25}
-						/>
+						<p className="bg-red-500 w-fit px-2 py-1 rounded-lg text-white">
+							Quiz
+						</p>
 					)}
 
 					{folderMaterial.materialType === "note" && (
-						<Image
-							className="object-contain"
-							src={
-								user.theme
-									? "/icons/flashcard.png"
-									: "/icons/flashcard_black.png"
-							}
-							alt="icon"
-							width={25}
-							height={25}
-						/>
+						<p className="bg-purple-500 w-fit px-2 py-1 rounded-lg text-white">
+							Note
+						</p>
 					)}
 				</div>
 			</button>

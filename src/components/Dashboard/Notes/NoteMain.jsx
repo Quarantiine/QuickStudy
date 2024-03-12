@@ -132,6 +132,7 @@ export default function NoteMain({ folder, user }) {
 				</div>
 
 				<div className="w-fit flex justify-center items-center gap-1 ml-auto">
+					<p>Note Folders:</p>
 					<p>
 						{
 							folderMaterialSystem.allFolderMaterials
@@ -144,7 +145,6 @@ export default function NoteMain({ folder, user }) {
 								.map((noteFolder) => noteFolder).length
 						}
 					</p>
-					<p>Note Folders</p>
 				</div>
 
 				<div

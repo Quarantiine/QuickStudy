@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import FirebaseAPI from "../../pages/api/firebaseAPI";
 import Image from "next/image";
 import { UserCredentialsCtx } from "../../pages";
@@ -74,26 +74,54 @@ export default function Folders({ user }) {
 }
 
 const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
+	const { auth, folderMaterialSystem } = FirebaseAPI();
+
+	const flashcards = folderMaterialSystem.allFolderMaterials
+		.filter(
+			(folderMaterial) =>
+				folderMaterial.uid === auth.currentUser.uid &&
+				folderMaterial.currentFolderID === folder.id &&
+				folderMaterial.materialType === "flash-card"
+		)
+		.map((folderMaterial) => folderMaterial).length;
+	const quizzes = folderMaterialSystem.allFolderMaterials
+		.filter(
+			(folderMaterial) =>
+				folderMaterial.uid === auth.currentUser.uid &&
+				folderMaterial.currentFolderID === folder.id &&
+				folderMaterial.materialType === "quiz"
+		)
+		.map((folderMaterial) => folderMaterial).length;
+	const notes = folderMaterialSystem.allFolderMaterials
+		.filter(
+			(folderMaterial) =>
+				folderMaterial.uid === auth.currentUser.uid &&
+				folderMaterial.currentFolderID === folder.id &&
+				folderMaterial.materialType === "note"
+		)
+		.map((folderMaterial) => folderMaterial).length;
+
 	return (
-		<>
-			<button
-				onClick={() => handleOpenFolderModal(folder.id)}
-				className={`flex flex-col justify-start items-start text-start text-btn gap-2.5 w-[280px] h-full rounded-xl px-6 py-4 ${
-					user.theme ? "bg-[#444]" : "bg-gray-100"
-				}`}
-			>
-				<div className="flex justify-between items-center gap-1 w-full">
+		<button
+			onClick={() => handleOpenFolderModal(folder.id)}
+			className={`flex flex-col justify-start items-start text-start text-btn gap-4 w-[280px] h-full rounded-xl px-6 py-4 ${
+				user.theme ? "bg-[#444]" : "bg-gray-100"
+			}`}
+		>
+			<div className="w-full flex flex-col gap-1">
+				<div className="flex justify-between items-start gap-1.5 w-full">
 					<h1 className="text-xl font-semibold">{folder.name}</h1>
 					<Image
-						className="object-contain"
+						className="object-contain relative top-0.5"
 						src={"/icons/folder.svg"}
 						alt="icon"
 						width={23}
 						height={23}
 					/>
 				</div>
+
 				<p
-					className={`line-clamp-4 ${
+					className={`line-clamp-2 ${
 						user.theme
 							? folder.description === "No Description" && "text-[#777]"
 							: folder.description === "No Description" && "text-gray-400"
@@ -101,7 +129,19 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 				>
 					{folder.description}
 				</p>
-			</button>
-		</>
+			</div>
+
+			<div className="flex flex-wrap justify-start items-center gap-2 w-full">
+				<p className="bg-blue-500 w-fit px-2 py-1 rounded-lg text-white">
+					{flashcards} Flash-cards
+				</p>
+				<p className="bg-red-500 w-fit px-2 py-1 rounded-lg text-white">
+					{quizzes} Quiz
+				</p>
+				<p className="bg-purple-500 w-fit px-2 py-1 rounded-lg text-white">
+					{notes} Notes
+				</p>
+			</div>
+		</button>
 	);
 };
