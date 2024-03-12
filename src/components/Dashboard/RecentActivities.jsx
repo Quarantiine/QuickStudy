@@ -4,7 +4,8 @@ import Image from "next/image";
 import { UserCredentialsCtx } from "../../pages";
 
 export default function Folders({ user }) {
-	const { registration, folderSystem, folderMaterialSystem } = FirebaseAPI();
+	const { auth, registration, folderSystem, folderMaterialSystem } =
+		FirebaseAPI();
 	const {
 		setFolderID,
 		setMainMaterialID,
@@ -38,7 +39,7 @@ export default function Folders({ user }) {
 
 	return (
 		<>
-			<div className="flex flex-col justify-center items-center relative w-full h-auto gap-5">
+			<div className="flex flex-col justify-center items-center relative w-full h-auto gap-2">
 				<div className="flex justify-between items-center gap-2 w-full">
 					<h1 className="title-h1">Recent Activities</h1>
 					<button onClick={handleHideFolder} className="text-btn text-sm">
@@ -50,7 +51,9 @@ export default function Folders({ user }) {
 					className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 				>
 					{folderMaterialSystem.allFolderMaterials
-						.filter((folderMaterial) => folderMaterial.uid === user.uid)
+						.filter(
+							(folderMaterial) => folderMaterial.uid === auth.currentUser.uid
+						)
 						.slice(0, 3)
 						.map((folderMaterial) => {
 							return (
@@ -65,7 +68,9 @@ export default function Folders({ user }) {
 				</div>
 
 				{folderMaterialSystem.allFolderMaterials
-					.filter((folderMaterial) => folderMaterial.uid === user.uid)
+					.filter(
+						(folderMaterial) => folderMaterial.uid === auth.currentUser.uid
+					)
 					.map((folderMaterial) => folderMaterial).length < 1 && (
 					<div
 						className={`w-full h-[250px] rounded-xl flex flex-col gap-2 justify-center items-center ${
@@ -89,6 +94,12 @@ export default function Folders({ user }) {
 }
 
 const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
+	const { auth, folderSystem } = FirebaseAPI();
+
+	useEffect(() => {
+		console.log();
+	});
+
 	return (
 		<>
 			<button
@@ -109,7 +120,14 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 							user.theme ? "text-[#777]" : "text-gray-400"
 						}`}
 					>
-						{folderMaterial.currentFolderName}
+						{folderSystem.allFolders
+							.filter(
+								(folder) =>
+									folder.uid === auth.currentUser.uid &&
+									folder.id === folderMaterial.currentFolderID
+							)
+							.map((folder) => folder.name)
+							.toString()}
 					</p>
 
 					<div className="flex justify-between items-center gap-5 w-full">

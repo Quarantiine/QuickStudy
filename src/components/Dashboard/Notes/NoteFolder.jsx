@@ -48,15 +48,15 @@ export default function NoteFolder({
 				<div className="w-full relative flex justify-between items-center">
 					<button
 						onClick={() => handleOpenNoteFolder(noteFolder.id)}
-						className="text-btn border rounded-l-lg px-4 pt-3 pb-2 w-full flex flex-col justify-start items-start overflow-with-height overflow-x-scroll overflow-y-hidden"
+						className="text-btn bg-gray-100 rounded-l-lg px-4 pt-3 pb-2 w-full flex flex-col justify-start items-start overflow-with-height overflow-x-scroll overflow-y-hidden"
 					>
 						<p className="text-gray-500 text-sm">Notes: 0</p>
 						<p className="whitespace-nowrap font-medium">{noteFolder.title}</p>
 					</button>
 
-					<div className="relative flex justify-center items-center border-r border-t border-b px-2 w-auto h-full rounded-r-lg">
+					<div className="relative flex justify-center items-center bg-[#2871FF] px-2 w-auto h-full rounded-r-lg">
 						<button
-							className="text-btn relative"
+							className="text-btn relative h-full"
 							onClick={handleNoteDeletionWarning}
 						>
 							<Image
@@ -70,7 +70,7 @@ export default function NoteFolder({
 					</div>
 
 					{noteDeletionWarning && (
-						<div className="note-delete-folder-modal absolute top-12 right-0 w-fit h-fit bg-white shadow-lg rounded-lg px-3 py-2 z-10 text-sm flex flex-col justify-center items-start gap-1">
+						<div className="note-delete-folder-modal absolute top-1/2 -translate-y-1/2 right-12 w-fit h-fit bg-white rounded-lg px-3 py-2 z-10 text-sm flex flex-col justify-center items-start gap-1">
 							<button
 								onClick={handleEditNoteTitle}
 								className="text-btn flex justify-center items-center gap-1 base-text"

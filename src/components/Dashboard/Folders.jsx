@@ -4,7 +4,7 @@ import Image from "next/image";
 import { UserCredentialsCtx } from "../../pages";
 
 export default function Folders({ user }) {
-	const { registration, folderSystem } = FirebaseAPI();
+	const { auth, registration, folderSystem } = FirebaseAPI();
 	const { handleOpenFolderModal, handleViewAllFolders } =
 		useContext(UserCredentialsCtx);
 
@@ -35,7 +35,7 @@ export default function Folders({ user }) {
 					className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 				>
 					{folderSystem.allFolders
-						.filter((value) => value.uid === user.uid)
+						.filter((value) => value.uid === auth.currentUser.uid)
 						.slice(0, 3)
 						.map((folder) => {
 							return (
@@ -50,7 +50,7 @@ export default function Folders({ user }) {
 				</div>
 
 				{folderSystem.allFolders
-					.filter((folder) => folder.uid === user.uid)
+					.filter((folder) => folder.uid === auth.currentUser.uid)
 					.map((folder) => folder).length < 1 && (
 					<div
 						className={`w-full h-[250px] rounded-xl flex flex-col gap-2 justify-center items-center ${

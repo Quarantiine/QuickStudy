@@ -152,7 +152,7 @@ export default function NoteMain({ folder, user }) {
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(noteFolder) =>
-									noteFolder.uid === user.uid &&
+									noteFolder.uid === auth.currentUser.uid &&
 									noteFolder.materialType === "note" &&
 									noteFolder.currentFolderID === folder.id
 							)
@@ -161,7 +161,7 @@ export default function NoteMain({ folder, user }) {
 							: folderMaterialSystem.allFolderMaterials
 									?.filter(
 										(noteFolder) =>
-											noteFolder.uid === user.uid &&
+											noteFolder.uid === auth.currentUser.uid &&
 											noteFolder.materialType === "note" &&
 											noteFolder.currentFolderID === folder.id
 									)
@@ -173,7 +173,7 @@ export default function NoteMain({ folder, user }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(noteFolder) =>
-								noteFolder.uid === user.uid &&
+								noteFolder.uid === auth.currentUser.uid &&
 								noteFolder.materialType === "note" &&
 								noteFolder.currentFolderID === folder.id
 						)
@@ -200,7 +200,7 @@ export default function NoteMain({ folder, user }) {
 				{folderMaterialSystem.allFolderMaterials
 					?.filter(
 						(noteFolder) =>
-							noteFolder.uid === user.uid &&
+							noteFolder.uid === auth.currentUser.uid &&
 							noteFolder.materialType === "note" &&
 							noteFolder.currentFolderID === folder.id
 					)
@@ -222,7 +222,7 @@ export default function NoteMain({ folder, user }) {
 					folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(noteFolder) =>
-								noteFolder.uid === user.uid &&
+								noteFolder.uid === auth.currentUser.uid &&
 								noteFolder.materialType === "note" &&
 								noteFolder.currentFolderID === folder.id &&
 								noteFolder.title

@@ -11,7 +11,7 @@ export default function MainQuizStart({
 	mainMaterialID,
 	startBackToQuizModal,
 }) {
-	const { questionNAnswerSystem } = FirebaseAPI();
+	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const { handleResetQuizzes } = useContext(UserCredentialsCtx);
 
 	return (
@@ -21,7 +21,7 @@ export default function MainQuizStart({
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "quiz"
@@ -30,7 +30,7 @@ export default function MainQuizStart({
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "quiz" &&
@@ -70,7 +70,7 @@ export default function MainQuizStart({
 									{folderMaterialSystem.allFolderMaterials
 										.filter(
 											(folderMaterial) =>
-												folderMaterial.uid === user.uid &&
+												folderMaterial.uid === auth.currentUser.uid &&
 												folderMaterial.materialType === "quiz" &&
 												folderMaterial.currentFolderID === folder.id &&
 												folderMaterial.id === mainMaterialID
@@ -101,7 +101,7 @@ export default function MainQuizStart({
 					{folderMaterialSystem.allFolderMaterials
 						.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.id === mainMaterialID

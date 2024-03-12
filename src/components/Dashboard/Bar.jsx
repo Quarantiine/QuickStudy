@@ -8,17 +8,27 @@ export default function Bar({ user }) {
 		{
 			title: "Recent Section",
 			notHidden: user.hideSection1,
-			uid: user.uid,
+			uid: auth.currentUser.uid,
 			id: 1,
 		},
-		{ title: "Folders", notHidden: user.hideSection2, uid: user.uid, id: 2 },
+		{
+			title: "Folders",
+			notHidden: user.hideSection2,
+			uid: auth.currentUser.uid,
+			id: 2,
+		},
 		{
 			title: "More Study Material",
 			notHidden: user.hideSection3,
-			uid: user.uid,
+			uid: auth.currentUser.uid,
 			id: 3,
 		},
-		{ title: "Study Tips", notHidden: user.hideSection4, uid: user.uid, id: 4 },
+		{
+			title: "Study Tips",
+			notHidden: user.hideSection4,
+			uid: auth.currentUser.uid,
+			id: 4,
+		},
 	];
 	const [hiddenFolderDropdown, setHiddenFolderDropdown] = useState(false);
 

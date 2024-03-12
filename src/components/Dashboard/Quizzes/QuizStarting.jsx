@@ -4,7 +4,7 @@ import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
 
 export default function QuizStarting({ folderMaterial }) {
-	const { questionNAnswerSystem } = FirebaseAPI();
+	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const { user, folderID, handleOpenQuizEdit, questionNAnswerContainerRef } =
 		useContext(UserCredentialsCtx);
 
@@ -12,7 +12,7 @@ export default function QuizStarting({ folderMaterial }) {
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz" &&
@@ -22,7 +22,7 @@ export default function QuizStarting({ folderMaterial }) {
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz"
@@ -35,7 +35,7 @@ export default function QuizStarting({ folderMaterial }) {
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz" &&
@@ -46,7 +46,7 @@ export default function QuizStarting({ folderMaterial }) {
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz" &&
@@ -61,7 +61,7 @@ export default function QuizStarting({ folderMaterial }) {
 			{questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz" &&
@@ -76,7 +76,7 @@ export default function QuizStarting({ folderMaterial }) {
 			{questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz"
@@ -85,7 +85,7 @@ export default function QuizStarting({ folderMaterial }) {
 				questionNAnswerSystem.allQuestionsNAnswers
 					.filter(
 						(questionNAnswer) =>
-							questionNAnswer.uid === user.uid &&
+							questionNAnswer.uid === auth.currentUser.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "quiz" &&
@@ -116,7 +116,7 @@ export default function QuizStarting({ folderMaterial }) {
 				{questionNAnswerSystem.allQuestionsNAnswers
 					.filter(
 						(questionNAnswer) =>
-							questionNAnswer.uid === user.uid &&
+							questionNAnswer.uid === auth.currentUser.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "quiz"
@@ -134,7 +134,7 @@ export default function QuizStarting({ folderMaterial }) {
 								{questionNAnswerSystem.allQuestionsNAnswers
 									.filter(
 										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
+											questionNAnswer.uid === auth.currentUser.uid &&
 											questionNAnswer.currentFolderID === folderID &&
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
 											questionNAnswer.materialType === "quiz"
@@ -142,6 +142,7 @@ export default function QuizStarting({ folderMaterial }) {
 									.map((questionNAnswer) => {
 										return (
 											<QuestionsNAnswers
+												auth={auth}
 												key={questionNAnswer.id}
 												questionNAnswer={questionNAnswer}
 												questionNAnswerSystem={questionNAnswerSystem}
@@ -184,6 +185,7 @@ export default function QuizStarting({ folderMaterial }) {
 }
 
 const QuestionsNAnswers = ({
+	auth,
 	questionNAnswer,
 	questionNAnswerSystem,
 	folderMaterial,
@@ -199,7 +201,7 @@ const QuestionsNAnswers = ({
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz" &&
@@ -209,7 +211,7 @@ const QuestionsNAnswers = ({
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz"

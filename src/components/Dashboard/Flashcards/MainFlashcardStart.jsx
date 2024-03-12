@@ -11,7 +11,7 @@ export default function MainFlashcardStart({
 	mainMaterialID,
 	startBackToFlashCardModal,
 }) {
-	const { questionNAnswerSystem } = FirebaseAPI();
+	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const { handleResetFlashcards } = useContext(UserCredentialsCtx);
 
 	return (
@@ -21,7 +21,7 @@ export default function MainFlashcardStart({
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "flash-card"
@@ -30,7 +30,7 @@ export default function MainFlashcardStart({
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "flash-card" &&
@@ -69,7 +69,7 @@ export default function MainFlashcardStart({
 									{folderMaterialSystem.allFolderMaterials
 										.filter(
 											(folderMaterial) =>
-												folderMaterial.uid === user.uid &&
+												folderMaterial.uid === auth.currentUser.uid &&
 												folderMaterial.materialType === "flash-card" &&
 												folderMaterial.currentFolderID === folder.id &&
 												folderMaterial.id === mainMaterialID
@@ -100,7 +100,7 @@ export default function MainFlashcardStart({
 					{folderMaterialSystem.allFolderMaterials
 						.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "flash-card" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.id === mainMaterialID

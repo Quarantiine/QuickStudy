@@ -5,7 +5,7 @@ import { UserCredentialsCtx } from "../../../pages";
 import Quiz from "./Quiz";
 
 export default function Quizzes({ user, folder }) {
-	const { folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
+	const { auth, folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
 	const { handleOpenQuizEdit, handleOpenQuizStart } =
 		useContext(UserCredentialsCtx);
 	const [openDropDown, setOpenDropDown] = useState(false);
@@ -224,7 +224,7 @@ export default function Quizzes({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id
 						)
@@ -234,7 +234,7 @@ export default function Quizzes({ user, folder }) {
 								folderMaterialSystem.allFolderMaterials
 									?.filter(
 										(folderMaterial) =>
-											folderMaterial.uid === user.uid &&
+											folderMaterial.uid === auth.currentUser.uid &&
 											folderMaterial.materialType === "quiz" &&
 											folderMaterial.currentFolderID === folder.id
 									)
@@ -248,7 +248,7 @@ export default function Quizzes({ user, folder }) {
 								folderMaterialSystem.allFolderMaterials
 									?.filter(
 										(folderMaterial) =>
-											folderMaterial.uid === user.uid &&
+											folderMaterial.uid === auth.currentUser.uid &&
 											folderMaterial.materialType === "quiz" &&
 											folderMaterial.currentFolderID === folder.id
 									)
@@ -263,7 +263,7 @@ export default function Quizzes({ user, folder }) {
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(folderMaterial) =>
-									folderMaterial.uid === user.uid &&
+									folderMaterial.uid === auth.currentUser.uid &&
 									folderMaterial.materialType === "quiz" &&
 									folderMaterial.currentFolderID === folder.id
 							)
@@ -275,7 +275,7 @@ export default function Quizzes({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id
 						)
@@ -304,7 +304,7 @@ export default function Quizzes({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.title
@@ -317,7 +317,7 @@ export default function Quizzes({ user, folder }) {
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(folderMaterial) =>
-									folderMaterial.uid === user.uid &&
+									folderMaterial.uid === auth.currentUser.uid &&
 									folderMaterial.materialType === "quiz" &&
 									folderMaterial.currentFolderID === folder.id
 							)
@@ -335,7 +335,7 @@ export default function Quizzes({ user, folder }) {
 				{folderMaterialSystem.allFolderMaterials
 					?.filter(
 						(folderMaterial) =>
-							folderMaterial.uid === user.uid &&
+							folderMaterial.uid === auth.currentUser.uid &&
 							folderMaterial.materialType === "quiz" &&
 							folderMaterial.currentFolderID === folder.id
 					)

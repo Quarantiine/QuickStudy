@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function Quiz({
 	user,
@@ -11,6 +12,7 @@ export default function Quiz({
 	handleOpenQuizStart,
 	folder,
 }) {
+	const { auth } = FirebaseAPI();
 	const [openDeletionWarningDropdown, setOpenDeletionWarningDropdown] =
 		useState(false);
 
@@ -18,7 +20,7 @@ export default function Quiz({
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folder.id &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz" &&
@@ -29,7 +31,7 @@ export default function Quiz({
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folder.id &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "quiz" &&
@@ -56,7 +58,7 @@ export default function Quiz({
 		questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folder.id &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "quiz"
@@ -79,7 +81,7 @@ export default function Quiz({
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === folderMaterial.id &&
 								questionNAnswer.materialType === "quiz"
@@ -95,7 +97,7 @@ export default function Quiz({
 								questionNAnswerSystem.allQuestionsNAnswers
 									.filter(
 										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
+											questionNAnswer.uid === auth.currentUser.uid &&
 											questionNAnswer.currentFolderID === folder.id &&
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
 											questionNAnswer.materialType === "quiz"

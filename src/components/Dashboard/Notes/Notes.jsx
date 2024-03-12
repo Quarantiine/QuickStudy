@@ -130,7 +130,7 @@ export default function Notes({ folder, user }) {
 					{noteSystem.allNotes
 						?.filter(
 							(note) =>
-								note.uid === user.uid &&
+								note.uid === auth.currentUser.uid &&
 								note.materialType === "note" &&
 								note.currentFolderID === folder.id
 						)
@@ -152,7 +152,7 @@ export default function Notes({ folder, user }) {
 						noteSystem.allNotes
 							?.filter(
 								(note) =>
-									note.uid === user.uid &&
+									note.uid === auth.currentUser.uid &&
 									note.materialType === "note" &&
 									note.currentFolderID === folder.id &&
 									note.title

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function Flashcard({
 	user,
@@ -11,13 +12,15 @@ export default function Flashcard({
 	handleOpenFlashCardStart,
 	folder,
 }) {
+	const { auth } = FirebaseAPI();
 	const [openDeletionWarningDropdown, setOpenDeletionWarningDropdown] =
 		useState(false);
+
 	const gradePercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folder.id &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "flash-card" &&
@@ -28,7 +31,7 @@ export default function Flashcard({
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folder.id &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card" &&
@@ -55,7 +58,7 @@ export default function Flashcard({
 		questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folder.id &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "flash-card"
@@ -78,7 +81,7 @@ export default function Flashcard({
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folder.id &&
 								questionNAnswer.currentMaterialID === folderMaterial.id &&
 								questionNAnswer.materialType === "flash-card"
@@ -94,7 +97,7 @@ export default function Flashcard({
 								questionNAnswerSystem.allQuestionsNAnswers
 									.filter(
 										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
+											questionNAnswer.uid === auth.currentUser.uid &&
 											questionNAnswer.currentFolderID === folder.id &&
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
 											questionNAnswer.materialType === "flash-card"

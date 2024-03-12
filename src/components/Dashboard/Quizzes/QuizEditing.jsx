@@ -311,7 +311,7 @@ export default function QuizEditing({ folderMaterial }) {
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "quiz"
@@ -324,7 +324,7 @@ export default function QuizEditing({ folderMaterial }) {
 									questionNAnswerSystem.allQuestionsNAnswers
 										.filter(
 											(questionNAnswer) =>
-												questionNAnswer.uid === user.uid &&
+												questionNAnswer.uid === auth.currentUser.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
 												questionNAnswer.materialType === "quiz"
@@ -342,7 +342,7 @@ export default function QuizEditing({ folderMaterial }) {
 									questionNAnswerSystem.allQuestionsNAnswers
 										.filter(
 											(questionNAnswer) =>
-												questionNAnswer.uid === user.uid &&
+												questionNAnswer.uid === auth.currentUser.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
 												questionNAnswer.materialType === "quiz"
@@ -359,7 +359,7 @@ export default function QuizEditing({ folderMaterial }) {
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "quiz"
@@ -381,7 +381,7 @@ export default function QuizEditing({ folderMaterial }) {
 						{questionNAnswerSystem.allQuestionsNAnswers
 							.filter(
 								(questionNAnswer) =>
-									questionNAnswer.uid === user.uid &&
+									questionNAnswer.uid === auth.currentUser.uid &&
 									questionNAnswer.currentFolderID === folderID &&
 									questionNAnswer.currentMaterialID === mainMaterialID &&
 									questionNAnswer.materialType === "quiz"

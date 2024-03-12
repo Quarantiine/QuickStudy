@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import FirebaseAPI from "../../pages/api/firebaseAPI";
 
 export default function MainFolderModal({
 	user,
@@ -22,12 +23,14 @@ export default function MainFolderModal({
 	handleDeleteFolder,
 	handleOpenNoteModal,
 }) {
+	const { auth } = FirebaseAPI();
+
 	return (
 		<>
 			<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
 				<div className="folder-child-modal w-[240px] sm:w-[470px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
 					{folderSystem.allFolders
-						.filter((folder) => folder.uid === user.uid)
+						.filter((folder) => folder.uid === auth.currentUser.uid)
 						.map((folder) => {
 							return (
 								<React.Fragment key={folder.id}>
@@ -183,7 +186,8 @@ export default function MainFolderModal({
 															folderMaterialSystem.allFolderMaterials
 																?.filter(
 																	(folderMaterial) =>
-																		folderMaterial.uid === user.uid &&
+																		folderMaterial.uid ===
+																			auth.currentUser.uid &&
 																		folderMaterial.materialType ===
 																			"flash-card" &&
 																		folderMaterial.currentFolderID === folderID
@@ -216,7 +220,8 @@ export default function MainFolderModal({
 															folderMaterialSystem.allFolderMaterials
 																?.filter(
 																	(folderMaterial) =>
-																		folderMaterial.uid === user.uid &&
+																		folderMaterial.uid ===
+																			auth.currentUser.uid &&
 																		folderMaterial.materialType === "quiz" &&
 																		folderMaterial.currentFolderID === folderID
 																)
@@ -248,7 +253,8 @@ export default function MainFolderModal({
 															folderMaterialSystem.allFolderMaterials
 																?.filter(
 																	(folderMaterial) =>
-																		folderMaterial.uid === user.uid &&
+																		folderMaterial.uid ===
+																			auth.currentUser.uid &&
 																		folderMaterial.materialType === "note" &&
 																		folderMaterial.currentFolderID === folderID
 																)

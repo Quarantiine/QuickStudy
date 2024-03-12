@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import QuizEditing from "./QuizEditing";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function MainQuizEditing({
 	folder,
@@ -14,6 +15,8 @@ export default function MainQuizEditing({
 	editBackToQuizModal,
 	mainMaterialID,
 }) {
+	const { auth } = FirebaseAPI();
+
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 			<div
@@ -51,7 +54,7 @@ export default function MainQuizEditing({
 										{folderMaterialSystem.allFolderMaterials
 											.filter(
 												(folderMaterial) =>
-													folderMaterial.uid === user.uid &&
+													folderMaterial.uid === auth.currentUser.uid &&
 													folderMaterial.materialType === "quiz" &&
 													folderMaterial.currentFolderID === folder.id &&
 													folderMaterial.id === mainMaterialID
@@ -65,7 +68,7 @@ export default function MainQuizEditing({
 									folderMaterialSystem.allFolderMaterials
 										.filter(
 											(folderMaterial) =>
-												folderMaterial.uid === user.uid &&
+												folderMaterial.uid === auth.currentUser.uid &&
 												folderMaterial.materialType === "quiz" &&
 												folderMaterial.currentFolderID === folder.id &&
 												folderMaterial.id === mainMaterialID
@@ -120,7 +123,7 @@ export default function MainQuizEditing({
 					{folderMaterialSystem.allFolderMaterials
 						.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "quiz" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.id === mainMaterialID

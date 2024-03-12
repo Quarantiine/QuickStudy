@@ -519,7 +519,8 @@ export default function Home() {
 											folderSystem.allFolders
 												.filter(
 													(folder) =>
-														folder.uid === user.uid && folder.id === folderID
+														folder.uid === auth.currentUser.uid &&
+														folder.id === folderID
 												)
 												.map((folder) => {
 													return (
@@ -569,7 +570,8 @@ export default function Home() {
 										folderSystem.allFolders
 											.filter(
 												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
+													folder.uid === auth.currentUser.uid &&
+													folder.id === folderID
 											)
 											.map((folder) => {
 												return (
@@ -597,7 +599,8 @@ export default function Home() {
 										folderSystem.allFolders
 											.filter(
 												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
+													folder.uid === auth.currentUser.uid &&
+													folder.id === folderID
 											)
 											.map((folder) => {
 												return (
@@ -622,7 +625,8 @@ export default function Home() {
 											folderSystem.allFolders
 												.filter(
 													(folder) =>
-														folder.uid === user.uid && folder.id === folderID
+														folder.uid === auth.currentUser.uid &&
+														folder.id === folderID
 												)
 												.map((folder) => {
 													return (
@@ -670,7 +674,8 @@ export default function Home() {
 										folderSystem.allFolders
 											.filter(
 												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
+													folder.uid === auth.currentUser.uid &&
+													folder.id === folderID
 											)
 											.map((folder) => {
 												return (
@@ -694,7 +699,8 @@ export default function Home() {
 										folderSystem.allFolders
 											.filter(
 												(folder) =>
-													folder.uid === user.uid && folder.id === folderID
+													folder.uid === auth.currentUser.uid &&
+													folder.id === folderID
 											)
 											.map((folder) => {
 												return (
@@ -718,7 +724,8 @@ export default function Home() {
 											folderSystem.allFolders
 												.filter(
 													(folder) =>
-														folder.uid === user.uid && folder.id === folderID
+														folder.uid === auth.currentUser.uid &&
+														folder.id === folderID
 												)
 												.map((folder) => {
 													return (
@@ -746,7 +753,8 @@ export default function Home() {
 											folderSystem.allFolders
 												.filter(
 													(folder) =>
-														folder.uid === user.uid && folder.id === folderID
+														folder.uid === auth.currentUser.uid &&
+														folder.id === folderID
 												)
 												.map((folder) => {
 													return (
@@ -769,7 +777,6 @@ export default function Home() {
 								{viewAllFolders &&
 									createPortal(
 										<AllFolders
-											user={user}
 											searchQuery={searchQuery}
 											folderSystem={folderSystem}
 											setSearchQuery={setSearchQuery}

@@ -4,7 +4,7 @@ import FirebaseAPI from "../../../pages/api/firebaseAPI";
 import { UserCredentialsCtx } from "../../../pages";
 
 export default function FlashCardStarting({ folderMaterial }) {
-	const { questionNAnswerSystem } = FirebaseAPI();
+	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const {
 		user,
 		folderID,
@@ -16,7 +16,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "flash-card" &&
@@ -26,7 +26,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card"
@@ -39,7 +39,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "flash-card" &&
@@ -50,7 +50,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card" &&
@@ -65,7 +65,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 			{questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card" &&
@@ -80,7 +80,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 			{questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card"
@@ -89,7 +89,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 				questionNAnswerSystem.allQuestionsNAnswers
 					.filter(
 						(questionNAnswer) =>
-							questionNAnswer.uid === user.uid &&
+							questionNAnswer.uid === auth.currentUser.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "flash-card" &&
@@ -122,7 +122,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 				{questionNAnswerSystem.allQuestionsNAnswers
 					.filter(
 						(questionNAnswer) =>
-							questionNAnswer.uid === user.uid &&
+							questionNAnswer.uid === auth.currentUser.uid &&
 							questionNAnswer.currentFolderID === folderID &&
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "flash-card"
@@ -139,7 +139,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 								{questionNAnswerSystem.allQuestionsNAnswers
 									.filter(
 										(questionNAnswer) =>
-											questionNAnswer.uid === user.uid &&
+											questionNAnswer.uid === auth.currentUser.uid &&
 											questionNAnswer.currentFolderID === folderID &&
 											questionNAnswer.currentMaterialID === folderMaterial.id &&
 											questionNAnswer.materialType === "flash-card"
@@ -148,6 +148,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 									.map((questionNAnswer) => {
 										return (
 											<QuestionsNAnswers
+												auth={auth}
 												key={questionNAnswer.id}
 												questionNAnswer={questionNAnswer}
 												questionNAnswerSystem={questionNAnswerSystem}
@@ -190,6 +191,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 }
 
 const QuestionsNAnswers = ({
+	auth,
 	questionNAnswer,
 	questionNAnswerSystem,
 	folderMaterial,
@@ -204,7 +206,7 @@ const QuestionsNAnswers = ({
 		(questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.currentMaterialID === folderMaterial.id &&
 					questionNAnswer.materialType === "flash-card" &&
@@ -214,7 +216,7 @@ const QuestionsNAnswers = ({
 			questionNAnswerSystem.allQuestionsNAnswers
 				.filter(
 					(questionNAnswer) =>
-						questionNAnswer.uid === user.uid &&
+						questionNAnswer.uid === auth.currentUser.uid &&
 						questionNAnswer.currentFolderID === folderID &&
 						questionNAnswer.currentMaterialID === folderMaterial.id &&
 						questionNAnswer.materialType === "flash-card"

@@ -5,7 +5,7 @@ import Image from "next/image";
 import FlashCardEditingForm from "./FlashCardEditingForm";
 
 export default function FlashCardEditing({ folderMaterial }) {
-	const { questionNAnswerSystem } = FirebaseAPI();
+	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const {
 		user,
 		folderID,
@@ -120,7 +120,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "flash-card"
@@ -133,7 +133,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 									questionNAnswerSystem.allQuestionsNAnswers
 										.filter(
 											(questionNAnswer) =>
-												questionNAnswer.uid === user.uid &&
+												questionNAnswer.uid === auth.currentUser.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
 												questionNAnswer.materialType === "flash-card"
@@ -151,7 +151,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 									questionNAnswerSystem.allQuestionsNAnswers
 										.filter(
 											(questionNAnswer) =>
-												questionNAnswer.uid === user.uid &&
+												questionNAnswer.uid === auth.currentUser.uid &&
 												questionNAnswer.currentFolderID === folderID &&
 												questionNAnswer.currentMaterialID === mainMaterialID &&
 												questionNAnswer.materialType === "flash-card"
@@ -168,7 +168,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 					{questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
-								questionNAnswer.uid === user.uid &&
+								questionNAnswer.uid === auth.currentUser.uid &&
 								questionNAnswer.currentFolderID === folderID &&
 								questionNAnswer.currentMaterialID === mainMaterialID &&
 								questionNAnswer.materialType === "flash-card"
@@ -191,7 +191,7 @@ export default function FlashCardEditing({ folderMaterial }) {
 							{questionNAnswerSystem.allQuestionsNAnswers
 								.filter(
 									(questionNAnswer) =>
-										questionNAnswer.uid === user.uid &&
+										questionNAnswer.uid === auth.currentUser.uid &&
 										questionNAnswer.currentFolderID === folderID &&
 										questionNAnswer.currentMaterialID === mainMaterialID &&
 										questionNAnswer.materialType === "flash-card"

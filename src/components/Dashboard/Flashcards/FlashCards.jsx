@@ -5,7 +5,7 @@ import { UserCredentialsCtx } from "../../../pages";
 import Flashcard from "./Flashcard";
 
 export default function FlashCards({ user, folder }) {
-	const { folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
+	const { auth, folderMaterialSystem, questionNAnswerSystem } = FirebaseAPI();
 	const { handleOpenFlashCardEdit, handleOpenFlashCardStart } =
 		useContext(UserCredentialsCtx);
 
@@ -117,7 +117,7 @@ export default function FlashCards({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "flash-card" &&
 								folderMaterial.currentFolderID === folder.id
 						)
@@ -127,7 +127,7 @@ export default function FlashCards({ user, folder }) {
 								folderMaterialSystem.allFolderMaterials
 									?.filter(
 										(folderMaterial) =>
-											folderMaterial.uid === user.uid &&
+											folderMaterial.uid === auth.currentUser.uid &&
 											folderMaterial.materialType === "flash-card" &&
 											folderMaterial.currentFolderID === folder.id
 									)
@@ -141,7 +141,7 @@ export default function FlashCards({ user, folder }) {
 								folderMaterialSystem.allFolderMaterials
 									?.filter(
 										(folderMaterial) =>
-											folderMaterial.uid === user.uid &&
+											folderMaterial.uid === auth.currentUser.uid &&
 											folderMaterial.materialType === "flash-card" &&
 											folderMaterial.currentFolderID === folder.id
 									)
@@ -157,7 +157,7 @@ export default function FlashCards({ user, folder }) {
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(folderMaterial) =>
-									folderMaterial.uid === user.uid &&
+									folderMaterial.uid === auth.currentUser.uid &&
 									folderMaterial.materialType === "flash-card" &&
 									folderMaterial.currentFolderID === folder.id
 							)
@@ -169,7 +169,7 @@ export default function FlashCards({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "flash-card" &&
 								folderMaterial.currentFolderID === folder.id
 						)
@@ -199,7 +199,7 @@ export default function FlashCards({ user, folder }) {
 					{folderMaterialSystem.allFolderMaterials
 						?.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "flash-card" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.title
@@ -212,7 +212,7 @@ export default function FlashCards({ user, folder }) {
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(folderMaterial) =>
-									folderMaterial.uid === user.uid &&
+									folderMaterial.uid === auth.currentUser.uid &&
 									folderMaterial.materialType === "flash-card" &&
 									folderMaterial.currentFolderID === folder.id
 							)
@@ -231,7 +231,7 @@ export default function FlashCards({ user, folder }) {
 				{folderMaterialSystem.allFolderMaterials
 					?.filter(
 						(folderMaterial) =>
-							folderMaterial.uid === user.uid &&
+							folderMaterial.uid === auth.currentUser.uid &&
 							folderMaterial.materialType === "flash-card" &&
 							folderMaterial.currentFolderID === folder.id
 					)

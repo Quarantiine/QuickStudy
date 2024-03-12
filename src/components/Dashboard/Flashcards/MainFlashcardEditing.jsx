@@ -1,6 +1,7 @@
 import React from "react";
 import FlashCardEditing from "../Flashcards/FlashCardEditing";
 import Image from "next/image";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function MainFlashcardEditing({
 	folder,
@@ -14,6 +15,8 @@ export default function MainFlashcardEditing({
 	editBackToFlashCardModal,
 	mainMaterialID,
 }) {
+	const { auth } = FirebaseAPI();
+
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 			<div
@@ -51,7 +54,7 @@ export default function MainFlashcardEditing({
 										{folderMaterialSystem.allFolderMaterials
 											.filter(
 												(folderMaterial) =>
-													folderMaterial.uid === user.uid &&
+													folderMaterial.uid === auth.currentUser.uid &&
 													folderMaterial.materialType === "flash-card" &&
 													folderMaterial.currentFolderID === folder.id &&
 													folderMaterial.id === mainMaterialID
@@ -65,7 +68,7 @@ export default function MainFlashcardEditing({
 									folderMaterialSystem.allFolderMaterials
 										.filter(
 											(folderMaterial) =>
-												folderMaterial.uid === user.uid &&
+												folderMaterial.uid === auth.currentUser.uid &&
 												folderMaterial.materialType === "flash-card" &&
 												folderMaterial.currentFolderID === folder.id &&
 												folderMaterial.id === mainMaterialID
@@ -122,7 +125,7 @@ export default function MainFlashcardEditing({
 					{folderMaterialSystem.allFolderMaterials
 						.filter(
 							(folderMaterial) =>
-								folderMaterial.uid === user.uid &&
+								folderMaterial.uid === auth.currentUser.uid &&
 								folderMaterial.materialType === "flash-card" &&
 								folderMaterial.currentFolderID === folder.id &&
 								folderMaterial.id === mainMaterialID

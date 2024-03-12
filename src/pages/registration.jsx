@@ -262,7 +262,7 @@ const SignUp = ({
 									<input
 										className="input-field w-full !pr-9"
 										autoComplete="off"
-										placeholder={showPassword ? "password" : "•••••••••"}
+										placeholder={showPassword ? "" : "•••••••••"}
 										type={showPassword ? "text" : "password"}
 										name="password"
 										onChange={(e) =>
@@ -292,9 +292,7 @@ const SignUp = ({
 									<input
 										className="input-field w-full !pr-9"
 										autoComplete="off"
-										placeholder={
-											showPassword ? "confirm password" : "•••••••••"
-										}
+										placeholder={showPassword ? "" : "•••••••••"}
 										type={showPassword ? "text" : "password"}
 										name="confirmPassword"
 										onChange={(e) =>
@@ -336,12 +334,12 @@ const SignUp = ({
 					</button>
 				</div>
 
-				<div className="flex flex-col justify-start items-start w-full">
+				<div className="flex flex-col justify-center items-center w-full">
 					<button
 						onClick={handleChangeRegistrationForm}
 						className="base-text text-btn"
 					>
-						{"Don't have an account?"}
+						Have an account?
 					</button>
 					<button
 						onClick={handleOpenResetPassword}
@@ -432,7 +430,7 @@ const SignIn = ({
 						</div>
 					</div>
 
-					<button onClick={handleSubmitForm} className="btn w-full">
+					<button onClick={handleSubmitForm} className="btn w-full !py-2">
 						Sign In
 					</button>
 					<button
@@ -454,7 +452,7 @@ const SignIn = ({
 						onClick={handleChangeRegistrationForm}
 						className="base-text text-btn"
 					>
-						Have an account?
+						{"Don't have an account?"}
 					</button>
 					<button
 						onClick={handleOpenResetPassword}

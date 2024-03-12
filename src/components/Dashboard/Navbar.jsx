@@ -9,6 +9,7 @@ import MainFolderModal from "./MainFolderModal";
 
 export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 	const {
+		auth,
 		registration,
 		folderSystem,
 		folderMaterialSystem,
@@ -90,7 +91,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			folderSystem.addingFolder(
 				folderName.trim(),
 				folderDescription.trim(),
-				user.uid
+				auth.currentUser.uid
 			);
 			setCreateFolderModal(false);
 
@@ -133,7 +134,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		folderMaterialSystem.allFolderMaterials
 			.filter(
 				(folderMaterial) =>
-					folderMaterial.uid === user.uid &&
+					folderMaterial.uid === auth.currentUser.uid &&
 					folderMaterial.materialType === "flash-card" &&
 					folderMaterial.currentFolderID === id
 			)
@@ -144,7 +145,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.materialType === "flash-card"
 			)
@@ -155,7 +156,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		folderMaterialSystem.allFolderMaterials
 			.filter(
 				(folderMaterial) =>
-					folderMaterial.uid === user.uid &&
+					folderMaterial.uid === auth.currentUser.uid &&
 					folderMaterial.materialType === "quiz" &&
 					folderMaterial.currentFolderID === id
 			)
@@ -166,7 +167,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		questionNAnswerSystem.allQuestionsNAnswers
 			.filter(
 				(questionNAnswer) =>
-					questionNAnswer.uid === user.uid &&
+					questionNAnswer.uid === auth.currentUser.uid &&
 					questionNAnswer.currentFolderID === folderID &&
 					questionNAnswer.materialType === "quiz"
 			)
@@ -177,7 +178,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		folderMaterialSystem.allFolderMaterials
 			.filter(
 				(folderMaterial) =>
-					folderMaterial.uid === user.uid &&
+					folderMaterial.uid === auth.currentUser.uid &&
 					folderMaterial.materialType === "note" &&
 					folderMaterial.currentFolderID === id
 			)
@@ -310,7 +311,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 							{libraryDropdown &&
 								(folderSystem.allFolders
-									.filter((folder) => folder.uid === user.uid)
+									.filter((folder) => folder.uid === auth.currentUser.uid)
 									.map((folder) => folder).length < 1 ? (
 									<div className="library-dropdown flex flex-col justify-center items-center gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
 										<p className="text-sm text-center text-gray-400">
@@ -322,7 +323,9 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 										<div className="library-dropdown flex flex-col justify-center items-start gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
 											<div className="flex flex-col justify-center items-start gap-1 w-full">
 												{folderSystem.allFolders
-													.filter((folder) => folder.uid === user.uid)
+													.filter(
+														(folder) => folder.uid === auth.currentUser.uid
+													)
 													.slice(0, 5)
 													.map((folder) => {
 														return (
@@ -365,6 +368,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			</div>
 
 			<ShortNavbar
+				auth={auth}
 				user={user}
 				openShortNavbar={openShortNavbar}
 				handleLibraryDropdown={handleLibraryDropdown}
@@ -380,6 +384,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 }
 
 const ShortNavbar = ({
+	auth,
 	user,
 	openShortNavbar,
 	handleLibraryDropdown,
@@ -433,7 +438,7 @@ const ShortNavbar = ({
 								<>
 									<div className="library-dropdown flex flex-col justify-center items-start gap-1 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
 										{folderSystem.allFolders
-											.filter((folder) => folder.uid === user.uid)
+											.filter((folder) => folder.uid === auth.currentUser.uid)
 											.slice(0, 5)
 											.map((folder) => {
 												return (
