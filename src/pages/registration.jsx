@@ -258,9 +258,9 @@ const SignUp = ({
 							<div className="flex flex-col justify-center items-start w-full">
 								<label htmlFor="Password">Password</label>
 
-								<div className="relative">
+								<div className="relative w-full">
 									<input
-										className="input-field w-full !pr-9"
+										className="input-field w-full !pr-9-"
 										autoComplete="off"
 										placeholder={showPassword ? "" : "•••••••••"}
 										type={showPassword ? "text" : "password"}
@@ -269,7 +269,7 @@ const SignUp = ({
 											handleFormDispatch(e, e.target.name, e.target.value)
 										}
 									/>
-									<Image
+									{/* <Image
 										className="w-[17px] h-auto object-contain absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer"
 										src={
 											showPassword
@@ -281,16 +281,16 @@ const SignUp = ({
 										height={25}
 										draggable={false}
 										onClick={handleShowPassword}
-									/>
+									/> */}
 								</div>
 							</div>
 
 							<div className="flex flex-col justify-center items-start w-full">
 								<label htmlFor="ConfirmPassword">Confirm Password</label>
 
-								<div className="relative">
+								<div className="relative w-full">
 									<input
-										className="input-field w-full !pr-9"
+										className="input-field w-full !pr-9-"
 										autoComplete="off"
 										placeholder={showPassword ? "" : "•••••••••"}
 										type={showPassword ? "text" : "password"}
@@ -299,7 +299,7 @@ const SignUp = ({
 											handleFormDispatch(e, e.target.name, e.target.value)
 										}
 									/>
-									<Image
+									{/* <Image
 										className="w-[17px] h-auto object-contain absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer"
 										src={
 											showPassword
@@ -311,7 +311,7 @@ const SignUp = ({
 										height={25}
 										draggable={false}
 										onClick={handleShowPassword}
-									/>
+									/> */}
 								</div>
 							</div>
 						</div>
@@ -403,9 +403,9 @@ const SignIn = ({
 
 					<div className="flex flex-col justify-center items-start w-full">
 						<label htmlFor="Password">Password</label>
-						<div className="relative">
+						<div className="relative w-full">
 							<input
-								className="input-field w-full !pr-9"
+								className="input-field w-full !pr-9-"
 								autoComplete="off"
 								placeholder={showPassword ? "password" : "•••••••••"}
 								type={showPassword ? "text" : "password"}
@@ -414,7 +414,7 @@ const SignIn = ({
 									handleFormDispatch(e, e.target.name, e.target.value)
 								}
 							/>
-							<Image
+							{/* <Image
 								className="w-[17px] h-auto object-contain absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer"
 								src={
 									showPassword
@@ -426,7 +426,7 @@ const SignIn = ({
 								height={25}
 								draggable={false}
 								onClick={handleShowPassword}
-							/>
+							/> */}
 						</div>
 					</div>
 

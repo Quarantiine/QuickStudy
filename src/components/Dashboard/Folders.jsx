@@ -104,13 +104,13 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 	return (
 		<button
 			onClick={() => handleOpenFolderModal(folder.id)}
-			className={`flex flex-col justify-start items-start text-start text-btn gap-4 w-[280px] h-full rounded-xl px-6 py-4 ${
+			className={`flex flex-col justify-start items-start text-start text-btn gap-4 w-[316px] h-full rounded-xl px-6 py-4 ${
 				user.theme ? "bg-[#444]" : "bg-gray-100"
 			}`}
 		>
 			<div className="w-full flex flex-col gap-1">
 				<div className="flex justify-between items-start gap-1.5 w-full">
-					<h1 className="text-xl font-semibold">{folder.name}</h1>
+					<h1 className="text-xl font-semibold line-clamp-1">{folder.name}</h1>
 					<Image
 						className="object-contain relative top-0.5"
 						src={"/icons/folder.svg"}

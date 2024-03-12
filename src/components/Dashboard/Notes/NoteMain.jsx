@@ -132,18 +132,49 @@ export default function NoteMain({ folder, user }) {
 				</div>
 
 				<div className="w-fit flex justify-center items-center gap-1 ml-auto">
-					<p>Note Folders:</p>
-					<p>
-						{
-							folderMaterialSystem.allFolderMaterials
-								.filter(
-									(noteFolder) =>
-										noteFolder.uid === auth.currentUser.uid &&
-										noteFolder.materialType === "note" &&
-										noteFolder.currentFolderID === folderID
-								)
-								.map((noteFolder) => noteFolder).length
-						}
+					<p className="ml-auto pt-3">
+						{folderMaterialSystem.allFolderMaterials
+
+							?.filter(
+								(folderMaterial) =>
+									folderMaterial.uid === auth.currentUser.uid &&
+									folderMaterial.materialType === "note" &&
+									folderMaterial.currentFolderID === folder.id
+							)
+
+							.map((folderMaterial) => folderMaterial).length === 1 ? (
+							<span>
+								{
+									folderMaterialSystem.allFolderMaterials
+
+										?.filter(
+											(folderMaterial) =>
+												folderMaterial.uid === auth.currentUser.uid &&
+												folderMaterial.materialType === "note" &&
+												folderMaterial.currentFolderID === folder.id
+										)
+
+										.map((folderMaterial) => folderMaterial).length
+								}{" "}
+								Item
+							</span>
+						) : (
+							<span>
+								{
+									folderMaterialSystem.allFolderMaterials
+
+										?.filter(
+											(folderMaterial) =>
+												folderMaterial.uid === auth.currentUser.uid &&
+												folderMaterial.materialType === "note" &&
+												folderMaterial.currentFolderID === folder.id
+										)
+
+										.map((folderMaterial) => folderMaterial).length
+								}{" "}
+								Items
+							</span>
+						)}
 					</p>
 				</div>
 

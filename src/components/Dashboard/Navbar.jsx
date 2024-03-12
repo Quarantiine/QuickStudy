@@ -283,29 +283,62 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 
 							{openFolderModal &&
 								createPortal(
-									<MainFolderModal
-										user={user}
-										folderSystem={folderSystem}
-										folderID={folderID}
-										editFolderName={editFolderName}
-										changedFolderNameRef={changedFolderNameRef}
-										handleChangeFolderName={handleChangeFolderName}
-										handleEditFolderName={handleEditFolderName}
-										handleFolderDeleteDropdown={handleFolderDeleteDropdown}
-										folderDeleteDropdown={folderDeleteDropdown}
-										handleViewAllFolders={handleViewAllFolders}
-										editFolderDescription={editFolderDescription}
-										changedFolderDescriptionRef={changedFolderDescriptionRef}
-										handleChangeFolderDescription={
-											handleChangeFolderDescription
-										}
-										handleEditFolderDescription={handleEditFolderDescription}
-										folderMaterialSystem={folderMaterialSystem}
-										handleOpenFlashCardsModal={handleOpenFlashCardsModal}
-										handleOpenQuizzesModal={handleOpenQuizzesModal}
-										handleDeleteFolder={handleDeleteFolder}
-										handleOpenNoteModal={handleOpenNoteModal}
-									/>,
+									<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
+										<div className="folder-child-modal w-[240px] sm:w-[470px] h-fit flex flex-col justify-center items-start gap-5 rounded-xl bg-white p-5">
+											<>
+												{folderSystem.allFolders
+													.filter(
+														(folder) => folder.uid === auth.currentUser.uid
+													)
+													.map((folder) => {
+														return (
+															<React.Fragment key={folder.id}>
+																{folderID === folder.id && (
+																	<MainFolderModal
+																		auth={auth}
+																		folder={folder}
+																		folderSystem={folderSystem}
+																		folderID={folderID}
+																		editFolderName={editFolderName}
+																		changedFolderNameRef={changedFolderNameRef}
+																		handleChangeFolderName={
+																			handleChangeFolderName
+																		}
+																		handleEditFolderName={handleEditFolderName}
+																		handleFolderDeleteDropdown={
+																			handleFolderDeleteDropdown
+																		}
+																		folderDeleteDropdown={folderDeleteDropdown}
+																		handleViewAllFolders={handleViewAllFolders}
+																		editFolderDescription={
+																			editFolderDescription
+																		}
+																		changedFolderDescriptionRef={
+																			changedFolderDescriptionRef
+																		}
+																		handleChangeFolderDescription={
+																			handleChangeFolderDescription
+																		}
+																		handleEditFolderDescription={
+																			handleEditFolderDescription
+																		}
+																		folderMaterialSystem={folderMaterialSystem}
+																		handleOpenFlashCardsModal={
+																			handleOpenFlashCardsModal
+																		}
+																		handleOpenQuizzesModal={
+																			handleOpenQuizzesModal
+																		}
+																		handleDeleteFolder={handleDeleteFolder}
+																		handleOpenNoteModal={handleOpenNoteModal}
+																	/>
+																)}
+															</React.Fragment>
+														);
+													})}
+											</>
+										</div>
+									</div>,
 									document.body
 								)}
 
