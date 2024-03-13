@@ -48,13 +48,13 @@ export default function Folders({ user }) {
 				</div>
 
 				<div
-					className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+					className={`grid grid-cols-[auto_auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 				>
 					{folderMaterialSystem.allFolderMaterials
 						.filter(
 							(folderMaterial) => folderMaterial.uid === auth.currentUser.uid
 						)
-						.slice(0, 3)
+						.slice(0, 4)
 						.map((folderMaterial) => {
 							return (
 								<ChildRecent
@@ -173,19 +173,31 @@ const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 
 				<div className="flex flex-wrap justify-start items-center gap-2 w-full">
 					{folderMaterial.materialType === "flash-card" && (
-						<p className="bg-blue-500 w-fit px-2 py-1 rounded-lg text-white">
+						<p
+							className={`w-fit px-2 py-1 rounded-lg text-white ${
+								user.theme ? "flash-card-bg-opacity" : "flash-card-bg"
+							}`}
+						>
 							Flashcard
 						</p>
 					)}
 
 					{folderMaterial.materialType === "quiz" && (
-						<p className="bg-red-500 w-fit px-2 py-1 rounded-lg text-white">
+						<p
+							className={`w-fit px-2 py-1 rounded-lg text-white ${
+								user.theme ? "quiz-bg-opacity" : "quiz-bg"
+							}`}
+						>
 							Quiz
 						</p>
 					)}
 
 					{folderMaterial.materialType === "note" && (
-						<p className="bg-purple-500 w-fit px-2 py-1 rounded-lg text-white">
+						<p
+							className={`w-fit px-2 py-1 rounded-lg text-white ${
+								user.theme ? "note-bg-opacity" : "note-bg"
+							}`}
+						>
 							Note
 						</p>
 					)}
