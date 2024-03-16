@@ -28,6 +28,8 @@ export default function Registration() {
 	const [openPasswordResetModal, setOpenPasswordResetModal] = useState(false);
 
 	const [emailPasswordReset, setEmailPasswordReset] = useState("");
+	const [errorWarning, setErrorWarning] = useState("");
+	let errorWarningRef = useRef();
 
 	const handleChangeRegistrationForm = (e) => {
 		e.preventDefault();
@@ -53,9 +55,8 @@ export default function Registration() {
 
 	const handleResetPassword = (e) => {
 		e.preventDefault();
-
-		/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailPasswordReset) &&
-			registration.passwordReset();
+		registration.passwordReset(emailPasswordReset);
+		setOpenPasswordResetModal(false);
 	};
 
 	useEffect(() => {
@@ -83,6 +84,8 @@ export default function Registration() {
 	};
 
 	const handleSubmitForm = (e) => {
+		clearTimeout(errorWarningRef.current);
+
 		e.preventDefault();
 		const checkedUsername = formState.username.length > 1;
 		const checkedEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
@@ -94,16 +97,26 @@ export default function Registration() {
 		const checkedPasswordSignIn = formState.password.length > 5;
 
 		if (changeRegistrationForm) {
-			if (checkedEmail && checkedPasswordSignIn) {
-				registration.signIn(formState.email, formState.password);
-			}
-		} else {
 			if (checkedUsername && checkedEmail && checkedPasswordSignUp) {
 				registration.addUser(
 					formState.email,
 					formState.password,
 					formState.username
 				);
+			} else {
+				setErrorWarning("Error: Check Information");
+				errorWarningRef.current = setTimeout(() => {
+					setErrorWarning("");
+				}, 4000);
+			}
+		} else {
+			if (checkedEmail && checkedPasswordSignIn) {
+				registration.signIn(formState.email, formState.password);
+			} else {
+				setErrorWarning("Error: Check Information");
+				errorWarningRef.current = setTimeout(() => {
+					setErrorWarning("");
+				}, 4000);
 			}
 		}
 	};
@@ -127,6 +140,12 @@ export default function Registration() {
 						</div>
 					)}
 
+					{!openPasswordResetModal && errorWarning && (
+						<div className="fixed top-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg h-fit w-[90%] sm:w-fit text-center z-[60] overflow-y-hidden overflow-x-scroll overflow-no-height">
+							{errorWarning}
+						</div>
+					)}
+
 					{openPasswordResetModal &&
 						createPortal(
 							<>
@@ -147,6 +166,9 @@ export default function Registration() {
 												name="email"
 												placeholder="example123@example.com"
 												onChange={(e) => setEmailPasswordReset(e.target.value)}
+												onKeyDown={(e) =>
+													e.key === "Enter" && handleResetPassword(e)
+												}
 											/>
 										</div>
 										<button
@@ -164,7 +186,7 @@ export default function Registration() {
 					{!openPasswordResetModal && (
 						<>
 							{changeRegistrationForm ? (
-								<SignIn
+								<SignUp
 									handleSubmitForm={handleSubmitForm}
 									handleChangeRegistrationForm={handleChangeRegistrationForm}
 									handleResetPassword={handleResetPassword}
@@ -173,7 +195,7 @@ export default function Registration() {
 									handleGoogleSignIn={handleGoogleSignIn}
 								/>
 							) : (
-								<SignUp
+								<SignIn
 									handleSubmitForm={handleSubmitForm}
 									handleChangeRegistrationForm={handleChangeRegistrationForm}
 									handleResetPassword={handleResetPassword}

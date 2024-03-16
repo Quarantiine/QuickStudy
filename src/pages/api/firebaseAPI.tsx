@@ -205,8 +205,9 @@ export default function FirebaseAPI() {
 		};
 
 		passwordReset = async (email: string) => {
+			clearTimeout(registrationErrMsgRef.current);
+
 			await sendPasswordResetEmail(auth, email).catch((err) => {
-				clearTimeout(registrationErrMsgRef.current);
 				setRegistrationErrMsg(err.message);
 
 				registrationErrMsgRef.current = setTimeout(() => {
