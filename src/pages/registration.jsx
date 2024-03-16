@@ -320,7 +320,7 @@ const SignUp = ({
 					<button onClick={handleSubmitForm} className="btn w-full !py-2">
 						Create Account
 					</button>
-					<button
+					{/* <button
 						onClick={handleGoogleSignIn}
 						className="px-3 py-2 rounded-lg bg-gray-100 hover:opacity-70 transition-opacity w-full flex justify-center items-center gap-2"
 					>
@@ -331,7 +331,7 @@ const SignUp = ({
 							height={20}
 						/>
 						<p>Sign in Google</p>
-					</button>
+					</button> */}
 				</div>
 
 				<div className="flex flex-col justify-center items-center w-full">
@@ -433,7 +433,7 @@ const SignIn = ({
 					<button onClick={handleSubmitForm} className="btn w-full !py-2">
 						Sign In
 					</button>
-					<button
+					{/* <button
 						onClick={handleGoogleSignIn}
 						className="px-3 py-2 rounded-lg bg-gray-100 hover:opacity-70 transition-opacity w-full flex justify-center items-center gap-2"
 					>
@@ -444,7 +444,7 @@ const SignIn = ({
 							height={20}
 						/>
 						<p>Sign in Google</p>
-					</button>
+					</button> */}
 				</div>
 
 				<div className="flex flex-col justify-center items-center w-full">
