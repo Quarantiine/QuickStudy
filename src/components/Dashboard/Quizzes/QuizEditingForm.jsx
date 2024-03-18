@@ -110,7 +110,7 @@ export default function QuizEditingForm({
 							>
 								<Image
 									src={"/icons/cancel.svg"}
-									alt="close"
+									alt="icon"
 									width={30}
 									height={30}
 								/>
@@ -118,7 +118,7 @@ export default function QuizEditingForm({
 							<Image
 								className="object-contain rounded-lg"
 								src={questionNAnswer.image}
-								alt="image"
+								alt="img"
 								fill
 								sizes="(max-width: 768px) 100vw, 33vw"
 							/>
@@ -209,7 +209,7 @@ export default function QuizEditingForm({
 													<Image
 														className="object-cover rounded-lg"
 														src={questionNAnswer.image}
-														alt="image"
+														alt="img"
 														fill
 														sizes="(max-width: 768px) 100vw, 33vw"
 													/>
@@ -227,7 +227,7 @@ export default function QuizEditingForm({
 												>
 													<Image
 														src={"/icons/open_in_full.svg"}
-														alt="fullscreen"
+														alt="icon"
 														width={15}
 														height={15}
 													/>

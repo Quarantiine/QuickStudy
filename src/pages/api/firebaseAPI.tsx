@@ -69,6 +69,12 @@ const queryQuestionNAnswers: Query = query(
 	orderBy("createdTime")
 );
 
+const colRefSectionNotes: CollectionReference = collection(db, "section-notes");
+const querySectionNotes: Query = query(
+	colRefSectionNotes,
+	orderBy("createdTime")
+);
+
 const colRefNotes: CollectionReference = collection(db, "notes");
 const queryNotes: Query = query(colRefNotes, orderBy("createdTime"));
 
@@ -77,6 +83,7 @@ export default function FirebaseAPI() {
 	const [allFolders, setAllFolders] = useState<any[]>([]);
 	const [allFolderMaterials, setAllFolderMaterials] = useState<any[]>([]);
 	const [allQuestionsNAnswers, setAllQuestionsNAnswers] = useState<any[]>([]);
+	const [allSectionNotes, setAllSectionNotes] = useState<any[]>([]);
 	const [allNotes, setAllNotes] = useState<any[]>([]);
 
 	const [registrationErrMsg, setRegistrationErrMsg] = useState<string>("");
@@ -145,6 +152,21 @@ export default function FirebaseAPI() {
 			});
 
 			setAllQuestionsNAnswers(questionsNAnswers);
+		});
+	}, []);
+
+	useEffect(() => {
+		onSnapshot(querySectionNotes, (ss) => {
+			const sectionNotes = [];
+
+			ss.docs.map((doc) => {
+				sectionNotes.unshift({
+					...doc.data(),
+					id: doc.id,
+				});
+			});
+
+			setAllSectionNotes(sectionNotes);
 		});
 	}, []);
 
@@ -667,20 +689,74 @@ export default function FirebaseAPI() {
 	const updateCompleted = QNAS.updateCompleted;
 	const updateImage = QNAS.updateImage;
 	const updateDummyAnswers = QNAS.updateDummyAnswers;
+
+	class NoteSectionSystem {
+		constructor() {}
+
+		addSectionNote = async (
+			title: string,
+			currentMaterialID: string,
+			currentFolderID: string,
+			materialType: string,
+			uid: string
+		) => {
+			await addDoc(colRefSectionNotes, {
+				title: title,
+				currentMaterialID: currentMaterialID,
+				currentFolderID: currentFolderID,
+				materialType: materialType,
+				uid: uid,
+				createdTime: serverTimestamp(),
+			}).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		deleteSectionNote = async (id: string) => {
+			const docRef = doc(colRefSectionNotes, id);
+			await deleteDoc(docRef).catch((err) => {
+				clearTimeout(dashboardErrMsgRef.current);
+				setDashboardErrMsg(err.message);
+
+				dashboardErrMsgRef.current = setTimeout(() => {
+					setDashboardErrMsg("");
+				}, dashboardErrMsgTime);
+			});
+		};
+
+		editSectionNoteTitle = async (title: string, id: string) => {
+			const docRef = doc(colRefSectionNotes, id);
+			await updateDoc(docRef, {
+				title: title,
+			});
+		};
+	}
+	const NSS = new NoteSectionSystem();
+	const addingSectionNote = NSS.addSectionNote;
+	const deletingSectionNote = NSS.deleteSectionNote;
+	const editingSectionNote = NSS.editSectionNoteTitle;
+
 	class NoteSystem {
 		constructor() {}
 
 		createNote = async (
 			title: string,
+			image: string,
 			currentFolderID: string,
 			currentMaterialID: string,
-			materialType: string,
-			image: string
+			currentSectionNoteID: string,
+			materialType: string
 		) => {
 			addDoc(colRefNotes, {
 				title: title,
 				currentFolderID: currentFolderID,
 				currentMaterialID: currentMaterialID,
+				currentSectionNoteID: currentSectionNoteID,
 				materialType: materialType,
 				image: image || "",
 				uid: auth.currentUser.uid,
@@ -773,6 +849,13 @@ export default function FirebaseAPI() {
 			updateCompleted,
 			updateImage,
 			updateDummyAnswers,
+		},
+
+		noteSectionSystem: {
+			allSectionNotes,
+			addingSectionNote,
+			deletingSectionNote,
+			editingSectionNote,
 		},
 
 		noteSystem: {

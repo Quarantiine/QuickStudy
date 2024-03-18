@@ -33,7 +33,7 @@ export default function NoteMain({ folder, user }) {
 
 	useEffect(() => {
 		const closeDropdown = (e) => {
-			if (!e.target.closest(".create-note-dropdown")) {
+			if (!e.target.closest(".create-folder-note-dropdown")) {
 				setOpenDropDown(false);
 			}
 		};
@@ -71,7 +71,7 @@ export default function NoteMain({ folder, user }) {
 						<div className="flex w-full sm:w-fit h-auto justify-start items-start gap-2 relative">
 							<button
 								onClick={handleOpenDropdown}
-								className="create-note-dropdown btn flex justify-center items-center gap-1 w-full"
+								className="create-folder-note-dropdown btn flex justify-center items-center gap-1 w-full"
 							>
 								<p>Create Note Folders</p>
 								<Image
@@ -84,7 +84,7 @@ export default function NoteMain({ folder, user }) {
 							</button>
 
 							{openDropDown && (
-								<form className="create-note-dropdown w-full h-auto bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center z-10">
+								<form className="create-folder-note-dropdown w-full h-auto bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center z-10">
 									<div className="w-full flex flex-col justify-center items-center gap-3">
 										<div className="flex flex-col justify-center items-start gap-1 w-full">
 											<div className="flex justify-between items-center gap-2 w-full">
@@ -222,6 +222,7 @@ export default function NoteMain({ folder, user }) {
 										noteFolder={noteFolder}
 										folderMaterialSystem={folderMaterialSystem}
 										handleOpenNoteFolder={handleOpenNoteFolder}
+										folder={folder}
 									/>
 								);
 							}

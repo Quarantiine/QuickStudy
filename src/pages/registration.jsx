@@ -298,7 +298,7 @@ const SignUp = ({
 												? "/icons/visibility.svg"
 												: "/icons/visibility_off.svg"
 										}
-										alt="image"
+										alt="icon"
 										width={25}
 										height={25}
 										draggable={false}
@@ -328,7 +328,7 @@ const SignUp = ({
 												? "/icons/visibility.svg"
 												: "/icons/visibility_off.svg"
 										}
-										alt="image"
+										alt="icon"
 										width={25}
 										height={25}
 										draggable={false}
@@ -443,7 +443,7 @@ const SignIn = ({
 										? "/icons/visibility.svg"
 										: "/icons/visibility_off.svg"
 								}
-								alt="image"
+								alt="icon"
 								width={25}
 								height={25}
 								draggable={false}

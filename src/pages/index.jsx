@@ -759,12 +759,7 @@ export default function Home() {
 												.map((folder) => {
 													return (
 														<React.Fragment key={folder.id}>
-															<Notes
-																folder={folder}
-																user={user}
-																openNoteFolder={openNoteFolder}
-																setOpenNoteFolder={setOpenNoteFolder}
-															/>
+															<Notes folder={folder} />
 														</React.Fragment>
 													);
 												}),

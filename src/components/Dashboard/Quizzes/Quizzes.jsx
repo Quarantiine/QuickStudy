@@ -259,7 +259,7 @@ export default function Quizzes({ user, folder }) {
 					)}
 				</p>
 				<div
-					className={`w-full pb-7 grid gap-5 overflow-scroll ${
+					className={`w-full pb-7 grid gap-5 ${
 						folderMaterialSystem.allFolderMaterials
 							?.filter(
 								(folderMaterial) =>

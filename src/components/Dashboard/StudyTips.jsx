@@ -40,7 +40,7 @@ export default function StudyTips({ user }) {
 										<Image
 											className="object-cover object-bottom"
 											src={"/images/study_tip_banner.jpeg"}
-											alt="banner"
+											alt="img"
 											fill
 											sizes="(max-width: 768px) 100vw, 33vw"
 											draggable={false}
@@ -102,7 +102,7 @@ export default function StudyTips({ user }) {
 					<Image
 						className="object-cover"
 						src={"/images/study_tip_banner_2.jpeg"}
-						alt="picture"
+						alt="img"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
 					/>

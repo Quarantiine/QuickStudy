@@ -34,7 +34,7 @@ export default function KhanAcademy({ user }) {
 					<Image
 						className="object-cover"
 						src={"/images/khan_academy_banner.jpeg"}
-						alt="picture"
+						alt="img"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
 					/>
@@ -48,7 +48,7 @@ export default function KhanAcademy({ user }) {
 						<Image
 							className="object-cover"
 							src={"/icons/open_in_new.svg"}
-							alt="picture"
+							alt="icon"
 							width={30}
 							height={30}
 							sizes="(max-width: 768px) 100vw, 33vw"

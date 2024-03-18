@@ -14,6 +14,8 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		folderSystem,
 		folderMaterialSystem,
 		questionNAnswerSystem,
+		noteSectionSystem,
+		noteSystem,
 	} = FirebaseAPI();
 	const {
 		createFolderModal,
@@ -185,6 +187,26 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 			.map((folderMaterial) =>
 				folderMaterialSystem.deleteMainMaterial(folderMaterial.id)
 			);
+
+		noteSectionSystem.allSectionNotes
+			.filter(
+				(sectionNote) =>
+					sectionNote.uid === auth.currentUser.uid &&
+					sectionNote.currentFolderID === id &&
+					sectionNote.materialType === "note"
+			)
+			.map((sectionNote) =>
+				noteSectionSystem.deletingSectionNote(sectionNote.id)
+			);
+
+		noteSystem.allNotes
+			.filter(
+				(note) =>
+					note.uid === auth.currentUser.uid &&
+					note.currentFolderID === id &&
+					note.materialType === "note"
+			)
+			.map((note) => noteSystem.deleteNote(note.id));
 	};
 
 	const handleEditFolderName = (e) => {
