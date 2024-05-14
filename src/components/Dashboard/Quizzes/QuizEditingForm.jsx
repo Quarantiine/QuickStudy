@@ -106,10 +106,10 @@ export default function QuizEditingForm({
 						<div className="flex justify-center items-center w-[90%] h-[90%] bg-transparent relative">
 							<div
 								onClick={handleOpenFullscreen}
-								className="p-1 rounded-full absolute top-5 left-5 base-bg z-10 text-btn"
+								className="p-1 rounded-full absolute top-3 right-3 base-bg z-10 text-btn"
 							>
 								<Image
-									src={"/icons/cancel.svg"}
+									src={"/icons/close.svg"}
 									alt="icon"
 									width={30}
 									height={30}

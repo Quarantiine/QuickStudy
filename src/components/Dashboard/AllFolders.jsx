@@ -14,7 +14,7 @@ export default function AllFolders({
 		<>
 			<div className="flex justify-center items-center bg-[rgba(0,0,0,0.7)] w-full h-full top-0 left-0 fixed z-50 px-4 overflow-no-width overflow-x-hidden overflow-y-scroll">
 				<div
-					className={`all-folders-modal w-[80%] sm:w-[45%] h-fit flex flex-col justify-center items-center rounded-xl bg-white p-5 ${
+					className={`all-folders-modal w-[90%] sm:w-fit h-fit flex flex-col justify-center items-center rounded-xl bg-white p-5 ${
 						searchQuery.length < 1 ? "gap-4" : "gap-2"
 					}`}
 				>
@@ -36,7 +36,9 @@ export default function AllFolders({
 						</div>
 					) : (
 						<>
-							<h1 className="title-h1">Your Library</h1>
+							<h1 className="title-h1 text-center sm:text-start">
+								Your Library
+							</h1>
 							<input
 								className="input-field w-full"
 								type="text"

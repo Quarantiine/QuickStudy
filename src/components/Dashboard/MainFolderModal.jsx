@@ -56,7 +56,7 @@ export default function MainFolderModal({
 					) : (
 						<h1
 							onClick={handleEditFolderName}
-							className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1 text-center sm:text-start"
+							className="text-btn !text-2xl sm:!text-3xl font-semibold title-h1 text-center sm:text-start line-clamp-1"
 						>
 							{folder.name}
 						</h1>

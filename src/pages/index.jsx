@@ -793,18 +793,16 @@ export default function Home() {
 										/>
 									</div>
 
-									{!createFolderModal && (
-										<>
-											{!openShortNavbar && (
-												<ThemeChange
-													user={user}
-													handleChangeTheme={handleChangeTheme}
-												/>
-											)}
+									<>
+										{!openShortNavbar && (
+											<ThemeChange
+												user={user}
+												handleChangeTheme={handleChangeTheme}
+											/>
+										)}
 
-											<MainDashboard user={user} />
-										</>
-									)}
+										<MainDashboard user={user} />
+									</>
 								</main>
 							</UserCredentialsCtx.Provider>
 						</React.Fragment>

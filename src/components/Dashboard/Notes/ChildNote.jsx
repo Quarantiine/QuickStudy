@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
-export default function ChildNote({ note }) {
+export default function ChildNote({ note, mainMaterialID }) {
 	const { noteSystem } = FirebaseAPI();
 	const [fullscreen, setFullscreen] = useState(false);
 	const [editingTitle, setEditingTitle] = useState(false);
 	const [editNoteTitle, setEditNoteTitle] = useState("");
+	const [incrementLimitReached, setIncrementLimitReached] = useState(false);
+	const [decrementLimitReached, setDecrementLimitReached] = useState(true);
+	const [sliceValue, setSliceValue] = useState(0);
 
 	const handleFullscreen = () => {
 		setFullscreen(!fullscreen);
@@ -39,59 +42,150 @@ export default function ChildNote({ note }) {
 		return () => document.removeEventListener("mousedown", closeEditing);
 	}, [editingTitle]);
 
+	useEffect(() => {
+		if (
+			sliceValue >=
+			noteSystem.allNotes
+				.filter(
+					(note2) => note2.currentSectionNoteID === note.currentSectionNoteID
+				)
+				.map((note2) => note2).length
+		) {
+			setIncrementLimitReached(true);
+			setSliceValue(0);
+		} else {
+			setIncrementLimitReached(false);
+		}
+
+		if (sliceValue < 0) {
+			setSliceValue(
+				noteSystem.allNotes
+					.filter(
+						(note2) => note2.currentSectionNoteID === note.currentSectionNoteID
+					)
+					.map((note2) => note2).length - 1
+			);
+			setDecrementLimitReached(true);
+		} else {
+			setDecrementLimitReached(false);
+		}
+	}, [sliceValue, fullscreen]);
+
+	const handleIncrement = () => {
+		if (
+			sliceValue >=
+			noteSystem.allNotes
+				.filter(
+					(note2) => note2.currentSectionNoteID === note.currentSectionNoteID
+				)
+				.map((note2) => note2).length
+		) {
+			null;
+		} else {
+			setSliceValue((prevState) => prevState + 1);
+		}
+	};
+
+	const handleDecrement = () => {
+		if (sliceValue < 0) {
+			null;
+		} else {
+			setSliceValue((prevState) => prevState - 1);
+		}
+	};
+
 	return (
 		<>
 			{fullscreen && (
 				<div className="fixed top-0 left-0 w-full h-full bg-[#222] z-10 flex justify-center items-center p-10">
 					<button
 						onClick={handleFullscreen}
-						className="text-sm base-bg rounded-full p-1 text-btn z-10 absolute top-5 right-5 flex justify-center items-center"
+						className="text-sm base-bg rounded-full p-1 text-btn z-10 absolute top-10 right-10 flex justify-center items-center"
 					>
-						<Image
-							src={"/icons/cancel.svg"}
-							alt="icon"
-							width={30}
-							height={30}
-						/>
+						<Image src={"/icons/close.svg"} alt="icon" width={25} height={25} />
 					</button>
 
-					<Image
-						className="object-contain rounded-lg"
-						src={note.image}
-						alt="img"
-						fill
-						sizes="(max-width: 768px) 100vw, 33vw"
-					/>
+					<div className="flex flex-wrap w-full h-full">
+						{noteSystem.allNotes
+							.filter(
+								(note2) =>
+									note2.currentSectionNoteID === note.currentSectionNoteID
+							)
+							.slice(sliceValue, sliceValue + 1)
+							.map((note2) => {
+								return (
+									<React.Fragment key={note2.id}>
+										<Image
+											className="object-contain rounded-lg"
+											src={note2.image}
+											alt="img"
+											fill
+											sizes="(max-width: 768px) 100vw, 33vw"
+										/>
 
-					<h1 className="title-h1 shadow-2xl absolute bottom-10 left-1/2 -translate-x-1/2 bg-white rounded-lg px-3 py-1 text-center">
-						{note.title}
-					</h1>
+										<div className="flex flex-col justify-center items-center absolute bottom-10 gap-2 w-[90%]">
+											{noteSystem.allNotes
+												.filter(
+													(note2) =>
+														note2.currentSectionNoteID ===
+														note.currentSectionNoteID
+												)
+												.map((note2) => note2).length > 1 ? (
+												<h1 className="block sm:hidden title-h1 shadow-2xl bg-white rounded-lg px-3 py-1 text-center opacity-70 hover:opacity-100 transition-all">
+													{note2.title}
+												</h1>
+											) : (
+												<h1 className="title-h1 shadow-2xl bg-white rounded-lg px-3 py-1 text-center opacity-70 hover:opacity-100 transition-all">
+													{note2.title}
+												</h1>
+											)}
 
-					{/* <div className="flex justify-center items-center gap-1">
-						<button
-							onClick={null}
-							className="text-sm base-bg rounded-full p-1 text-btn z-10 absolute top-1/2 -translate-y-1/2 left-5 flex justify-center items-center rotate-90"
-						>
-							<Image
-								src={"/icons/expand_more_white.svg"}
-								alt="icon"
-								width={30}
-								height={30}
-							/>
-						</button>
+											{noteSystem.allNotes
+												.filter(
+													(note2) =>
+														note2.currentSectionNoteID ===
+														note.currentSectionNoteID
+												)
+												.map((note2) => note2).length > 1 && (
+												<div className="flex justify-between items-center gap-1 w-full">
+													{!decrementLimitReached && (
+														<button
+															onClick={handleDecrement}
+															className="text-sm base-bg rounded-full p-1 text-btn z-10 flex justify-center items-center rotate-90"
+														>
+															<Image
+																src={"/icons/expand_more_white.svg"}
+																alt="icon"
+																width={30}
+																height={30}
+															/>
+														</button>
+													)}
 
-						<button
-							onClick={null}
-							className="text-sm base-bg rounded-full p-1 w-fit h-fit text-btn z-10 absolute top-1/2 -translate-y-1/2 right-5 flex justify-center items-center -rotate-90"
-						>
-							<Image
-								src={"/icons/expand_more_white.svg"}
-								alt="icon"
-								width={30}
-								height={30}
-							/>
-						</button>
-					</div> */}
+													<h1 className="hidden sm:block title-h1 shadow-2xl bg-white rounded-lg px-3 py-1 text-center opacity-70 hover:opacity-100 transition-all">
+														{note2.title}
+													</h1>
+
+													{!incrementLimitReached && (
+														<button
+															onClick={handleIncrement}
+															className="text-sm base-bg rounded-full p-1 w-fit h-fit text-btn z-10 flex justify-center items-center -rotate-90"
+														>
+															<Image
+																src={"/icons/expand_more_white.svg"}
+																alt="icon"
+																width={30}
+																height={30}
+															/>
+														</button>
+													)}
+												</div>
+											)}
+										</div>
+									</React.Fragment>
+								);
+							})}
+					</div>
 				</div>
 			)}
 

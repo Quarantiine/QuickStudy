@@ -16,6 +16,11 @@ export default function SectionNote({ folder, sectionNote }) {
 	const [openCreateDropdown, setOpenCreateDropdown] = useState(false);
 	const [noteTitle, setNoteTitle] = useState("");
 	const [image, setImage] = useState("");
+	const [closeImageWarning, setCloseImageWarning] = useState(false);
+
+	const handleCloseImageWarning = () => {
+		setCloseImageWarning(!closeImageWarning);
+	};
 
 	const handleOpenDropdown = () => {
 		setOpenDropdown(!openDropdown);
@@ -195,7 +200,7 @@ export default function SectionNote({ folder, sectionNote }) {
 														<>
 															<div
 																{...getRootProps()}
-																className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1"
+																className="bg-gray-300 w-full h-[150px] rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1"
 															>
 																<p>Upload Image</p>
 															</div>
@@ -249,8 +254,8 @@ export default function SectionNote({ folder, sectionNote }) {
 												: "0"}
 										</p>
 
-										<p className="text-gray-500 text-sm flex flex-row justify-center items-center gap-1 text-center">
-											<span>
+										{!closeImageWarning && (
+											<div className="bg-yellow-500 px-2 py-1 rounded-md text-sm flex flex-row justify-center items-center gap-1 text-center">
 												<Image
 													className="min-w-[15px] min-h-[15px] max-w-[15px] max-h-[15px]"
 													src={"/icons/warning.svg"}
@@ -258,12 +263,25 @@ export default function SectionNote({ folder, sectionNote }) {
 													width={15}
 													height={15}
 												/>
-											</span>
 
-											<span>
-												Images will disappear if the images are too big
-											</span>
-										</p>
+												<p className="text-white">
+													Images will disappear if the images are too big
+												</p>
+
+												<button
+													className="text-btn flex justify-center items-center w-fit"
+													onClick={handleCloseImageWarning}
+												>
+													<Image
+														className="min-w-[20px] min-h-[20px] max-w-[20px] max-h-[20px] ml-2"
+														src={"/icons/close.svg"}
+														alt="icon"
+														width={20}
+														height={20}
+													/>
+												</button>
+											</div>
+										)}
 									</div>
 
 									<button
@@ -285,7 +303,13 @@ export default function SectionNote({ folder, sectionNote }) {
 														note.currentSectionNoteID === sectionNote.id
 												)
 												.map((note) => {
-													return <ChildNote key={note.id} note={note} />;
+													return (
+														<ChildNote
+															key={note.id}
+															note={note}
+															mainMaterialID={mainMaterialID}
+														/>
+													);
 												})}
 										</>
 									</div>

@@ -17,6 +17,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 		noteSectionSystem,
 		noteSystem,
 	} = FirebaseAPI();
+
 	const {
 		createFolderModal,
 		setCreateFolderModal,
@@ -263,7 +264,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 					<button onClick={handleOpenShortNavbar} className="text-btn">
 						<Image
 							className="object-contain block sm:hidden"
-							src={openShortNavbar ? "/icons/cancel.svg" : "/icons/menu.svg"}
+							src={openShortNavbar ? "/icons/close.svg" : "/icons/menu.svg"}
 							alt="icon"
 							width={25}
 							height={25}
@@ -375,7 +376,7 @@ export default function Navbar({ user, openShortNavbar, setOpenShortNavbar }) {
 									</div>
 								) : (
 									<>
-										<div className="library-dropdown flex flex-col justify-center items-start gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2 line-clamp-1 overflow-ellipsis">
+										<div className="library-dropdown flex flex-col justify-center items-start gap-2 w-[150px] h-fit rounded-xl absolute top-10 right-0 bg-white text-black shadow-md z-10 text-sm p-2">
 											<div className="flex flex-col justify-center items-start gap-1 w-full">
 												{folderSystem.allFolders
 													.filter(
