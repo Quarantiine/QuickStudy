@@ -125,7 +125,7 @@ export default function ChildNote({ note }) {
 						<Image src={"/icons/close.svg"} alt="icon" width={25} height={25} />
 					</button>
 
-					<div className="flex flex-wrap w-full h-full">
+					<div className="flex flex-wrap w-full h-full absolute">
 						{noteSystem.allNotes
 							.filter(
 								(note2) =>
