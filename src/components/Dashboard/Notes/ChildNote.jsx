@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
-export default function ChildNote({ note, mainMaterialID }) {
+export default function ChildNote({ note }) {
 	const { noteSystem } = FirebaseAPI();
 	const [fullscreen, setFullscreen] = useState(false);
 	const [editingTitle, setEditingTitle] = useState(false);
@@ -11,7 +11,27 @@ export default function ChildNote({ note, mainMaterialID }) {
 	const [decrementLimitReached, setDecrementLimitReached] = useState(true);
 	const [sliceValue, setSliceValue] = useState(0);
 
+	// useEffect(() => {
+	// 	const list = noteSystem.allNotes
+	// 		.filter(
+	// 			(note2) => note2.currentSectionNoteID === note.currentSectionNoteID
+	// 		)
+	// 		.map((note2) => note2.id === note.id);
+
+	// 	let i = 0;
+	// 	for (let index of list) {
+	// 		if (!index) {
+	// 			i++;
+	// 		} else {
+	// 			break;
+	// 		}
+	// 		list.slice(0, i);
+	// 		console.log(list);
+	// 	}
+	// });
+
 	const handleFullscreen = () => {
+		setSliceValue(sliceValue);
 		setFullscreen(!fullscreen);
 	};
 
@@ -123,7 +143,7 @@ export default function ChildNote({ note, mainMaterialID }) {
 											sizes="(max-width: 768px) 100vw, 33vw"
 										/>
 
-										<div className="flex flex-col justify-center items-center absolute bottom-10 gap-2 w-[90%]">
+										<div className="flex flex-col justify-center items-center absolute bottom-10 gap-2 w-[90%] left-1/2 -translate-x-1/2">
 											{noteSystem.allNotes
 												.filter(
 													(note2) =>

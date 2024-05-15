@@ -215,7 +215,7 @@ export default function Notes({ folder }) {
 							<>
 								<div className="relative mx-auto w-[80%] h-[40%] flex justify-center items-center p-4 text-center">
 									<p className="text-lg text-gray-400">
-										<span>No Section Notes named: </span>{" "}
+										<span>No Section Note named: </span>{" "}
 										<span className="text-gray-500">{searchQuery}</span>
 									</p>
 								</div>

@@ -118,7 +118,7 @@ export default function SectionNote({ folder, sectionNote }) {
 		reader.readAsDataURL(acceptedFiles[0]);
 	}, []);
 
-	const { getRootProps } = useDropzone({
+	const { getRootProps, getInputProps, fileRejections } = useDropzone({
 		onDrop,
 		maxSize: 1048487,
 		maxFiles: 1,
@@ -143,6 +143,18 @@ export default function SectionNote({ folder, sectionNote }) {
 		}
 	};
 
+	const fileRejectionSystem = () => {
+		const sizeInMB = fileRejections[0]?.file.size / 1048576;
+
+		if (fileRejections.length > 0) {
+			return `File (${fileRejections[0]?.file.name.slice(
+				0,
+				10
+			)}...) is larger than 1 MB. Image File size: ${sizeInMB.toFixed(1)} MB`;
+		}
+		return false;
+	};
+
 	return (
 		<>
 			{openSectionNote &&
@@ -150,7 +162,7 @@ export default function SectionNote({ folder, sectionNote }) {
 					<>
 						<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 							<div
-								className={`section-note-modal w-[70%] h-[70%] flex flex-col justify-start items-start bg-white p-4 relative overflow-with-width overflow-x-hidden overflow-y-scroll rounded-xl gap-6`}
+								className={`section-note-modal w-[70%] h-[70%] flex flex-col justify-start items-start bg-white p-4 relative overflow-with-width overflow-x-hidden overflow-y-scroll rounded-xl gap-3 sm:gap-6`}
 							>
 								<div className="flex flex-col sm:flex-row justify-center items-center sm:justify-between sm:items-start gap-1 sm:gap-2 w-full">
 									<div className="flex flex-col justify-center items-start gap-2 relative w-full">
@@ -167,7 +179,7 @@ export default function SectionNote({ folder, sectionNote }) {
 										</div>
 
 										{openCreateDropdown && (
-											<form className="create-note-dropdown-2 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-40 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
+											<form className="create-note-dropdown-2 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-32 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
 												<div className="w-full flex flex-col justify-center items-center gap-3">
 													<div className="flex flex-col justify-center items-start gap-1 w-full">
 														<input
@@ -181,31 +193,30 @@ export default function SectionNote({ folder, sectionNote }) {
 														/>
 													</div>
 
-													{image ? (
-														<div className="w-full h-[150px] rounded-xl">
-															<div
-																{...getRootProps()}
-																className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative"
-															>
-																<Image
-																	className="object-cover rounded-lg"
-																	src={image}
-																	alt="img"
-																	fill
-																	sizes="(max-width: 768px) 100vw, 33vw"
-																/>
+													<div
+														className="w-full h-[150px] flex justify-center items-center"
+														{...getRootProps()}
+													>
+														{image ? (
+															<div className="w-full h-full rounded-xl">
+																<div className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative">
+																	<Image
+																		className="object-cover rounded-lg"
+																		src={image}
+																		alt="img"
+																		fill
+																		sizes="(max-width: 768px) 100vw, 33vw"
+																	/>
+																</div>
 															</div>
-														</div>
-													) : (
-														<>
-															<div
-																{...getRootProps()}
-																className="bg-gray-300 w-full h-[150px] rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1"
-															>
-																<p>Upload Image</p>
-															</div>
-														</>
-													)}
+														) : (
+															<>
+																<div className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1">
+																	<p>Upload Image</p>
+																</div>
+															</>
+														)}
+													</div>
 
 													<div className="flex flex-col justify-center items-center w-full gap-2">
 														<button
@@ -303,13 +314,7 @@ export default function SectionNote({ folder, sectionNote }) {
 														note.currentSectionNoteID === sectionNote.id
 												)
 												.map((note) => {
-													return (
-														<ChildNote
-															key={note.id}
-															note={note}
-															mainMaterialID={mainMaterialID}
-														/>
-													);
+													return <ChildNote key={note.id} note={note} />;
 												})}
 										</>
 									</div>
