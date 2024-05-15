@@ -197,6 +197,7 @@ export default function SectionNote({ folder, sectionNote }) {
 														className="w-full h-[150px] flex justify-center items-center"
 														{...getRootProps()}
 													>
+														<input {...getInputProps()} />
 														{image ? (
 															<div className="w-full h-full rounded-xl">
 																<div className="w-full h-full rounded-lg flex justify-center items-center text-center text-btn relative">
@@ -212,7 +213,6 @@ export default function SectionNote({ folder, sectionNote }) {
 														) : (
 															<>
 																<div className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1">
-																	<input {...getInputProps()} />
 																	<p>Upload Image</p>
 																</div>
 															</>
