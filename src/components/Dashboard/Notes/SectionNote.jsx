@@ -212,6 +212,7 @@ export default function SectionNote({ folder, sectionNote }) {
 														) : (
 															<>
 																<div className="bg-gray-300 w-full h-full rounded-lg flex justify-center items-center text-sm text-gray-500 text-center text-btn p-1">
+																	<input {...getInputProps()} />
 																	<p>Upload Image</p>
 																</div>
 															</>
