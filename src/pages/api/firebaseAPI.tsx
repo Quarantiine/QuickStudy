@@ -746,7 +746,7 @@ export default function FirebaseAPI() {
 
 		createNote = async (
 			title: string,
-			image: string,
+			noteImage: string,
 			currentFolderID: string,
 			currentMaterialID: string,
 			currentSectionNoteID: string,
@@ -758,7 +758,7 @@ export default function FirebaseAPI() {
 				currentMaterialID: currentMaterialID,
 				currentSectionNoteID: currentSectionNoteID,
 				materialType: materialType,
-				image: image || "",
+				noteImage: noteImage || "",
 				uid: auth.currentUser.uid,
 				createdTime: serverTimestamp(),
 			}).catch((err) => {
