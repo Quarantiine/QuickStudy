@@ -13,10 +13,12 @@ export default function SectionNote({ folder, sectionNote }) {
 	const [editSectionTitle, setEditSectionTitle] = useState(false);
 	const [sectionNoteTitle, setSectionNoteTitle] = useState("");
 	const [openSectionNote, setOpenSectionNote] = useState(false);
-	const [openCreateDropdown, setOpenCreateDropdown] = useState(false);
-	const [noteTitle, setNoteTitle] = useState("");
+	const [openAddImageDropdown, setOpenAddImageDropdown] = useState(false);
 	const [image, setImage] = useState("");
+	const [noteTitle, setNoteTitle] = useState("");
 	const [closeImageWarning, setCloseImageWarning] = useState(false);
+	const [openAddFileDropdown, setOpenAddFileDropdown] = useState(false);
+	const [selectedFile, setSelectedFile] = useState("");
 
 	const handleCloseImageWarning = () => {
 		setCloseImageWarning(!closeImageWarning);
@@ -93,20 +95,22 @@ export default function SectionNote({ folder, sectionNote }) {
 		return () => document.removeEventListener("mousedown", closeSectionModal);
 	}, [openSectionNote]);
 
-	const handleOpenChangeDropdown = () => {
-		setOpenCreateDropdown(!openCreateDropdown);
+	const handleOpenAddImageDropdown = () => {
+		setOpenAddImageDropdown(!openAddImageDropdown);
+		setOpenAddFileDropdown(false);
 	};
 
 	useEffect(() => {
-		const closeNoteDropdown = (e) => {
+		const closeAddImageDropdown = (e) => {
 			if (!e.target.closest(".create-note-dropdown-2")) {
-				setOpenCreateDropdown(false);
+				setOpenAddImageDropdown(false);
 			}
 		};
 
-		document.addEventListener("mousedown", closeNoteDropdown);
-		return () => document.removeEventListener("mousedown", closeNoteDropdown);
-	}, [openCreateDropdown]);
+		document.addEventListener("mousedown", closeAddImageDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeAddImageDropdown);
+	}, [openAddImageDropdown]);
 
 	const onDrop = useCallback((acceptedFiles) => {
 		const reader = new FileReader();
@@ -124,7 +128,7 @@ export default function SectionNote({ folder, sectionNote }) {
 		maxFiles: 1,
 	});
 
-	const handleCreateNote = (e) => {
+	const handleAddImageNote = (e) => {
 		e.preventDefault();
 
 		if (noteTitle && image) {
@@ -137,23 +141,77 @@ export default function SectionNote({ folder, sectionNote }) {
 				"note"
 			);
 
-			setOpenCreateDropdown(false);
+			setOpenAddImageDropdown(false);
 			setNoteTitle("");
 			setImage("");
 		}
 	};
 
-	const fileRejectionSystem = () => {
-		const sizeInMB = fileRejections[0]?.file.size / 1048576;
+	useEffect(() => {
+		const closeAddFileDropdown = (e) => {
+			if (!e.target.closest(".create-note-dropdown-3")) {
+				setOpenAddFileDropdown(false);
+			}
+		};
 
-		if (fileRejections.length > 0) {
-			return `File (${fileRejections[0]?.file.name.slice(
-				0,
-				10
-			)}...) is larger than 1 MB. Image File size: ${sizeInMB.toFixed(1)} MB`;
-		}
-		return false;
+		document.addEventListener("mousedown", closeAddFileDropdown);
+		return () =>
+			document.removeEventListener("mousedown", closeAddFileDropdown);
+	}, [openAddFileDropdown]);
+
+	const handleOpenAddFileDropdown = () => {
+		setOpenAddFileDropdown(!openAddFileDropdown);
+		setOpenAddImageDropdown(false);
 	};
+
+	// const handleAddFileNote = (e) => {
+	// 	e.preventDefault();
+	// };
+
+	// const handleFileChange = (event) => {
+	// 	setSelectedFile(event.target.files[0]);
+	// 	console.log(event.target.files[0]);
+	// };
+
+	// const handleSubmit = (event) => {
+	// 	event.preventDefault();
+	// 	if (selectedFile) {
+	// 		// Send the file to the server using Fetch API or a library like Axios
+	// 		const formData = new FormData();
+	// 		formData.append("file", selectedFile);
+
+	// 		fetch("/upload", {
+	// 			method: "POST",
+	// 			body: formData,
+	// 		})
+	// 			.then((response) => response.json())
+	// 			.then((data) => {
+	// 				setSelectedFile(data);
+
+	// 				if (noteTitle && image) {
+	// 					noteSystem.createNote(
+	// 						noteTitle,
+	// 						data,
+	// 						folder.id,
+	// 						mainMaterialID,
+	// 						sectionNote.id,
+	// 						"note"
+	// 					);
+
+	// 					setOpenAddFileDropdown(false);
+	// 					setNoteTitle("");
+	// 					setSelectedFile("");
+	// 				}
+	// 				// Handle successful upload (e.g., display message)
+	// 			})
+	// 			.catch((error) => {
+	// 				console.error("File upload failed:", error);
+	// 				// Handle upload error
+	// 			});
+	// 	} else {
+	// 		console.error("Please select a file");
+	// 	}
+	// };
 
 	return (
 		<>
@@ -162,7 +220,7 @@ export default function SectionNote({ folder, sectionNote }) {
 					<>
 						<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 							<div
-								className={`section-note-modal w-[70%] h-[70%] flex flex-col justify-start items-start bg-white p-4 relative overflow-with-width overflow-x-hidden overflow-y-scroll rounded-xl gap-3 sm:gap-6`}
+								className={`section-note-modal w-[70%] h-[70%] flex flex-col justify-start items-start bg-white p-4 relative overflow-with-width overflow-x-hidden overflow-y-scroll rounded-xl sm:gap-6`}
 							>
 								<div className="flex flex-col sm:flex-row justify-center items-center sm:justify-between sm:items-start gap-1 sm:gap-2 w-full">
 									<div className="flex flex-col justify-center items-start gap-2 relative w-full">
@@ -170,15 +228,23 @@ export default function SectionNote({ folder, sectionNote }) {
 											<h1 className="title-h1 line-clamp-1">
 												{sectionNote.title}
 											</h1>
-											<button
-												className="!hidden sm:!block btn w-fit create-note-dropdown-2"
-												onClick={handleOpenChangeDropdown}
-											>
-												Create Note
-											</button>
+											<div className="flex flex-col gap-1 justify-center items-center">
+												<button
+													className="!hidden sm:!block btn create-note-dropdown-2 w-full"
+													onClick={handleOpenAddImageDropdown}
+												>
+													Add Image
+												</button>
+												<button
+													className="!hidden sm:!block btn create-note-dropdown-2 w-full"
+													onClick={handleOpenAddFileDropdown}
+												>
+													Add File
+												</button>
+											</div>
 										</div>
 
-										{openCreateDropdown && (
+										{openAddImageDropdown && (
 											<form className="create-note-dropdown-2 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-32 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
 												<div className="w-full flex flex-col justify-center items-center gap-3">
 													<div className="flex flex-col justify-center items-start gap-1 w-full">
@@ -188,7 +254,7 @@ export default function SectionNote({ folder, sectionNote }) {
 															placeholder="Image Caption"
 															onChange={(e) => setNoteTitle(e.target.value)}
 															onKeyDown={(e) =>
-																e.key === "Enter" && handleCreateNote(e)
+																e.key === "Enter" && handleAddImageNote(e)
 															}
 														/>
 													</div>
@@ -221,13 +287,13 @@ export default function SectionNote({ folder, sectionNote }) {
 
 													<div className="flex flex-col justify-center items-center w-full gap-2">
 														<button
-															onClick={handleCreateNote}
+															onClick={handleAddImageNote}
 															className="btn w-full"
 														>
-															Create
+															Add Image
 														</button>
 														<button
-															onClick={handleOpenChangeDropdown}
+															onClick={handleOpenAddImageDropdown}
 															className="btn !bg-red-500 w-full sm:hidden"
 														>
 															Cancel
@@ -236,6 +302,62 @@ export default function SectionNote({ folder, sectionNote }) {
 												</div>
 											</form>
 										)}
+
+										{/* {openAddFileDropdown && (
+											<form className="create-note-dropdown-3 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-40 sm:top-[75px] left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
+												<div className="w-full flex flex-col justify-center items-center gap-3">
+													<div className="flex flex-col justify-center items-start gap-1 w-full">
+														<input
+															className="input-field w-full"
+															type="text"
+															placeholder="File Caption"
+															onChange={(e) => setNoteTitle(e.target.value)}
+															onKeyDown={(e) => e.key === "Enter" && null}
+														/>
+													</div>
+													<div className="w-full h-16 flex justify-center items-center">
+														{selectedFile ? (
+															<div className="bg-gray-300 w-full h-full rounded-lg flex flex-col justify-center items-center text-sm text-gray-500 text-center text-btn p-1 relative">
+																<input
+																	className="w-full h-full absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 !opacity-0 cursor-pointer"
+																	type="file"
+																	onChange={handleFileChange}
+																/>
+																<p className="cursor-pointer">
+																	File Uploaded Successfully
+																</p>
+															</div>
+														) : (
+															<>
+																<div className="bg-gray-300 w-full h-full rounded-lg flex flex-col justify-center items-center text-sm text-gray-500 text-center text-btn p-1 relative">
+																	<input
+																		className="w-full h-full absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 !opacity-0 cursor-pointer"
+																		type="file"
+																		onChange={handleFileChange}
+																	/>
+																	<p className="cursor-pointer">Upload File</p>
+																</div>
+															</>
+														)}
+													</div>
+
+													<div className="flex flex-col justify-center items-center w-full gap-2">
+														<button
+															onClick={handleSubmit}
+															className="btn w-full"
+														>
+															Add File
+														</button>
+														<button
+															onClick={handleOpenAddFileDropdown}
+															className="btn !bg-red-500 w-full sm:hidden"
+														>
+															Cancel
+														</button>
+													</div>
+												</div>
+											</form>
+										)} */}
 									</div>
 								</div>
 
@@ -296,12 +418,20 @@ export default function SectionNote({ folder, sectionNote }) {
 										)}
 									</div>
 
-									<button
-										className="!block sm:!hidden btn w-full create-note-dropdown-2"
-										onClick={handleOpenChangeDropdown}
-									>
-										Create Note
-									</button>
+									<div className="flex flex-col gap-1 justify-center item-center">
+										<button
+											className="!block sm:!hidden btn w-full create-note-dropdown-2"
+											onClick={handleOpenAddImageDropdown}
+										>
+											Add Image
+										</button>
+										<button
+											className="!block sm:!hidden btn w-full create-note-dropdown-2"
+											onClick={handleOpenAddFileDropdown}
+										>
+											Add File
+										</button>
+									</div>
 
 									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 w-full">
 										<>
