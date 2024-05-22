@@ -18,6 +18,8 @@ export default function SectionNote({ folder, sectionNote }) {
   const [image, setImage] = useState("");
   const [noteTitle, setNoteTitle] = useState("");
   const [closeImageWarning, setCloseImageWarning] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [notesDropdown, setNotesDropdown] = useState(false);
 
   const handleCloseImageWarning = () => {
     setCloseImageWarning(!closeImageWarning);
@@ -143,6 +145,22 @@ export default function SectionNote({ folder, sectionNote }) {
     }
   };
 
+  const handleNotesDropdown = () => {
+    setNotesDropdown(!notesDropdown);
+    setOpenAddImageDropdown(false)
+  };
+
+  useEffect(() => {
+    const closeNotesDropdown = (e) => {
+      if (!e.target.closest(".create-note-dropdown-3")) {
+        setNotesDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeNotesDropdown);
+    return () => document.removeEventListener("mousedown", closeNotesDropdown);
+  }, [notesDropdown]);
+
   return (
     <>
       {openSectionNote &&
@@ -155,12 +173,12 @@ export default function SectionNote({ folder, sectionNote }) {
                 <div className="flex flex-col sm:flex-row justify-center items-center sm:justify-between sm:items-start gap-1 sm:gap-2 w-full">
                   <div className="flex flex-col justify-center items-start gap-2 relative w-full">
                     <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center w-full mx-auto sm:mx-0">
-                      <div className="flex flex-col justify-start item-start w-full">
+                      <div className="flex flex-col justify-start item-start w-full gap-1">
                         <h1 className="title-h1 line-clamp-1">
                           {sectionNote.title}
                         </h1>
                         <p className="text-lg">
-                          Notes:{" "}
+                          Notes{" "}
                           {noteSystem.allNotes
                             .filter(
                               (note) =>
@@ -185,18 +203,44 @@ export default function SectionNote({ folder, sectionNote }) {
                         </p>
                       </div>
 
-                      <div className="flex flex-col gap-1 justify-center items-center">
-                        <button
-                          className="!hidden sm:!block btn create-note-dropdown-2 w-full whitespace-nowrap"
-                          onClick={handleOpenAddImageDropdown}
-                        >
-                          Add Image
-                        </button>
+                      <div className="flex flex-col sm:gap-2 justify-center items-center w-full sm:w-fit mt-2 sm:mt-0">
+                        <div className="flex justify-center items-center relative w-full">
+                          <button
+                            className="create-note-dropdown-3 !hidden sm:!block btn create-note-dropdown-2 w-full whitespace-nowrap"
+                            onClick={handleNotesDropdown}
+                          >
+                            Add Notes
+                          </button>
+
+                          {notesDropdown && (
+                            <div className="create-note-dropdown-3 flex flex-col justify-center items-center w-full absolute top-24 sm:top-10 left-0 bg-white px-3 py-1.5 rounded-lg gap-2 shadow-lg z-10">
+                              <button
+                                className="btn create-note-dropdown-2 w-full whitespace-nowrap"
+                                onClick={handleOpenAddImageDropdown}
+                              >
+                                Add Image
+                              </button>
+                              <button
+                                className="btn create-note-dropdown-2 w-full whitespace-nowrap"
+                                onClick={null}
+                              >
+                                Add Link
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        <input
+                          className="input-field w-full sm:w-fit"
+                          placeholder="Search Notes By Title"
+                          type="text"
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                       </div>
                     </div>
 
                     {openAddImageDropdown && (
-                      <div className="create-note-dropdown-2 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-32 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
+                      <div className="create-note-dropdown-2 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-40 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
                         <div className="w-full flex flex-col justify-center items-center gap-3">
                           <div className="flex flex-col justify-center items-start gap-1 w-full">
                             <input
@@ -288,12 +332,12 @@ export default function SectionNote({ folder, sectionNote }) {
                     </div>
                   )}
 
-                  <div className="flex flex-col gap-1 justify-center item-center mt-3">
+                  <div className="create-note-dropdown-3 flex flex-col gap-1 justify-center item-center mt-3">
                     <button
                       className="!block sm:!hidden btn w-full create-note-dropdown-2"
-                      onClick={handleOpenAddImageDropdown}
+                      onClick={handleNotesDropdown}
                     >
-                      Add Image
+                      Add Notes
                     </button>
                   </div>
 
@@ -309,7 +353,21 @@ export default function SectionNote({ folder, sectionNote }) {
                             note.currentSectionNoteID === sectionNote.id
                         )
                         .map((note) => {
-                          return <ChildNote key={note.id} note={note} />;
+                          if (
+                            note.title
+                              .normalize("NFD")
+                              .replace(/\p{Diacritic}/gu, "")
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())
+                          ) {
+                            return (
+                              <ChildNote
+                                key={note.id}
+                                note={note}
+                                searchQuery={searchQuery}
+                              />
+                            );
+                          }
                         })}
                     </>
                   </div>
@@ -321,12 +379,24 @@ export default function SectionNote({ folder, sectionNote }) {
                         note.materialType === "note" &&
                         note.currentMaterialID === mainMaterialID &&
                         note.currentFolderID === folder.id &&
-                        note.currentSectionNoteID === sectionNote.id
+                        note.currentSectionNoteID === sectionNote.id &&
+                        note.title
+                          .normalize("NFD")
+                          .replace(/\p{Diacritic}/gu, "")
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
                     )
                     .map((note) => note).length < 1 && (
                     <>
                       <div className="flex flex-col justify-center items-center gap-1 text-gray-400 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
                         <p>No Notes</p>
+                        <Image
+                          className="grayscale"
+                          src={"/images/logo.png"}
+                          alt="logo"
+                          width={50}
+                          height={50}
+                        />
                       </div>
                     </>
                   )}
