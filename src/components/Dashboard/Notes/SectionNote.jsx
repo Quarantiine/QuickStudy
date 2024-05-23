@@ -20,6 +20,13 @@ export default function SectionNote({ folder, sectionNote }) {
   const [closeImageWarning, setCloseImageWarning] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [notesDropdown, setNotesDropdown] = useState(false);
+  const [openAddLinkDropdown, setOpenAddLinkDropdown] = useState(false);
+  const [url, setUrl] = useState("");
+
+  function isURL() {
+    const urlRegex = /^(http|https):\/\/\S+/;
+    return urlRegex.test(url);
+  }
 
   const handleCloseImageWarning = () => {
     setCloseImageWarning(!closeImageWarning);
@@ -130,7 +137,7 @@ export default function SectionNote({ folder, sectionNote }) {
 
   const handleAddImageNote = () => {
     if (noteTitle && image) {
-      noteSystem.createNote(
+      noteSystem.createImageNote(
         noteTitle,
         image,
         folder.id,
@@ -147,7 +154,8 @@ export default function SectionNote({ folder, sectionNote }) {
 
   const handleNotesDropdown = () => {
     setNotesDropdown(!notesDropdown);
-    setOpenAddImageDropdown(false)
+    setOpenAddImageDropdown(false);
+    setOpenAddLinkDropdown(false);
   };
 
   useEffect(() => {
@@ -160,6 +168,38 @@ export default function SectionNote({ folder, sectionNote }) {
     document.addEventListener("mousedown", closeNotesDropdown);
     return () => document.removeEventListener("mousedown", closeNotesDropdown);
   }, [notesDropdown]);
+
+  const handleOpenAddLinkDropdown = () => {
+    setOpenAddLinkDropdown(!openAddLinkDropdown);
+  };
+
+  const handleAddLinkNote = () => {
+    if (noteTitle && isURL()) {
+      noteSystem.createLinkNote(
+        noteTitle,
+        url,
+        folder.id,
+        mainMaterialID,
+        sectionNote.id,
+        "note"
+      );
+
+      setOpenAddLinkDropdown(false);
+      setNoteTitle("");
+      setUrl("");
+    }
+  };
+
+  useEffect(() => {
+    const closeLinkDropdown = (e) => {
+      if (!e.target.closest(".create-note-dropdown-4")) {
+        setOpenAddLinkDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeLinkDropdown);
+    return () => document.removeEventListener("mousedown", closeLinkDropdown);
+  }, [openAddLinkDropdown]);
 
   return (
     <>
@@ -213,16 +253,16 @@ export default function SectionNote({ folder, sectionNote }) {
                           </button>
 
                           {notesDropdown && (
-                            <div className="create-note-dropdown-3 flex flex-col justify-center items-center w-full absolute top-24 sm:top-10 left-0 bg-white px-3 py-1.5 rounded-lg gap-2 shadow-lg z-10">
+                            <div className="create-note-dropdown-3 flex flex-col justify-center items-center w-full absolute top-24 sm:top-10 left-0 bg-white px-3 py-1.5 rounded-lg gap-2 shadow-md z-10">
                               <button
-                                className="btn create-note-dropdown-2 w-full whitespace-nowrap"
+                                className="text-btn text-blue-500 create-note-dropdown-2 w-full whitespace-nowrap"
                                 onClick={handleOpenAddImageDropdown}
                               >
                                 Add Image
                               </button>
                               <button
-                                className="btn create-note-dropdown-2 w-full whitespace-nowrap"
-                                onClick={null}
+                                className="text-btn text-blue-500 create-note-dropdown-2 w-full whitespace-nowrap"
+                                onClick={handleOpenAddLinkDropdown}
                               >
                                 Add Link
                               </button>
@@ -249,7 +289,7 @@ export default function SectionNote({ folder, sectionNote }) {
                               placeholder="Image Caption"
                               onChange={(e) => setNoteTitle(e.target.value)}
                               onKeyDown={(e) =>
-                                e.key === "Enter" && handleAddImageNote(e)
+                                e.key === "Enter" && handleAddImageNote()
                               }
                             />
                           </div>
@@ -297,6 +337,51 @@ export default function SectionNote({ folder, sectionNote }) {
                         </div>
                       </div>
                     )}
+
+                    {openAddLinkDropdown && (
+                      <div className="create-note-dropdown-4 w-full sm:w-[250px] h-auto bg-white shadow-lg rounded-xl p-4 absolute top-40 sm:top-10 left-0 sm:right-0 sm:left-auto flex justify-center items-center z-10">
+                        <div className="w-full flex flex-col justify-center items-center gap-3">
+                          <div className="flex flex-col justify-center items-start gap-1 w-full">
+                            <input
+                              className="input-field w-full"
+                              type="text"
+                              placeholder="URL Caption"
+                              onChange={(e) => setNoteTitle(e.target.value)}
+                              onKeyDown={(e) =>
+                                e.key === "Enter" && handleAddLinkNote()
+                              }
+                            />
+                          </div>
+
+                          <div className="flex flex-col justify-center items-start gap-1 w-full">
+                            <input
+                              className="input-field w-full"
+                              type="text"
+                              placeholder="Add URL"
+                              onChange={(e) => setUrl(e.target.value)}
+                              onKeyDown={(e) =>
+                                e.key === "Enter" && handleAddLinkNote()
+                              }
+                            />
+                          </div>
+
+                          <div className="flex flex-col justify-center items-center w-full gap-2">
+                            <button
+                              onClick={handleAddLinkNote}
+                              className="btn w-full"
+                            >
+                              Add Link
+                            </button>
+                            <button
+                              onClick={handleOpenAddLinkDropdown}
+                              className="btn !bg-red-500 w-full sm:hidden"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -332,44 +417,140 @@ export default function SectionNote({ folder, sectionNote }) {
                     </div>
                   )}
 
-                  <div className="create-note-dropdown-3 flex flex-col gap-1 justify-center item-center mt-3">
+                  <div className="create-note-dropdown-3 flex sm:hidden flex-col gap-1 justify-center item-center mt-3">
                     <button
-                      className="!block sm:!hidden btn w-full create-note-dropdown-2"
+                      className="btn w-full create-note-dropdown-2"
                       onClick={handleNotesDropdown}
                     >
                       Add Notes
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 w-full">
-                    <>
-                      {noteSystem.allNotes
-                        .filter(
-                          (note) =>
-                            note.uid === auth.currentUser.uid &&
-                            note.materialType === "note" &&
-                            note.currentMaterialID === mainMaterialID &&
-                            note.currentFolderID === folder.id &&
-                            note.currentSectionNoteID === sectionNote.id
-                        )
-                        .map((note) => {
-                          if (
-                            note.title
-                              .normalize("NFD")
-                              .replace(/\p{Diacritic}/gu, "")
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase())
-                          ) {
-                            return (
-                              <ChildNote
-                                key={note.id}
-                                note={note}
-                                searchQuery={searchQuery}
-                              />
-                            );
-                          }
-                        })}
-                    </>
+                  <div className="flex flex-col justify-center items-center w-full h-auto gap-5">
+                    {noteSystem.allNotes
+                      .filter(
+                        (note) =>
+                          note.uid === auth.currentUser.uid &&
+                          note.materialType === "note" &&
+                          note.currentMaterialID === mainMaterialID &&
+                          note.currentFolderID === folder.id &&
+                          note.currentSectionNoteID === sectionNote.id &&
+                          note.linkNote
+                      )
+                      .map((linkNote) => linkNote).length > 0 && (
+                      <div className="flex flex-col gap-1 w-full">
+                        {noteSystem.allNotes
+                          .filter(
+                            (note) =>
+                              note.uid === auth.currentUser.uid &&
+                              note.materialType === "note" &&
+                              note.currentMaterialID === mainMaterialID &&
+                              note.currentFolderID === folder.id &&
+                              note.currentSectionNoteID === sectionNote.id &&
+                              !note.title
+                                .normalize("NFD")
+                                .replace(/\p{Diacritic}/gu, "")
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
+                          )
+                          .map((note) => note).length < 1 && (
+                          <h1 className="text-lg text-gray-500 w-full text-start">
+                            Link Section
+                          </h1>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-7 gap-y-3 w-full">
+                          <>
+                            {noteSystem.allNotes
+                              .filter(
+                                (note) =>
+                                  note.uid === auth.currentUser.uid &&
+                                  note.materialType === "note" &&
+                                  note.currentMaterialID === mainMaterialID &&
+                                  note.currentFolderID === folder.id &&
+                                  note.currentSectionNoteID ===
+                                    sectionNote.id &&
+                                  note.linkNote
+                              )
+                              .map((note) => {
+                                if (
+                                  note.title
+                                    .normalize("NFD")
+                                    .replace(/\p{Diacritic}/gu, "")
+                                    .toLowerCase()
+                                    .includes(searchQuery.toLowerCase())
+                                ) {
+                                  return (
+                                    <ChildNote key={note.id} note={note} />
+                                  );
+                                }
+                              })}
+                          </>
+                        </div>
+                      </div>
+                    )}
+
+                    {noteSystem.allNotes
+                      .filter(
+                        (note) =>
+                          note.uid === auth.currentUser.uid &&
+                          note.materialType === "note" &&
+                          note.currentMaterialID === mainMaterialID &&
+                          note.currentFolderID === folder.id &&
+                          note.currentSectionNoteID === sectionNote.id &&
+                          !note.linkNote
+                      )
+                      .map((linkNote) => linkNote).length > 0 && (
+                      <div className="flex flex-col gap-1 w-full">
+                        {noteSystem.allNotes
+                          .filter(
+                            (note) =>
+                              note.uid === auth.currentUser.uid &&
+                              note.materialType === "note" &&
+                              note.currentMaterialID === mainMaterialID &&
+                              note.currentFolderID === folder.id &&
+                              note.currentSectionNoteID === sectionNote.id &&
+                              !note.title
+                                .normalize("NFD")
+                                .replace(/\p{Diacritic}/gu, "")
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
+                          )
+                          .map((note) => note).length < 1 && (
+                          <h1 className="text-lg text-gray-500 w-full text-start">
+                            Image Section
+                          </h1>
+                        )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 w-full">
+                          <>
+                            {noteSystem.allNotes
+                              .filter(
+                                (note) =>
+                                  note.uid === auth.currentUser.uid &&
+                                  note.materialType === "note" &&
+                                  note.currentMaterialID === mainMaterialID &&
+                                  note.currentFolderID === folder.id &&
+                                  note.currentSectionNoteID ===
+                                    sectionNote.id &&
+                                  !note.linkNote
+                              )
+                              .map((note) => {
+                                if (
+                                  note.title
+                                    .normalize("NFD")
+                                    .replace(/\p{Diacritic}/gu, "")
+                                    .toLowerCase()
+                                    .includes(searchQuery.toLowerCase())
+                                ) {
+                                  return (
+                                    <ChildNote key={note.id} note={note} />
+                                  );
+                                }
+                              })}
+                          </>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {noteSystem.allNotes
@@ -439,43 +620,77 @@ export default function SectionNote({ folder, sectionNote }) {
               note.currentSectionNoteID === sectionNote.id
           )
           .map((note) => note).length > 0 ? (
-          <div
-            className={`justify-center w-full ${
-              noteSystem.allNotes
-                .filter(
-                  (note) =>
-                    note.uid === auth.currentUser.uid &&
-                    note.materialType === "note" &&
-                    note.currentMaterialID === mainMaterialID &&
-                    note.currentFolderID === folder.id &&
-                    note.currentSectionNoteID === sectionNote.id
-                )
-                .map((note) => note).length < 2
-                ? "grid-cols-1 py-3 flex relative items-start"
-                : "grid-cols-2 py-3 gap-1 grid items-center"
-            }`}
-          >
-            {noteSystem.allNotes
-              .filter(
-                (note) =>
-                  note.uid === auth.currentUser.uid &&
-                  note.materialType === "note" &&
-                  note.currentMaterialID === mainMaterialID &&
-                  note.currentFolderID === folder.id &&
-                  note.currentSectionNoteID === sectionNote.id
-              )
-              .slice(0, 4)
-              .map((note) => {
-                return (
-                  <SectionNotePreview
-                    key={note.id}
-                    note={note}
-                    folder={folder}
-                    sectionNote={sectionNote}
-                  />
-                );
-              })}
-          </div>
+          <>
+            {
+              <>
+                <div
+                  className={`w-full flex flex-col justify-start items-center mt-2 gap-2`}
+                >
+                  {noteSystem.allNotes
+                    .filter(
+                      (note) =>
+                        note.uid === auth.currentUser.uid &&
+                        note.materialType === "note" &&
+                        note.currentMaterialID === mainMaterialID &&
+                        note.currentFolderID === folder.id &&
+                        note.currentSectionNoteID === sectionNote.id &&
+                        note.linkNote
+                    )
+                    .slice(0, 2)
+                    .map((note) => {
+                      return (
+                        <SectionNotePreview
+                          key={note.id}
+                          note={note}
+                          folder={folder}
+                          sectionNote={sectionNote}
+                        />
+                      );
+                    })}
+                </div>
+
+                <div
+                  className={`justify-center w-full ${
+                    noteSystem.allNotes
+                      .filter(
+                        (note) =>
+                          note.uid === auth.currentUser.uid &&
+                          note.materialType === "note" &&
+                          note.currentMaterialID === mainMaterialID &&
+                          note.currentFolderID === folder.id &&
+                          note.currentSectionNoteID === sectionNote.id &&
+                          !note.linkNote
+                      )
+                      .map((note) => note).length < 2
+                      ? "grid-cols-1 py-3 flex relative items-start"
+                      : "grid-cols-2 py-3 gap-1 grid items-center"
+                  }`}
+                >
+                  {noteSystem.allNotes
+                    .filter(
+                      (note) =>
+                        note.uid === auth.currentUser.uid &&
+                        note.materialType === "note" &&
+                        note.currentMaterialID === mainMaterialID &&
+                        note.currentFolderID === folder.id &&
+                        note.currentSectionNoteID === sectionNote.id &&
+                        !note.linkNote
+                    )
+                    .slice(0, 4)
+                    .map((note) => {
+                      return (
+                        <SectionNotePreview
+                          key={note.id}
+                          note={note}
+                          folder={folder}
+                          sectionNote={sectionNote}
+                        />
+                      );
+                    })}
+                </div>
+              </>
+            }
+          </>
         ) : (
           <p className="text-gray-500 pb-3 pt-2">No Notes</p>
         )}
