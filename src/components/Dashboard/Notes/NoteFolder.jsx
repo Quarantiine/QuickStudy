@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function NoteFolder({
 	noteFolder,
 	folderMaterialSystem,
 	handleOpenNoteFolder,
+	folder,
 }) {
+	const { auth, noteSectionSystem, noteSystem } = FirebaseAPI();
 	const [noteDeletionWarning, setNoteDeletionWarning] = useState(false);
 	const [editTitle, setEditTitle] = useState(false);
 	const [changeTitle, setChangeTitle] = useState("");
@@ -16,6 +19,28 @@ export default function NoteFolder({
 
 	const handleDeleteNote = () => {
 		folderMaterialSystem.deleteMainMaterial(noteFolder.id);
+
+		noteSectionSystem.allSectionNotes
+			.filter(
+				(sectionNote) =>
+					sectionNote.uid === auth.currentUser.uid &&
+					sectionNote.currentFolderID === folder.id &&
+					sectionNote.currentMaterialID === noteFolder.id &&
+					sectionNote.materialType === "note"
+			)
+			.map((sectionNote) =>
+				noteSectionSystem.deletingSectionNote(sectionNote.id)
+			);
+
+		noteSystem.allNotes
+			.filter(
+				(note) =>
+					note.uid === auth.currentUser.uid &&
+					note.currentFolderID === folder.id &&
+					note.materialType === "note" &&
+					note.currentMaterialID === noteFolder.id
+			)
+			.map((note) => noteSystem.deleteNote(note.id));
 	};
 
 	useEffect(() => {
@@ -50,7 +75,20 @@ export default function NoteFolder({
 						onClick={() => handleOpenNoteFolder(noteFolder.id)}
 						className="text-btn bg-gray-100 rounded-l-lg px-4 pt-3 pb-2 w-full flex flex-col justify-start items-start overflow-with-height overflow-x-scroll overflow-y-hidden"
 					>
-						<p className="text-gray-500 text-sm">Notes: 0</p>
+						<p className="text-gray-500 text-sm">
+							Notes:{" "}
+							{
+								noteSectionSystem.allSectionNotes
+									.filter(
+										(sectionNote) =>
+											sectionNote.uid === auth.currentUser.uid &&
+											sectionNote.materialType === "note" &&
+											sectionNote.currentMaterialID === noteFolder.id &&
+											sectionNote.currentFolderID === folder.id
+									)
+									.map((sectionNote) => sectionNote).length
+							}
+						</p>
 						<p className="whitespace-nowrap font-medium">{noteFolder.title}</p>
 					</button>
 
@@ -62,7 +100,7 @@ export default function NoteFolder({
 							<Image
 								className="object-cover min-w-[25px] min-h-[25px]"
 								src={"/icons/more_vert.svg"}
-								alt="logo"
+								alt="icon"
 								width={25}
 								height={25}
 							/>

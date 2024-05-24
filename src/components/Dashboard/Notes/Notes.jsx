@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { UserCredentialsCtx } from "../../../pages";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
+import SectionNote from "./SectionNote";
 
-export default function Notes({ folder, user }) {
-	const { auth, noteSystem, folderMaterialSystem } = FirebaseAPI();
+export default function Notes({ folder }) {
+	const { auth, folderMaterialSystem, noteSectionSystem } = FirebaseAPI();
 	const { handleBackToNoteModal, mainMaterialID } =
 		useContext(UserCredentialsCtx);
 	const [openDropDown, setOpenDropDown] = useState(false);
@@ -17,7 +18,7 @@ export default function Notes({ folder, user }) {
 
 	useEffect(() => {
 		const closeDropdown = (e) => {
-			if (!e.target.closest(".create-note-dropdown-2")) {
+			if (!e.target.closest(".create-section-note-dropdown-2")) {
 				setOpenDropDown(false);
 			}
 		};
@@ -26,11 +27,28 @@ export default function Notes({ folder, user }) {
 		return () => document.removeEventListener("mousedown", closeDropdown);
 	}, []);
 
+	const handleCreatingSectionNote = (e) => {
+		e.preventDefault();
+
+		if (noteTitle) {
+			noteSectionSystem.addingSectionNote(
+				noteTitle,
+				mainMaterialID,
+				folder.id,
+				"note",
+				auth.currentUser.uid
+			);
+
+			setOpenDropDown(false);
+			setNoteTitle("");
+		}
+	};
+
 	return (
 		<>
 			<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 				<div
-					className={`note-modal w-[100%] h-[100%] flex flex-col justify-start items-start gap-10 bg-white py-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
+					className={`note-modal w-[100%] h-[100%] flex flex-col justify-start items-center sm:items-start gap-10 bg-white py-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll`}
 				>
 					<div className="flex flex-col justify-center items-start gap-3 w-full">
 						<div className="flex w-full h-auto justify-between items-center gap-2">
@@ -67,7 +85,7 @@ export default function Notes({ folder, user }) {
 							<div className="flex w-full sm:w-fit h-auto justify-start items-start gap-2 relative">
 								<button
 									onClick={handleOpenDropdown}
-									className="create-note-dropdown-2 btn flex justify-center items-center gap-1 w-full"
+									className="create-section-note-dropdown-2 btn flex justify-center items-center gap-1 w-full"
 								>
 									<p>Create Note Sections</p>
 									<Image
@@ -80,7 +98,7 @@ export default function Notes({ folder, user }) {
 								</button>
 
 								{openDropDown && (
-									<form className="create-note-dropdown-2 w-full h-auto bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center z-10">
+									<form className="create-section-note-dropdown-2 w-full h-auto bg-white shadow-lg rounded-xl p-4 absolute top-10 left-0 flex justify-center items-center z-10">
 										<div className="w-full flex flex-col justify-center items-center gap-3">
 											<div className="flex flex-col justify-center items-start gap-1 w-full">
 												<div className="flex justify-between items-center gap-2 w-full">
@@ -96,9 +114,9 @@ export default function Notes({ folder, user }) {
 
 											<button
 												onKeyDown={(e) =>
-													e.key === "Enter" && e.preventDefault()
+													e.key === "Enter" && handleCreatingSectionNote(e)
 												}
-												onClick={(e) => e.preventDefault()}
+												onClick={(e) => handleCreatingSectionNote(e)}
 												className="btn w-full"
 											>
 												Create
@@ -127,16 +145,47 @@ export default function Notes({ folder, user }) {
 						</div>
 					</div>
 
-					{noteSystem.allNotes
+					<div className={`flex flex-wrap gap-5 justify-center items-start`}>
+						<>
+							{noteSectionSystem.allSectionNotes
+								.filter(
+									(sectionNote) =>
+										sectionNote.uid === auth.currentUser.uid &&
+										sectionNote.materialType === "note" &&
+										sectionNote.currentMaterialID === mainMaterialID &&
+										sectionNote.currentFolderID === folder.id
+								)
+								.map((sectionNote) => {
+									if (
+										sectionNote.title
+											.normalize("NFD")
+											.replace(/\p{Diacritic}/gu, "")
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+									) {
+										return (
+											<SectionNote
+												key={sectionNote.id}
+												sectionNote={sectionNote}
+												folder={folder}
+											/>
+										);
+									}
+								})}
+						</>
+					</div>
+
+					{noteSectionSystem.allSectionNotes
 						?.filter(
-							(note) =>
-								note.uid === auth.currentUser.uid &&
-								note.materialType === "note" &&
-								note.currentFolderID === folder.id
+							(sectionNote) =>
+								sectionNote.uid === auth.currentUser.uid &&
+								sectionNote.materialType === "note" &&
+								sectionNote.currentMaterialID === mainMaterialID &&
+								sectionNote.currentFolderID === folder.id
 						)
-						.map((note) => note).length < 1 ? (
+						.map((sectionNote) => sectionNote).length < 1 ? (
 						<div
-							className={`relative w-full h-[60%] rounded-xl flex flex-col gap-2 justify-center items-center`}
+							className={`relative w-full h-[40%] rounded-xl flex flex-col gap-2 justify-center items-center`}
 						>
 							<Image
 								className="object-cover grayscale opacity-50"
@@ -146,26 +195,27 @@ export default function Notes({ folder, user }) {
 								height={60}
 								priority="true"
 							/>
-							<p className="text-lg text-gray-400">You have no notes</p>
+							<p className="text-lg text-gray-400">You have no section notes</p>
 						</div>
 					) : (
-						noteSystem.allNotes
+						noteSectionSystem.allSectionNotes
 							?.filter(
-								(note) =>
-									note.uid === auth.currentUser.uid &&
-									note.materialType === "note" &&
-									note.currentFolderID === folder.id &&
-									note.title
+								(sectionNote) =>
+									sectionNote.uid === auth.currentUser.uid &&
+									sectionNote.materialType === "note" &&
+									sectionNote.currentMaterialID === mainMaterialID &&
+									sectionNote.currentFolderID === folder.id &&
+									sectionNote.title
 										.normalize("NFD")
 										.replace(/\p{Diacritic}/gu, "")
 										.toLowerCase()
 										.includes(searchQuery.toLowerCase())
 							)
-							.map((note) => note).length < 1 && (
+							.map((sectionNote) => sectionNote).length < 1 && (
 							<>
-								<div className="relative mx-auto w-[80%] h-full flex justify-center items-center p-4 text-center">
+								<div className="relative mx-auto w-[80%] h-[40%] flex justify-center items-center p-4 text-center">
 									<p className="text-lg text-gray-400">
-										<span>No Notes named: </span>{" "}
+										<span>No Section Note named: </span>{" "}
 										<span className="text-gray-500">{searchQuery}</span>
 									</p>
 								</div>

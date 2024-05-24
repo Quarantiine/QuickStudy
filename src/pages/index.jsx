@@ -759,12 +759,7 @@ export default function Home() {
 												.map((folder) => {
 													return (
 														<React.Fragment key={folder.id}>
-															<Notes
-																folder={folder}
-																user={user}
-																openNoteFolder={openNoteFolder}
-																setOpenNoteFolder={setOpenNoteFolder}
-															/>
+															<Notes folder={folder} />
 														</React.Fragment>
 													);
 												}),
@@ -798,18 +793,16 @@ export default function Home() {
 										/>
 									</div>
 
-									{!createFolderModal && (
-										<>
-											{!openShortNavbar && (
-												<ThemeChange
-													user={user}
-													handleChangeTheme={handleChangeTheme}
-												/>
-											)}
+									<>
+										{!openShortNavbar && (
+											<ThemeChange
+												user={user}
+												handleChangeTheme={handleChangeTheme}
+											/>
+										)}
 
-											<MainDashboard user={user} />
-										</>
-									)}
+										<MainDashboard user={user} />
+									</>
 								</main>
 							</UserCredentialsCtx.Provider>
 						</React.Fragment>

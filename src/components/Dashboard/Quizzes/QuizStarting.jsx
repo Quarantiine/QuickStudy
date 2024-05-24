@@ -99,7 +99,7 @@ export default function QuizStarting({ folderMaterial }) {
 								<Image
 									className="object-cover"
 									src={"/icons/task.svg"}
-									alt="logo"
+									alt="icon"
 									width={25}
 									height={25}
 									priority="true"
@@ -261,11 +261,11 @@ const QuestionsNAnswers = ({
 						<div className="flex justify-center items-center w-[90%] h-[90%] bg-transparent relative">
 							<div
 								onClick={handleOpenFullscreen}
-								className="p-1 rounded-full absolute top-5 left-5 base-bg z-10 text-btn"
+								className="p-1 rounded-full absolute top-3 right-3 base-bg z-10 text-btn"
 							>
 								<Image
-									src={"/icons/cancel.svg"}
-									alt="close"
+									src={"/icons/close.svg"}
+									alt="icon"
 									width={30}
 									height={30}
 								/>
@@ -274,7 +274,7 @@ const QuestionsNAnswers = ({
 							<Image
 								className="object-contain"
 								src={questionNAnswer.image}
-								alt="image"
+								alt="img"
 								fill
 								sizes="(max-width: 768px) 100vw, 33vw"
 							/>
@@ -288,7 +288,7 @@ const QuestionsNAnswers = ({
 					<Image
 						className="object-contain"
 						src={questionNAnswer.image}
-						alt="image"
+						alt="img"
 						fill
 						sizes="(max-width: 768px) 100vw, 33vw"
 					/>
@@ -303,7 +303,7 @@ const QuestionsNAnswers = ({
 					>
 						<Image
 							src={"/icons/open_in_full.svg"}
-							alt="fullscreen"
+							alt="icon"
 							width={15}
 							height={15}
 						/>
