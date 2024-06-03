@@ -32,11 +32,11 @@ export default function Folders({ user }) {
 				</div>
 
 				<div
-					className={`grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+					className={`grid grid-cols-[auto_auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 				>
 					{folderSystem.allFolders
 						.filter((value) => value.uid === auth.currentUser.uid)
-						.slice(0, 3)
+						.slice(0, 4)
 						.map((folder) => {
 							return (
 								<ChildFolders
@@ -131,14 +131,26 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 				</p>
 			</div>
 
-			<div className="flex flex-wrap justify-start items-center gap-2 w-full mt-auto">
-				<p className="bg-blue-500 w-fit px-2 py-1 rounded-lg text-white">
+			<div className="flex flex-wrap justify-start items-center gap-2 w-full">
+				<p
+					className={`flash-card-bg w-fit px-2 py-1 rounded-lg text-white ${
+						user.theme ? "flash-card-bg-opacity" : "flash-card-bg"
+					}`}
+				>
 					{flashcards} Flash-cards
 				</p>
-				<p className="bg-red-500 w-fit px-2 py-1 rounded-lg text-white">
+				<p
+					className={`quiz-bg w-fit px-2 py-1 rounded-lg text-white ${
+						user.theme ? "quiz-bg-opacity" : "quiz-bg"
+					}`}
+				>
 					{quizzes} Quiz
 				</p>
-				<p className="bg-purple-500 w-fit px-2 py-1 rounded-lg text-white">
+				<p
+					className={`note-bg w-fit px-2 py-1 rounded-lg text-white ${
+						user.theme ? "note-bg-opacity" : "note-bg"
+					}`}
+				>
 					{notes} Notes
 				</p>
 			</div>

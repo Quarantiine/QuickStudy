@@ -118,7 +118,7 @@ export default function FlashCardEditingForm({
 							</div>
 
 							<Image
-								className="object-contain rounded-lg"
+								className="object-contain"
 								src={questionNAnswer.image}
 								alt="icon"
 								fill

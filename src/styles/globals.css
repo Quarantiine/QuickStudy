@@ -10,6 +10,25 @@
 .base-bg {
 	@apply bg-[#2871FF];
 }
+.flash-card-bg {
+	@apply bg-[#2870ff];
+}
+.quiz-bg {
+	@apply bg-[#ff4545];
+}
+.note-bg {
+	@apply bg-[#c252ff];
+}
+.flash-card-bg-opacity {
+	@apply bg-[#2870ff9a];
+}
+.quiz-bg-opacity {
+	@apply bg-[#ff454593];
+}
+.note-bg-opacity {
+	@apply bg-[#c252ff92];
+}
+
 .base-text {
 	@apply text-[#2871FF];
 }

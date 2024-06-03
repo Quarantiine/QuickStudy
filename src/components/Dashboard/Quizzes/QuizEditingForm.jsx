@@ -116,7 +116,7 @@ export default function QuizEditingForm({
 								/>
 							</div>
 							<Image
-								className="object-contain rounded-lg"
+								className="object-contain"
 								src={questionNAnswer.image}
 								alt="img"
 								fill

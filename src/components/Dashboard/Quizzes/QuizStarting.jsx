@@ -270,8 +270,9 @@ const QuestionsNAnswers = ({
 									height={30}
 								/>
 							</div>
+
 							<Image
-								className="object-contain rounded-lg"
+								className="object-contain"
 								src={questionNAnswer.image}
 								alt="img"
 								fill
@@ -283,7 +284,7 @@ const QuestionsNAnswers = ({
 			)}
 
 			{questionNAnswer.image && (
-				<div className="w-[70%] min-h-[200px] relative">
+				<div className="w-[70%] min-h-[200px] relative bg-gray-200 rounded-xl">
 					<Image
 						className="object-contain"
 						src={questionNAnswer.image}
