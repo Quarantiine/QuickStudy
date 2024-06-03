@@ -131,7 +131,7 @@ const ChildFolders = ({ folder, user, handleOpenFolderModal }) => {
 				</p>
 			</div>
 
-			<div className="flex flex-wrap justify-start items-center gap-2 w-full">
+			<div className="flex flex-wrap justify-start items-center gap-2 w-full mt-auto">
 				<p className="bg-blue-500 w-fit px-2 py-1 rounded-lg text-white">
 					{flashcards} Flash-cards
 				</p>
