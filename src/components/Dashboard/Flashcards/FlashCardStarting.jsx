@@ -10,6 +10,7 @@ export default function FlashCardStarting({ folderMaterial }) {
 		folderID,
 		handleOpenFlashCardEdit,
 		questionNAnswerContainerRef,
+		didntUnderstandFlashcardToggle,
 	} = useContext(UserCredentialsCtx);
 
 	const completionPercentage = Math.round(
@@ -136,28 +137,54 @@ export default function FlashCardStarting({ folderMaterial }) {
 								className={`question-n-answers-container flex gap-7 justify-start items-center w-[90%] overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative mx-auto h-full`}
 								ref={questionNAnswerContainerRef}
 							>
-								{questionNAnswerSystem.allQuestionsNAnswers
-									.filter(
-										(questionNAnswer) =>
-											questionNAnswer.uid === auth.currentUser.uid &&
-											questionNAnswer.currentFolderID === folderID &&
-											questionNAnswer.currentMaterialID === folderMaterial.id &&
-											questionNAnswer.materialType === "flash-card"
-									)
-									.reverse()
-									.map((questionNAnswer) => {
-										return (
-											<QuestionsNAnswers
-												auth={auth}
-												key={questionNAnswer.id}
-												questionNAnswer={questionNAnswer}
-												questionNAnswerSystem={questionNAnswerSystem}
-												folderMaterial={folderMaterial}
-												user={user}
-												folderID={folderID}
-											/>
-										);
-									})}
+								{didntUnderstandFlashcardToggle
+									? questionNAnswerSystem.allQuestionsNAnswers
+											.filter(
+												(questionNAnswer) =>
+													questionNAnswer.uid === auth.currentUser.uid &&
+													questionNAnswer.currentFolderID === folderID &&
+													questionNAnswer.currentMaterialID ===
+														folderMaterial.id &&
+													questionNAnswer.materialType === "flash-card" &&
+													questionNAnswer.didntUnderstand === true
+											)
+											.reverse()
+											.map((questionNAnswer) => {
+												return (
+													<QuestionsNAnswers
+														auth={auth}
+														key={questionNAnswer.id}
+														questionNAnswer={questionNAnswer}
+														questionNAnswerSystem={questionNAnswerSystem}
+														folderMaterial={folderMaterial}
+														user={user}
+														folderID={folderID}
+													/>
+												);
+											})
+									: questionNAnswerSystem.allQuestionsNAnswers
+											.filter(
+												(questionNAnswer) =>
+													questionNAnswer.uid === auth.currentUser.uid &&
+													questionNAnswer.currentFolderID === folderID &&
+													questionNAnswer.currentMaterialID ===
+														folderMaterial.id &&
+													questionNAnswer.materialType === "flash-card"
+											)
+											.reverse()
+											.map((questionNAnswer) => {
+												return (
+													<QuestionsNAnswers
+														auth={auth}
+														key={questionNAnswer.id}
+														questionNAnswer={questionNAnswer}
+														questionNAnswerSystem={questionNAnswerSystem}
+														folderMaterial={folderMaterial}
+														user={user}
+														folderID={folderID}
+													/>
+												);
+											})}
 							</div>
 						</div>
 					</>

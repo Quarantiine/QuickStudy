@@ -78,10 +78,14 @@
 }
 
 .overflow-with-height::-webkit-scrollbar {
-	height: 5px;
+	height: 10px;
 }
 .overflow-with-height::-webkit-scrollbar-thumb {
-	background-color: #dfdfdf;
+	background-color: #999;
+	border-radius: 100px;
+}
+.overflow-with-height::-webkit-scrollbar-track {
+	background-color: #eee;
 	border-radius: 100px;
 }
 

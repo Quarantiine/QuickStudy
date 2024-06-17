@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FlashCardStarting from "./FlashCardStarting";
 import Image from "next/image";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
@@ -6,13 +6,17 @@ import { UserCredentialsCtx } from "../../../pages";
 
 export default function MainFlashcardStart({
 	folder,
-	user,
 	folderMaterialSystem,
 	mainMaterialID,
 	startBackToFlashCardModal,
 }) {
 	const { auth, questionNAnswerSystem } = FirebaseAPI();
-	const { handleResetFlashcards } = useContext(UserCredentialsCtx);
+	const {
+		handleResetFlashcards,
+		resettingFlashcards,
+		didntUnderstandFlashcardToggle,
+		setDidntUnderstandFlashcardToggle,
+	} = useContext(UserCredentialsCtx);
 
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
@@ -79,21 +83,90 @@ export default function MainFlashcardStart({
 								</h1>
 							</div>
 
-							<button
-								onClick={() => {
-									handleResetFlashcards();
-								}}
-								className="btn flex justify-center items-center gap-1 w-full sm:w-fit"
-							>
-								<Image
-									className="object-contain"
-									src={"/icons/restart.svg"}
-									alt="icon"
-									width={20}
-									height={20}
-								/>
-								<p>Reset Flashcards</p>
-							</button>
+							<div className="flex flex-row justify-center items-center gap-2 w-fit">
+								{questionNAnswerSystem.allQuestionsNAnswers
+									.filter(
+										(questionNAnswer) =>
+											questionNAnswer.uid === auth.currentUser.uid &&
+											questionNAnswer.currentFolderID === folder.id &&
+											questionNAnswer.currentMaterialID === mainMaterialID &&
+											questionNAnswer.materialType === "flash-card"
+									)
+									.map((questionNAnswer) => questionNAnswer.completed)
+									.includes(true) ? (
+									<button
+										onClick={() => {
+											!resettingFlashcards && handleResetFlashcards();
+										}}
+										className={`btn flex justify-center items-center gap-1 w-full sm:w-fit ${resettingFlashcards && "!bg-gray-500 cursor-not-allowed"}`}
+									>
+										<Image
+											className="object-contain"
+											src={"/icons/restart.svg"}
+											alt="icon"
+											width={20}
+											height={20}
+										/>
+										<p>Reset Flashcards</p>
+									</button>
+								) : (
+									<button className="btn !bg-gray-500 cursor-not-allowed flex justify-center items-center gap-1 w-full sm:w-fit">
+										<Image
+											className="object-contain"
+											src={"/icons/restart.svg"}
+											alt="icon"
+											width={20}
+											height={20}
+										/>
+										<p>Reset Flashcards</p>
+									</button>
+								)}
+
+								{!questionNAnswerSystem.allQuestionsNAnswers
+									.filter(
+										(questionNAnswer) =>
+											questionNAnswer.uid === auth.currentUser.uid &&
+											questionNAnswer.currentFolderID === folder.id &&
+											questionNAnswer.currentMaterialID === mainMaterialID &&
+											questionNAnswer.materialType === "flash-card"
+									)
+									.map((questionNAnswer) => questionNAnswer.completed === true)
+									.includes(false) &&
+									questionNAnswerSystem.allQuestionsNAnswers
+										.filter(
+											(questionNAnswer) =>
+												questionNAnswer.uid === auth.currentUser.uid &&
+												questionNAnswer.currentFolderID === folder.id &&
+												questionNAnswer.currentMaterialID === mainMaterialID &&
+												questionNAnswer.materialType === "flash-card"
+										)
+										.map((questionNAnswer) => questionNAnswer).length > 0 &&
+									questionNAnswerSystem.allQuestionsNAnswers
+										.filter(
+											(questionNAnswer) =>
+												questionNAnswer.uid === auth.currentUser.uid &&
+												questionNAnswer.currentFolderID === folder.id &&
+												questionNAnswer.currentMaterialID === mainMaterialID &&
+												questionNAnswer.materialType === "flash-card" &&
+												questionNAnswer.didntUnderstand === true
+										)
+										.map(
+											(questionNAnswer) => questionNAnswer.completed === true
+										).length > 0 && (
+										<button
+											onClick={() => {
+												setDidntUnderstandFlashcardToggle(
+													!didntUnderstandFlashcardToggle
+												);
+											}}
+											className={`btn flex justify-center items-center gap-1 w-full sm:w-fit ${
+												didntUnderstandFlashcardToggle && "opacity-50"
+											}`}
+										>
+											<p>Show Missed Flashcards</p>
+										</button>
+									)}
+							</div>
 						</div>
 					</div>
 
@@ -113,6 +186,12 @@ export default function MainFlashcardStart({
 								/>
 							);
 						})}
+
+					{resettingFlashcards && (
+						<div className="flex justify-center items-center gap-1 w-full sm:w-fit absolute bottom-16 left-1/2 -translate-x-1/2">
+							<p className="animate-pulse text-2xl">Resetting Flashcards</p>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

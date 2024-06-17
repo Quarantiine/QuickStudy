@@ -49,6 +49,9 @@ export default function Home() {
 	const [openEditFlashCardDropdown, setOpenEditFlashCardDropdown] =
 		useState(false);
 	const [flashcardQNATitle, setFlashcardQNATitle] = useState("");
+	const [resettingFlashcards, setResettingFlashcards] = useState(false);
+	const [didntUnderstandFlashcardToggle, setDidntUnderstandFlashcardToggle] =
+		useState(false);
 
 	// NOTE SECTION
 	const [openNoteFolder, setOpenNoteFolder] = useState(false);
@@ -193,6 +196,9 @@ export default function Home() {
 	};
 
 	const handleResetFlashcards = () => {
+		setResettingFlashcards(true);
+		setDidntUnderstandFlashcardToggle(false);
+
 		questionNAnswerContainerRef.current?.scrollTo(0, 0);
 
 		questionNAnswerSystem.allQuestionsNAnswers
@@ -243,6 +249,23 @@ export default function Home() {
 				folderMaterialSystem.updateMainMaterialCompletion(0, folderMaterial.id)
 			);
 	};
+
+	useEffect(() => {
+		if (
+			!questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === mainMaterialID &&
+						questionNAnswer.materialType === "flash-card"
+				)
+				.map((questionNAnswer) => questionNAnswer.completed)
+				.includes(true)
+		) {
+			setResettingFlashcards(false);
+		}
+	});
 
 	{
 		/* QUIZZES SECTION */
@@ -492,6 +515,9 @@ export default function Home() {
 									setOpenEditFlashCardDropdown,
 									setOpenFlashCardEdit,
 									handleResetFlashcards,
+									resettingFlashcards,
+									didntUnderstandFlashcardToggle,
+									setDidntUnderstandFlashcardToggle,
 
 									// QUIZ SECTION
 									openQuizModal,
