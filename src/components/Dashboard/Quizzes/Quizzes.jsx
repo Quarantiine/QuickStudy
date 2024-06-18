@@ -71,7 +71,7 @@ export default function Quizzes({ user, folder }) {
 
 		setOpenDropDown2(false);
 
-		setTransferIndicator("Transferred Complete");
+		setTransferIndicator("Transferring Set...Loading");
 		transferIndicatorRef.current = setTimeout(() => {
 			setTransferIndicator("");
 		}, 3000);
@@ -163,7 +163,17 @@ export default function Quizzes({ user, folder }) {
 								</div>
 
 								<div className="flex flex-col justify-center items-start w-full text-sm">
-									<p className="text-gray-400 px-2">Flash-cards Below</p>
+									<p className="text-gray-400 px-2">
+										{folderMaterialSystem.allFolderMaterials
+											.filter(
+												(value) =>
+													value.uid === folder.uid &&
+													value.materialType === "flash-card"
+											)
+											.map((material) => material).length < 1 &&
+											`(No Flashcards)`}
+										Flash-cards Below
+									</p>
 
 									<div className="w-full flex flex-col justify-center items-start">
 										{folderMaterialSystem.allFolderMaterials

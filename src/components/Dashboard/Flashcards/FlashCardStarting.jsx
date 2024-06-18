@@ -220,11 +220,10 @@ export default function FlashCardStarting({ folderMaterial }) {
 const QuestionsNAnswers = ({
 	auth,
 	questionNAnswer,
-	questionNAnswerSystem,
 	folderMaterial,
-	user,
 	folderID,
 }) => {
+	const { questionNAnswerSystem } = FirebaseAPI();
 	const [showAnswer, setShowAnswer] = useState(false);
 	const { folderMaterialSystem } = FirebaseAPI();
 	const [openFullscreenModal, setOpenFullscreenModal] = useState(false);
@@ -255,8 +254,6 @@ const QuestionsNAnswers = ({
 	const handleShowAnswer = () => {
 		setShowAnswer(true);
 	};
-
-	const handleCompletion = () => {};
 
 	const handleUnderstandQuestion = () => {
 		questionNAnswerSystem.updateUnderstand(
@@ -289,6 +286,10 @@ const QuestionsNAnswers = ({
 		e.preventDefault();
 		setOpenFullscreenModal(!openFullscreenModal);
 	};
+
+	useEffect(() => {
+		console.log(showAnswer);
+	});
 
 	return (
 		<div
@@ -331,7 +332,7 @@ const QuestionsNAnswers = ({
 			)}
 
 			{questionNAnswer.image && (
-				<div className="w-[70%] h-[200px] relative rounded-lg bg-gray-200">
+				<div className="w-[70%] h-[200px] relative rounded-lg">
 					<Image
 						className="object-contain"
 						src={questionNAnswer.image}
@@ -362,6 +363,7 @@ const QuestionsNAnswers = ({
 				<span className="font-semibold">Q:</span>{" "}
 				<span>{questionNAnswer.question}</span>
 			</p>
+
 			{!showAnswer &&
 				questionNAnswer.understand !== true &&
 				questionNAnswer.didntUnderstand !== true && (
@@ -369,31 +371,34 @@ const QuestionsNAnswers = ({
 						Show?
 					</button>
 				)}
+
 			{questionNAnswer.understand === true && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
+
 			{questionNAnswer.didntUnderstand === true && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
+
 			{showAnswer && (
 				<p className="flex justify-center items-start gap-2">
 					<span className="font-semibold">A:</span>{" "}
 					<span>{questionNAnswer.answer}</span>
 				</p>
 			)}
+
 			{showAnswer && (
 				<div className="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
 					<button
 						onClick={() => {
 							setShowAnswer(false);
 							handleUnderstandQuestion();
-							handleCompletion();
 						}}
 						className="btn !bg-green-500 w-full sm:w-fit"
 					>
@@ -403,7 +408,6 @@ const QuestionsNAnswers = ({
 						onClick={() => {
 							setShowAnswer(false);
 							handleDidntUnderstandQuestion();
-							handleCompletion();
 						}}
 						className="btn !bg-red-500 w-full sm:w-fit"
 					>

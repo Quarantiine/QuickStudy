@@ -73,7 +73,7 @@ export default function ChildNote({ note }) {
                     />
 
                     <div className="flex flex-col justify-center items-center absolute bottom-10 gap-2 w-[90%] left-1/2 -translate-x-1/2">
-                      <h1 className="title-h1 shadow-2xl bg-white rounded-lg px-3 py-1 text-center opacity-70 hover:opacity-100 transition-all">
+                      <h1 className="title-h1 shadow-2xl bg-white rounded-lg px-3 py-1 text-center opacity-20 hover:opacity-100 transition-all">
                         {note2.title}
                       </h1>
                     </div>

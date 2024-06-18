@@ -4,10 +4,13 @@ import { UserCredentialsCtx } from "../../../pages";
 import Image from "next/image";
 import QuizEditingForm from "./QuizEditingForm";
 
-export default function QuizEditing({ folderMaterial }) {
+export default function QuizEditing({
+	folderMaterial,
+	deletingAllQNA,
+	setDeletingAllQNA,
+}) {
 	const { auth, questionNAnswerSystem, folderMaterialSystem } = FirebaseAPI();
 	const {
-		user,
 		folderID,
 		mainMaterialID,
 		openEditQuizDropdown,
@@ -50,7 +53,21 @@ export default function QuizEditing({ folderMaterial }) {
 	const handleCreateQuestionNAnswer = (e) => {
 		e.preventDefault();
 
-		if (questionTxt && answerTxt) {
+		if (
+			questionTxt &&
+			answerTxt &&
+			questionTxt &&
+			answerTxt &&
+			questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === folderMaterial.id &&
+						questionNAnswer.materialType === "quiz"
+				)
+				.map((questionNAnswer) => questionNAnswer).length < 51
+		) {
 			setDropdown(false);
 
 			questionNAnswerSystem.createQuestionNAnswer(
@@ -67,28 +84,38 @@ export default function QuizEditing({ folderMaterial }) {
 	};
 
 	const handleCreateQNA = (material) => {
-		questionNAnswerSystem.allQuestionsNAnswers
-			.filter(
-				(value) =>
-					value.uid === folderMaterial.uid &&
-					value.currentMaterialID === material.id
-			)
-			.map((qna) =>
-				questionNAnswerSystem.createQuestionNAnswer(
-					qna.question,
-					qna.answer,
-					folderID,
-					mainMaterialID,
-					"quiz",
-					qna.image
+		if (
+			questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(value) =>
+						value.uid === folderMaterial.uid &&
+						value.currentMaterialID === mainMaterialID
 				)
-			);
+				.map((qna) => qna).length <= 50
+		) {
+			questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(value) =>
+						value.uid === folderMaterial.uid &&
+						value.currentMaterialID === material.id
+				)
+				.map((qna) =>
+					questionNAnswerSystem.createQuestionNAnswer(
+						qna.question,
+						qna.answer,
+						folderID,
+						mainMaterialID,
+						"quiz",
+						qna.image
+					)
+				);
 
-		setDropdown2(false);
-		setTransferIndicator("Transferred Complete");
-		transferIndicatorRef.current = setTimeout(() => {
-			setTransferIndicator("");
-		}, 3000);
+			setDropdown2(false);
+			setTransferIndicator("Transferring Set...Loading");
+			transferIndicatorRef.current = setTimeout(() => {
+				setTransferIndicator("");
+			}, 3000);
+		}
 	};
 
 	useEffect(() => {
@@ -103,27 +130,18 @@ export default function QuizEditing({ folderMaterial }) {
 	}, []);
 
 	const handleDeleteAllQNA = () => {
-		if (
-			questionNAnswerSystem.allQuestionsNAnswers
-				.filter(
-					(value) =>
-						value.uid === folderMaterial.uid &&
-						value.currentMaterialID === mainMaterialID
-				)
-				.map((qna) => qna).length > 0
-		) {
-			handleResetQuizzes();
+		setDeletingAllQNA(true);
+		handleResetQuizzes();
 
-			questionNAnswerSystem.allQuestionsNAnswers
-				.filter(
-					(value) =>
-						value.uid === folderMaterial.uid &&
-						value.currentMaterialID === mainMaterialID
-				)
-				.map((qna) => questionNAnswerSystem.deleteQuestionNAnswer(qna.id));
+		questionNAnswerSystem.allQuestionsNAnswers
+			.filter(
+				(value) =>
+					value.uid === folderMaterial.uid &&
+					value.currentMaterialID === mainMaterialID
+			)
+			.map((qna) => questionNAnswerSystem.deleteQuestionNAnswer(qna.id));
 
-			setDeletingAllWarning(!deletingAllWarning);
-		}
+		setDeletingAllWarning(!deletingAllWarning);
 	};
 
 	const handleDeletingAllWarning = () => {
@@ -141,11 +159,33 @@ export default function QuizEditing({ folderMaterial }) {
 		return () => document.removeEventListener("mousedown", closeWarningModal);
 	}, []);
 
+	useEffect(() => {
+		if (
+			!questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === mainMaterialID &&
+						questionNAnswer.materialType === "quiz"
+				)
+				.map((questionNAnswer) => questionNAnswer).length > 0
+		) {
+			setDeletingAllQNA(false);
+		}
+	});
+
 	return (
 		<>
 			{transferIndicator && (
 				<div className="absolute top-4 left-1/2 -translate-x-1/2 w-fit h-fit px-3 py-1 rounded-lg bg-green-500 text-white z-10">
 					<p>{transferIndicator}</p>
+				</div>
+			)}
+
+			{deletingAllQNA && (
+				<div className="absolute top-4 left-1/2 -translate-x-1/2 w-fit h-fit px-3 py-1 rounded-lg bg-red-500 text-white z-10">
+					<p>Deleting Questions...</p>
 				</div>
 			)}
 
@@ -157,12 +197,20 @@ export default function QuizEditing({ folderMaterial }) {
 								Are you sure you want to{" "}
 								<span className="font-bold">delete all</span> of your Q&As?
 							</h1>
-							<button
-								onClick={handleDeleteAllQNA}
-								className="btn !bg-red-500 w-full question-n-answer-dropdown"
-							>
-								Delete All Q&A
-							</button>
+							{questionNAnswerSystem.allQuestionsNAnswers
+								.filter(
+									(value) =>
+										value.uid === folderMaterial.uid &&
+										value.currentMaterialID === mainMaterialID
+								)
+								.map((qna) => qna).length > 0 && (
+								<button
+									onClick={handleDeleteAllQNA}
+									className="btn !bg-red-500 w-full question-n-answer-dropdown"
+								>
+									Delete All Q&A
+								</button>
+							)}
 
 							<button
 								onClick={handleDeletingAllWarning}
@@ -181,23 +229,43 @@ export default function QuizEditing({ folderMaterial }) {
 						className={`relative ${openEditQuizDropdown === false && "z-10"}`}
 					>
 						<div className="flex flex-col justify-center items-start gap-2">
-							<button
-								onClick={handleDropdown}
-								className="btn w-full sm:w-fit question-n-answer-dropdown"
-							>
-								Create Q&A
-							</button>
-							<button
-								onClick={handleDropdown2}
-								className="btn w-full sm:w-fit question-n-answer-dropdown"
-							>
-								Create Q&A with Flash-cards
-							</button>
+							{deletingAllQNA ? (
+								<>
+									<button
+										className={`btn w-full sm:w-fit question-n-answer-dropdown opacity-50 cursor-not-allowed`}
+									>
+										Create Q&A
+									</button>
+									<button
+										className={`btn w-full sm:w-fit question-n-answer-dropdown opacity-50 cursor-not-allowed`}
+									>
+										Create Q&A with Flash-cards
+									</button>
+								</>
+							) : (
+								<>
+									<button
+										onClick={handleDropdown}
+										className="btn w-full sm:w-fit question-n-answer-dropdown"
+									>
+										Create Q&A
+									</button>
+									<button
+										onClick={handleDropdown2}
+										className="btn w-full sm:w-fit question-n-answer-dropdown"
+									>
+										Create Q&A with Flash-cards
+									</button>
+								</>
+							)}
 						</div>
 
 						{dropdown && (
 							<>
 								<form className="question-n-answer-dropdown flex flex-col justify-start items-center gap-2 absolute top-10 right-0 w-full p-4 rounded-xl bg-white shadow-lg">
+									<p className="text-white bg-yellow-500 px-2 py-1 rounded-lg w-full">
+										Quiz Questions Limit: 50
+									</p>
 									<div className="flex flex-col justify-center items-start gap-1 w-full">
 										<label htmlFor="question">Question</label>
 										<input
@@ -232,6 +300,9 @@ export default function QuizEditing({ folderMaterial }) {
 							<>
 								<div className="create-quiz-dropdown-3 overflow-no-width w-full max-h-[200px] overflow-x-hidden overflow-y-scroll bg-white shadow-lg rounded-xl p-4 absolute top-20 left-0 flex flex-col justify-start items-start z-10 gap-5">
 									<div className="flex flex-col justify-start items-start gap-1 w-full">
+										<p className="text-white bg-yellow-500 px-2 py-1 rounded-lg w-full">
+											Quiz Questions Limit: 50
+										</p>
 										<h1 className="text-base font-bold px-2">
 											Create Quiz from Your Flash-cards Q&A
 										</h1>
@@ -244,7 +315,17 @@ export default function QuizEditing({ folderMaterial }) {
 									</div>
 
 									<div className="flex flex-col justify-center items-start w-full text-sm">
-										<p className="text-gray-400 px-2">Flash-cards Q&A Below</p>
+										<p className="text-gray-400 px-2">
+											{folderMaterialSystem.allFolderMaterials
+												.filter(
+													(value) =>
+														value.uid === folderID &&
+														value.materialType === "flash-card"
+												)
+												.map((material) => material).length < 1 &&
+												`(No Flashcards)`}
+											Flash-cards Below
+										</p>
 
 										<div className="w-full flex flex-col justify-center items-start">
 											{folderMaterialSystem.allFolderMaterials
@@ -289,21 +370,51 @@ export default function QuizEditing({ folderMaterial }) {
 					</div>
 
 					<div className="flex flex-col justify-center items-end w-full sm:w-fit gap-2 mt-5 sm:mt-auto">
-						<button
-							onClick={() => {
-								handleOpenQuizStart(folderMaterial.id);
-							}}
-							className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
-						>
-							Take Quiz
-						</button>
+						{deletingAllQNA ? (
+							<>
+								<button className="passive-btn w-full sm:w-fit question-n-answer-dropdown opacity-50 cursor-not-allowed">
+									Take Quiz
+								</button>
 
-						<button
-							onClick={() => setDeletingAllWarning(!deletingAllWarning)}
-							className="btn !bg-red-500 w-full sm:w-fit question-n-answer-dropdown"
-						>
-							Delete All Q&A
-						</button>
+								{questionNAnswerSystem.allQuestionsNAnswers
+									.filter(
+										(value) =>
+											value.uid === folderMaterial.uid &&
+											value.currentMaterialID === mainMaterialID
+									)
+									.map((qna) => qna).length > 0 && (
+									<button className="btn !bg-red-500 w-full sm:w-fit question-n-answer-dropdown opacity-50 cursor-not-allowed">
+										Delete All Q&A
+									</button>
+								)}
+							</>
+						) : (
+							<>
+								<button
+									onClick={() => {
+										handleOpenQuizStart(folderMaterial.id);
+									}}
+									className="passive-btn w-full sm:w-fit question-n-answer-dropdown"
+								>
+									Take Quiz
+								</button>
+
+								{questionNAnswerSystem.allQuestionsNAnswers
+									.filter(
+										(value) =>
+											value.uid === folderMaterial.uid &&
+											value.currentMaterialID === mainMaterialID
+									)
+									.map((qna) => qna).length > 0 && (
+									<button
+										onClick={() => setDeletingAllWarning(!deletingAllWarning)}
+										className="btn !bg-red-500 w-full sm:w-fit question-n-answer-dropdown"
+									>
+										Delete All Q&A
+									</button>
+								)}
+							</>
+						)}
 					</div>
 				</div>
 

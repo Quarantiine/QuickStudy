@@ -96,10 +96,6 @@ export default function Folders({ user }) {
 const ChildRecent = ({ folderMaterial, user, handleOpenMaterialEdit }) => {
 	const { auth, folderSystem } = FirebaseAPI();
 
-	useEffect(() => {
-		console.log();
-	});
-
 	return (
 		<>
 			<button

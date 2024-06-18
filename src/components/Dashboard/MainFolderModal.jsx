@@ -147,7 +147,7 @@ export default function MainFolderModal({
 			</form>
 
 			<div
-				className={`question-n-answers-container grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-with-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
+				className={`question-n-answers-container grid grid-cols-[auto_auto_auto] gap-7 justify-start items-center w-full h-fit overflow-no-height overflow-x-scroll overflow-y-hidden rounded-xl relative`}
 			>
 				<div className="question-n-answers-child w-[200px] h-[150px] rounded-xl bg-gray-100 p-4 flex flex-col justify-start items-start">
 					<div className="flex justify-between items-center gap-2 w-full">

@@ -61,6 +61,9 @@ export default function Home() {
 	const [openQuizStart, setOpenQuizStart] = useState(false);
 	const [openEditQuizDropdown, setOpenEditQuizDropdown] = useState(false);
 	const [quizQNATitle, setQuizQNATitle] = useState("");
+	const [resettingQuizzes, setResettingQuizzes] = useState(false);
+	const [didntUnderstandQuizzesToggle, setDidntUnderstandQuizzesToggle] =
+		useState(false);
 
 	const questionNAnswerContainerRef = useRef(null);
 
@@ -380,6 +383,9 @@ export default function Home() {
 	};
 
 	const handleResetQuizzes = () => {
+		setResettingQuizzes(true);
+		setDidntUnderstandQuizzesToggle(false);
+
 		questionNAnswerContainerRef.current?.scrollTo(0, 0);
 
 		questionNAnswerSystem.allQuestionsNAnswers
@@ -430,6 +436,23 @@ export default function Home() {
 				folderMaterialSystem.updateMainMaterialCompletion(0, folderMaterial.id)
 			);
 	};
+
+	useEffect(() => {
+		if (
+			!questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === mainMaterialID &&
+						questionNAnswer.materialType === "quiz"
+				)
+				.map((questionNAnswer) => questionNAnswer.completed)
+				.includes(true)
+		) {
+			setResettingQuizzes(false);
+		}
+	});
 
 	{
 		/* NOTE SECTION */
@@ -529,6 +552,9 @@ export default function Home() {
 									setOpenEditQuizDropdown,
 									setOpenQuizEdit,
 									handleResetQuizzes,
+									resettingQuizzes,
+									didntUnderstandQuizzesToggle,
+									setDidntUnderstandQuizzesToggle,
 
 									// NOTE SECTION
 									handleOpenNoteModal,

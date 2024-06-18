@@ -21,7 +21,7 @@ export default function MainFlashcardStart({
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
 			<div
-				className={`flash-card-edit-modal w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll ${
+				className={`w-[100%] h-[100%] flex flex-col justify-start items-start bg-white pt-7 px-5 relative overflow-with-width overflow-x-hidden overflow-y-scroll ${
 					questionNAnswerSystem.allQuestionsNAnswers
 						.filter(
 							(questionNAnswer) =>
@@ -52,21 +52,36 @@ export default function MainFlashcardStart({
 									<p className="text-sm text-gray-500">
 										{folder.name} - Studying Flash Cards
 									</p>
-									<button
-										onClick={() => {
-											startBackToFlashCardModal();
-										}}
-										className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-									>
-										<Image
-											className="object-contain"
-											src={"/icons/arrow_back_blue.svg"}
-											alt="icon"
-											width={17}
-											height={17}
-										/>
-										<p>Back</p>
-									</button>
+									{!resettingFlashcards ? (
+										<button
+											onClick={() => {
+												startBackToFlashCardModal();
+											}}
+											className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
+										>
+											<Image
+												className="object-contain"
+												src={"/icons/arrow_back_blue.svg"}
+												alt="icon"
+												width={17}
+												height={17}
+											/>
+											<p>Back</p>
+										</button>
+									) : (
+										<div
+											className="btn cursor-not-allowed !bg-transparent border border-gray-500 !text-gray-500 animate-pulse flex justify-center items-center gap-1"
+										>
+											<Image
+												className="object-contain grayscale"
+												src={"/icons/arrow_back_blue.svg"}
+												alt="icon"
+												width={17}
+												height={17}
+											/>
+											<p>Back</p>
+										</div>
+									)}
 								</div>
 
 								<h1 className="title-h1">
@@ -98,7 +113,9 @@ export default function MainFlashcardStart({
 										onClick={() => {
 											!resettingFlashcards && handleResetFlashcards();
 										}}
-										className={`btn flex justify-center items-center gap-1 w-full sm:w-fit ${resettingFlashcards && "!bg-gray-500 cursor-not-allowed"}`}
+										className={`btn flex justify-center items-center gap-1 w-full sm:w-fit ${
+											resettingFlashcards && "!bg-gray-500 cursor-not-allowed"
+										}`}
 									>
 										<Image
 											className="object-contain"
@@ -163,7 +180,7 @@ export default function MainFlashcardStart({
 												didntUnderstandFlashcardToggle && "opacity-50"
 											}`}
 										>
-											<p>Show Missed Flashcards</p>
+											<p>Missed Flashcards</p>
 										</button>
 									)}
 							</div>

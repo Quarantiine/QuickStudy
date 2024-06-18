@@ -7,7 +7,6 @@ import FlashCardEditingForm from "./FlashCardEditingForm";
 export default function FlashCardEditing({ folderMaterial }) {
 	const { auth, questionNAnswerSystem } = FirebaseAPI();
 	const {
-		user,
 		folderID,
 		mainMaterialID,
 		openEditFlashCardDropdown,
@@ -40,7 +39,19 @@ export default function FlashCardEditing({ folderMaterial }) {
 	const handleCreateQuestionNAnswer = (e) => {
 		e.preventDefault();
 
-		if (questionTxt && answerTxt) {
+		if (
+			questionTxt &&
+			answerTxt &&
+			questionNAnswerSystem.allQuestionsNAnswers
+				.filter(
+					(questionNAnswer) =>
+						questionNAnswer.uid === auth.currentUser.uid &&
+						questionNAnswer.currentFolderID === folderID &&
+						questionNAnswer.currentMaterialID === folderMaterial.id &&
+						questionNAnswer.materialType === "flash-card"
+				)
+				.map((questionNAnswer) => questionNAnswer).length < 51
+		) {
 			setDropdown(false);
 
 			questionNAnswerSystem.createQuestionNAnswer(
@@ -75,6 +86,10 @@ export default function FlashCardEditing({ folderMaterial }) {
 						{dropdown && (
 							<>
 								<form className="question-n-answer-dropdown flex flex-col justify-center items-start gap-2 absolute top-10 right-0 w-full p-3 rounded-xl bg-white shadow-lg z-10">
+									<p className="text-white bg-yellow-500 px-2 py-1 rounded-lg w-full">
+										Limit of Flashcards: 50
+									</p>
+
 									<div className="flex flex-col justify-center items-start gap-1 w-full">
 										<label htmlFor="question">Question</label>
 										<input

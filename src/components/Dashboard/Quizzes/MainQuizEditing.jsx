@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import QuizEditing from "./QuizEditing";
 import FirebaseAPI from "../../../pages/api/firebaseAPI";
 
 export default function MainQuizEditing({
 	folder,
-	user,
 	handleEditQuizTitle,
 	folderMaterialSystem,
 	openEditQuizDropdown,
@@ -16,6 +15,7 @@ export default function MainQuizEditing({
 	mainMaterialID,
 }) {
 	const { auth } = FirebaseAPI();
+	const [deletingAllQNA, setDeletingAllQNA] = useState(false);
 
 	return (
 		<div className="flex justify-center items-center bg-[rgba(0,0,0,0.9)] w-full h-full top-0 left-0 fixed z-50 overflow-no-width overflow-x-hidden overflow-y-scroll">
@@ -30,19 +30,34 @@ export default function MainQuizEditing({
 									{folder.name} - Editing Quiz
 								</p>
 
-								<button
-									onClick={editBackToQuizModal}
-									className="btn !bg-transparent border border-[#2871FF] !text-[#2871FF] flex justify-center items-center gap-1"
-								>
-									<Image
-										className="object-contain"
-										src={"/icons/arrow_back_blue.svg"}
-										alt="icon"
-										width={17}
-										height={17}
-									/>
-									<p>Back</p>
-								</button>
+								{deletingAllQNA ? (
+									<div
+										className={`btn !bg-transparent border flex justify-center items-center gap-1 border-[#2871FF] !text-[#2871FF] opacity-50 cursor-not-allowed`}
+									>
+										<Image
+											className={`object-contain grayscale`}
+											src={"/icons/arrow_back_blue.svg"}
+											alt="icon"
+											width={17}
+											height={17}
+										/>
+										<p>Back</p>
+									</div>
+								) : (
+									<button
+										onClick={editBackToQuizModal}
+										className={`btn !bg-transparent border flex justify-center items-center gap-1 border-[#2871FF] !text-[#2871FF]`}
+									>
+										<Image
+											className={`object-contain`}
+											src={"/icons/arrow_back_blue.svg"}
+											alt="icon"
+											width={17}
+											height={17}
+										/>
+										<p>Back</p>
+									</button>
+								)}
 							</div>
 
 							<div className="relative">
@@ -133,6 +148,8 @@ export default function MainQuizEditing({
 								<QuizEditing
 									key={folderMaterial.id}
 									folderMaterial={folderMaterial}
+									deletingAllQNA={deletingAllQNA}
+									setDeletingAllQNA={setDeletingAllQNA}
 								/>
 							);
 						})}

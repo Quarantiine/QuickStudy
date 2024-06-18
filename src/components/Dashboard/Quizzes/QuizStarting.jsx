@@ -5,8 +5,13 @@ import { UserCredentialsCtx } from "../../../pages";
 
 export default function QuizStarting({ folderMaterial }) {
 	const { auth, questionNAnswerSystem } = FirebaseAPI();
-	const { user, folderID, handleOpenQuizEdit, questionNAnswerContainerRef } =
-		useContext(UserCredentialsCtx);
+	const {
+		user,
+		folderID,
+		handleOpenQuizEdit,
+		questionNAnswerContainerRef,
+		didntUnderstandQuizzesToggle,
+	} = useContext(UserCredentialsCtx);
 
 	const completionPercentage = Math.round(
 		(questionNAnswerSystem.allQuestionsNAnswers
@@ -121,37 +126,61 @@ export default function QuizStarting({ folderMaterial }) {
 							questionNAnswer.currentMaterialID === folderMaterial.id &&
 							questionNAnswer.materialType === "quiz"
 					)
-					.reverse()
-					.map((questionNAnswer) => questionNAnswer).length > 4 ? (
+					.map((questionNAnswer) => questionNAnswer).length > 0 ? (
 					<>
 						<div
-							className={`rounded-xl absolute left-0 w-full flex flex-col justify-center items-center px-4 pb-4 h-[100%]`}
+							className={`rounded-xl absolute left-0 w-full flex flex-col justify-center items-center px-4 pb-4 h-[80%]`}
 						>
 							<div
 								className={`question-n-answers-quiz-container flex flex-col gap-7 justify-start items-start w-[100%] overflow-with-width overflow-y-scroll overflow-x-hidden rounded-xl relative mx-auto h-full`}
 								ref={questionNAnswerContainerRef}
 							>
-								{questionNAnswerSystem.allQuestionsNAnswers
-									.filter(
-										(questionNAnswer) =>
-											questionNAnswer.uid === auth.currentUser.uid &&
-											questionNAnswer.currentFolderID === folderID &&
-											questionNAnswer.currentMaterialID === folderMaterial.id &&
-											questionNAnswer.materialType === "quiz"
-									)
-									.map((questionNAnswer) => {
-										return (
-											<QuestionsNAnswers
-												auth={auth}
-												key={questionNAnswer.id}
-												questionNAnswer={questionNAnswer}
-												questionNAnswerSystem={questionNAnswerSystem}
-												folderMaterial={folderMaterial}
-												user={user}
-												folderID={folderID}
-											/>
-										);
-									})}
+								{didntUnderstandQuizzesToggle
+									? questionNAnswerSystem.allQuestionsNAnswers
+											.filter(
+												(questionNAnswer) =>
+													questionNAnswer.uid === auth.currentUser.uid &&
+													questionNAnswer.currentFolderID === folderID &&
+													questionNAnswer.currentMaterialID ===
+														folderMaterial.id &&
+													questionNAnswer.materialType === "quiz" &&
+													questionNAnswer.didntUnderstand === true
+											)
+											.map((questionNAnswer) => {
+												return (
+													<QuestionsNAnswers
+														auth={auth}
+														key={questionNAnswer.id}
+														questionNAnswer={questionNAnswer}
+														questionNAnswerSystem={questionNAnswerSystem}
+														folderMaterial={folderMaterial}
+														user={user}
+														folderID={folderID}
+													/>
+												);
+											})
+									: questionNAnswerSystem.allQuestionsNAnswers
+											.filter(
+												(questionNAnswer) =>
+													questionNAnswer.uid === auth.currentUser.uid &&
+													questionNAnswer.currentFolderID === folderID &&
+													questionNAnswer.currentMaterialID ===
+														folderMaterial.id &&
+													questionNAnswer.materialType === "quiz"
+											)
+											.map((questionNAnswer) => {
+												return (
+													<QuestionsNAnswers
+														auth={auth}
+														key={questionNAnswer.id}
+														questionNAnswer={questionNAnswer}
+														questionNAnswerSystem={questionNAnswerSystem}
+														folderMaterial={folderMaterial}
+														user={user}
+														folderID={folderID}
+													/>
+												);
+											})}
 							</div>
 						</div>
 					</>
@@ -169,7 +198,7 @@ export default function QuizStarting({ folderMaterial }) {
 						/>
 
 						<p className="text-lg text-gray-400">
-							{"You have < 5 questions/answers"}
+							You have no questions/answers
 						</p>
 						<button
 							onClick={() => handleOpenQuizEdit(folderMaterial.id)}
@@ -189,7 +218,6 @@ const QuestionsNAnswers = ({
 	questionNAnswer,
 	questionNAnswerSystem,
 	folderMaterial,
-	user,
 	folderID,
 }) => {
 	const { folderMaterialSystem } = FirebaseAPI();
